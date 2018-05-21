@@ -1,0 +1,7 @@
+---
+# common web server ports
+
+http: true
+https: true
+ssh: true
+ping: true

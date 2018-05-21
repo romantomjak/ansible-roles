@@ -1,0 +1,14 @@
+---
+# Installs basic iptables firewall with deny-all-except policy
+
+- name: Copy rules
+  template: src=firewall.j2 dest=/etc/firewall
+  become: true
+
+- name: Apply rules
+  shell: iptables-restore < /etc/firewall
+  become: true
+
+- name: Restore rules on startup
+  copy: src=restore.sh dest=/etc/network/if-pre-up.d/firewall mode=u+x,go-w
+  become: true
