@@ -1,5 +1,0 @@
-{
-    "data-root": "/data/docker",
-    "init": true,
-    "log-driver": "syslog"
-}
