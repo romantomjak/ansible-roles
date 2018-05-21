@@ -1,0 +1,11 @@
+---
+# Common tasks for any server provisioning
+
+- name: Update package lists
+  apt: update_cache=yes
+
+- name: Upgrade packages
+  apt: upgrade=yes
+
+- name: Install basic packages
+  apt: name=vim,curl state=latest
