@@ -1,12 +1,6 @@
 ---
 # Installs LetsEncrypt's Certbot
 
-- name: Add stretch backports
-  shell: echo 'deb http://httpredir.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
-  args:
-    creates: /etc/apt/sources.list.d/stretch-backports.list
-  become: true
-
 - name: Install Certbot
   apt: name=certbot state=latest update_cache=yes default_release=stretch-backports
   become: true
