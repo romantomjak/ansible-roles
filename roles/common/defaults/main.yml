@@ -1,8 +1,10 @@
 ---
 # Override these in playbook with 'vars:' block
 
-# Create a new user with sudo rights
-common_create_user: true
+# Create a new user with optional sudo rights and groups
+common_user_groups: []
+common_sudo: false
+common_passwordless_sudo: false
 common_username: changeme
 common_user_password: changeme
 
