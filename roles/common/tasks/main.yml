@@ -9,3 +9,7 @@
 
 - name: Install basic packages
   apt: name=vim,curl state=latest
+
+- include: adduser.yml
+
+- include: sshd_config.yml

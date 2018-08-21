@@ -1,0 +1,10 @@
+---
+# Create a default user with sudo rights
+
+- name: Create user {{ common_username }}
+  user: name={{ common_username }} groups=sudo shell=/bin/bash password={{ common_user_password | password_hash('sha512') }}
+  when: common_create_user and (common_username and common_user_password)
+
+- name: Install ssh key for {{ common_username }}
+  authorized_key: user={{ common_username }} key={{ common_ssh_pubkey }}
+  when: common_use_pki
