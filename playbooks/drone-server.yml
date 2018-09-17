@@ -1,0 +1,20 @@
+---
+# Deploys Drone Continuous Delivery server
+
+- name: Provision Drone Server
+  hosts: all
+  vars:
+    drone_server_admins: changeme
+    drone_server_host: changeme
+    drone_server_github_client: changeme
+    drone_server_github_secret: changeme
+    drone_server_secret: changeme
+    firewall_allow_http: true
+    firewall_allow_https: true
+    firewall_allow_ssh: true
+    firewall_allow_ping: true
+    firewall_allow_ports: ["9000"]
+  roles:
+    - docker
+    - firewall
+    - drone-server
