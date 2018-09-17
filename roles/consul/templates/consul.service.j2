@@ -1,0 +1,8 @@
+[Unit]
+Description=Consul Agent
+
+[Service]
+ExecStart=/usr/sbin/consul agent -config-file /etc/consul.conf -config-format json
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+---
+# Deploys Consul master node
+
+- name: Provision Consul master node
+  hosts: all
+  roles:
+    - nomad-server
+    - influxdb
+    - telegraf
+    - chronograf

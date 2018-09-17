@@ -1,0 +1,51 @@
+---
+# Installs Consul agent
+
+- name: Create group
+  become: true
+  group: name=consul state=present
+
+- name: Create user
+  become: true
+  user:
+    name: consul
+    groups: consul
+    shell: /sbin/nologin
+    create_home: true
+    home: /opt/consul
+
+- name: Install unzip
+  apt: name=unzip state=latest update_cache=yes
+  become: true
+
+- name: Download and install Consul
+  become: true
+  unarchive:
+    src: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
+    dest: /usr/sbin
+    remote_src: yes
+    owner: root
+    group: consul
+    mode: "750"
+
+- name: Copy service template
+  become: true
+  template:
+    src: templates/consul.service.j2
+    dest: /etc/systemd/system/consul.service
+    owner: root
+    group: consul
+    mode: 0644
+
+- name: Copy service configuration
+  become: true
+  template:
+    src: templates/consul.conf.j2
+    dest: /etc/consul.conf
+    owner: root
+    group: consul
+    mode: 0644
+
+- name: Start Consul
+  become: true
+  systemd: name=consul enabled=yes state=restarted daemon_reload=true

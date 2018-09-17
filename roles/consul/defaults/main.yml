@@ -1,0 +1,11 @@
+---
+# Override this in play
+
+consul_version: 1.2.2
+consul_node_name: test-master
+consul_server: true
+consul_acl_master_token: changeme
+consul_encrypt: changeme
+consul_servers: []
+consul_advertise_addr: 0.0.0.0  # should be reachable by all other nodes in the cluster
+consul_client_addr: 127.0.0.1  # address to which Consul will bind client interfaces, including the HTTP and DNS servers
