@@ -1,0 +1,13 @@
+# Only required if you want to connect to this host
+Address = {{ ansible_default_ipv4.address }}
+
+# The subnet which this tinc daemon will serve
+#
+# Multiple subnet lines can be specified for each daemon. Subnets can either be
+# single MAC, IPv4 or IPv6 addresses, in which case a subnet consisting of only
+# that single address is assumed, or they can be a # IPv4 or IPv6 network
+# address with a prefixlength. For example, IPv4 subnets must be in a form like
+# 192.168.1.0/24, where 192.168.1.0 is the network address and 24 is the number
+# of bits set in the netmask. Note that subnets like 192.168.1.1/24 are invalid!
+Subnet = {{ tinc_subnet }}
+

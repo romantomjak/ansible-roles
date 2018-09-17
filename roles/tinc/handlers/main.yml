@@ -1,0 +1,13 @@
+---
+
+- name: Restart tinc
+  systemd: name="tinc@{{ tinc_netname }}" state=restarted daemon_reload=yes
+  become: true
+
+- name: Synchronize host configurations
+  copy:
+    src: "{{ tinc_build_root }}/hosts"
+    dest: /etc/tinc/{{ tinc_netname }}/
+    mode: u+x,go-w
+  become: true
+  notify: Restart tinc
