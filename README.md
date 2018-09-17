@@ -1,6 +1,6 @@
-# ansible-roles
+# ansible
 
-For Debian based hosts
+Roles and playbooks for debian based hosts 
 
 ---
 
