@@ -1,0 +1,10 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Drone needs to know its server address. You must therefore provide the address
+# in <scheme>://<hostname>:<port> format. Please omit trailing slashes.
+drone_agent_server: changeme
+
+# Drone server and agents use a shared secret to authenticate communication.
+# This should be a random string of your choosing and should be kept private.
+drone_agent_secret: changeme
