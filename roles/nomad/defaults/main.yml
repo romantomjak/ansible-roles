@@ -1,0 +1,11 @@
+---
+# Override this in play
+
+nomad_version: 0.8.4
+nomad_node_name: test-master
+nomad_server: true
+nomad_encrypt: changeme
+nomad_consul_token: changeme
+nomad_servers: []
+nomad_advertise_addr: 0.0.0.0  # should be reachable by all other nodes in the cluster
+nomad_client_addr: 127.0.0.1  # address to which nomad will bind client interface

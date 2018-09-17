@@ -1,0 +1,51 @@
+---
+# Installs Nomad agent
+
+- name: Create group
+  become: true
+  group: name=nomad state=present
+
+- name: Create user
+  become: true
+  user:
+    name: nomad
+    groups: nomad
+    shell: /sbin/nologin
+    create_home: true
+    home: /opt/nomad
+
+- name: Install unzip and linux container userspace tools
+  apt: name=unzip,liblxc1 state=latest update_cache=yes
+  become: true
+
+- name: Download and install Nomad
+  become: true
+  unarchive:
+    src: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64-lxc.zip
+    dest: /usr/sbin
+    remote_src: yes
+    owner: root
+    group: nomad
+    mode: "750"
+
+- name: Copy service template
+  become: true
+  template:
+    src: templates/nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+    owner: root
+    group: nomad
+    mode: 0644
+
+- name: Copy service configuration
+  become: true
+  template:
+    src: templates/nomad.conf.j2
+    dest: /etc/nomad.conf
+    owner: root
+    group: nomad
+    mode: 0644
+
+- name: Start Nomad
+  become: true
+  systemd: name=nomad enabled=yes state=restarted daemon_reload=true

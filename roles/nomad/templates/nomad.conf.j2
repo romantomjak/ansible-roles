@@ -1,0 +1,42 @@
+# Setup data dir
+data_dir = "/opt/nomad"
+
+# Give the agent a unique name. Defaults to hostname
+name = "{{ nomad_node_name }}"
+
+{% if nomad_server == "true" %}
+# The bind address for individual network services
+addresses {
+  http = "{{ nomad_client_addr }}"
+  rpc  = "{{ nomad_advertise_addr }}"
+  serf = "{{ nomad_advertise_addr }}"
+}
+
+# The advertise address for individual network services
+advertise {
+  http = "{{ nomad_client_addr }}"
+  rpc  = "{{ nomad_advertise_addr }}"
+  serf = "{{ nomad_advertise_addr }}"
+}
+
+# Enable the server
+server {
+  enabled = true
+
+  # Self-elect, should be 3 or 5 for production
+  bootstrap_expect = 1
+
+  # Provides the gossip encryption key
+  encrypt = "{{ nomad_encrypt }}"
+}
+{% else %}
+# Nomad client specific configuration
+client {
+  enabled = true
+  servers = {{ nomad_servers | to_json }}
+}
+{% endif %}
+
+consul {
+  token = "{{ nomad_consul_token }}"
+}
