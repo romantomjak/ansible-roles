@@ -1,4 +1,5 @@
 ---
+# Handlers used in tasks
 
 - name: Restart tinc
   systemd: name="tinc@{{ tinc_netname }}" state=restarted daemon_reload=yes

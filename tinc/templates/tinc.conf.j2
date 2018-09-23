@@ -15,7 +15,7 @@ ConnectTo = {{ hostvars[host]['ansible_hostname'] | regex_replace('[^a-zA-Z0-9_]
 Name = {{ ansible_hostname | regex_replace('[^a-zA-Z0-9_]+', '_') }}
 
 # Full path name of the RSA private key file
-PrivateKeyFile = /etc/tinc/{{ tinc_netname }}/{{ ansible_hostname }}
+PrivateKeyFile = /etc/tinc/{{ tinc_netname }}/{{ ansible_hostname | regex_replace('[^a-zA-Z0-9_]+', '_') }}
 
 # Increasing the priority may help to reduce latency and packet loss on the VPN
 ProcessPriority = {{ tinc_process_priority }}

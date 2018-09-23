@@ -9,5 +9,5 @@ Address = {{ ansible_default_ipv4.address }}
 # address with a prefixlength. For example, IPv4 subnets must be in a form like
 # 192.168.1.0/24, where 192.168.1.0 is the network address and 24 is the number
 # of bits set in the netmask. Note that subnets like 192.168.1.1/24 are invalid!
-Subnet = {{ tinc_subnet }}
+Subnet = {{ vpn_ip }}/32
 
