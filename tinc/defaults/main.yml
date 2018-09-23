@@ -1,0 +1,20 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Temporary configuration storage
+tinc_build_root: null
+
+# Allowed characters: a-z, A-Z, 0-9 and _
+tinc_netname: mytinc
+
+# Network configuration
+#
+# No validation is done here, so be extra careful when changing these and
+# use the CIDR calculator when not sure.
+#
+# CIDR calculator: http://www.subnet-calculator.com/cidr.php
+tinc_subnet: 10.10.1.0/32
+tinc_mask: 255.255.255.0
+
+# Increasing the priority may help to reduce latency and packet loss on the VPN
+tinc_process_priority: high
