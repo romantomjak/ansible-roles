@@ -13,6 +13,23 @@ Things to be aware of:
 - By default, a mesh network with a name of `mytinc` and a subnet `10.10.1.0/32` will be created
 - tinc daemon can be started/stopped: `service tinc@mytinc start`
 
+## How does it work?
+
+Each playbook run generates new SSH keys for every node, so it can also be easily used to rotate SSH keys. Generally it works like this:
+
+- Create temporary build folder
+- Provision each node
+- Synchronize host configurations
+- Delete build folder
+
+**Create temporary build folder** - will keep all SSH keys and daemon configs, so that later we can distribute public keys to all hosts.
+
+**Provision each node** - installs tinc server, uploads daemon configuration files and private SSH key used to secure communication between the nodes.
+
+**Synchronize host configurations** - uploads tinc host configuration files to all nodes. this file has the node ip, subnet configuration and it’s public key.
+
+**Delete build folder** - deletes temporary build root, removing all traces of generated SSH keys.
+
 Example playbook:
 
 ```yml
