@@ -1,0 +1,8 @@
+---
+# Adds Backports repo (aka "testing") to Debian stable
+
+- name: Add Debian Backports repo
+  shell: echo 'deb http://httpredir.debian.org/debian {{ backports_codename }}-backports main' > /etc/apt/sources.list.d/{{ backports_codename }}-backports.list
+  args:
+    creates: /etc/apt/sources.list.d/{{ backports_codename }}-backports.list
+  become: true
