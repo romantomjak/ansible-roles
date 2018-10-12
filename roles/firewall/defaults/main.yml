@@ -1,0 +1,14 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Standard ports for web servers
+firewall_allow_http: true
+firewall_allow_https: true
+firewall_allow_ssh: true
+firewall_allow_ping: true
+
+# TCP/UDP traffic originating from these IP will be allowed explicitly
+firewall_whitelisted_ips: []
+
+# If that is not enough, you can supply your own iptables rules here
+firewall_raw_rules: []

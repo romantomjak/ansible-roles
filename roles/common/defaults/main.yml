@@ -1,0 +1,21 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Create a new user with optional sudo rights and groups
+common_user_groups: []
+common_sudo: false
+common_passwordless_sudo: false
+common_username: changeme
+common_user_password: changeme
+
+# Whether to install a public key for the user
+common_use_pki: false
+common_ssh_pubkey: "{{ lookup('file', '/Users/romantomjak/.ssh/changeme.pub') }}"
+
+# I strongly suggest you set common_use_pki=true and set the common_ssh_pubkey
+# for that will enforce PKI and disable password based authentication
+disable_password_authentication: true
+
+# Forbidding root account logins is good practice. Use 'sudo -i' to assume
+# root privileges
+common_disable_root_login: true

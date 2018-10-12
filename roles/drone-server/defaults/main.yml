@@ -1,0 +1,20 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Closed registration is enabled by default. It is imperative you provide
+# a list of administrators that are able to login and manage accounts.
+drone_server_open: false
+drone_server_admins: changeme
+
+# Drone needs to know its own address. You must therefore provide the address
+# in <scheme>://<hostname> format. Please omit trailing slashes.
+drone_server_host: changeme
+
+# Github configuration. Register your application with GitHub to create your
+# client id and secret. Please see http://docs.drone.io/install-for-github/
+drone_server_github_client: changeme
+drone_server_github_secret: changeme
+
+# Drone server and agents use a shared secret to authenticate communication.
+# This should be a random string of your choosing and should be kept private.
+drone_server_secret: changeme
