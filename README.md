@@ -53,6 +53,25 @@ This will install `python3` and `pip3` on all hosts defined in `inventory` file:
 $ ansible all -u root -m raw -a "apt-get install -y python3 python3-pip"
 ```
 
+it is also a good time to run the `common.yml` playbook as this will install 
+basic packages, create an user and harden ssh config.
+
+### Syntax check
+
+```shell
+$ ansible-playbook --syntax-check helloworld.yml
+```
+
+### Run against a single host
+
+Play needs to have `hosts: all`, then run:
+
+```shell
+$ ansible-playbook -i "myhost.com," helloworld.yml
+```
+
+Note the comma (,) at the end; this signals that it's a list, not a file.
+
 ### Python3 support
 
 Usually set per host as an inventory variable:
@@ -61,6 +80,10 @@ Usually set per host as an inventory variable:
 [docker]
 my_docker_host ansible_python_interpreter=/usr/bin/python3
 ```
+
+## Notes
+
+- [Ansible Coding Conventions](https://github.com/appsembler/configuration/wiki/Ansible-Coding-Conventions)
 
 ## License
 
