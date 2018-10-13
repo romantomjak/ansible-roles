@@ -4,6 +4,9 @@
 - set_fact: safe_hostname="{{ ansible_hostname | regex_replace('[^a-zA-Z0-9_]+', '_') }}"
 - set_fact: vpn_ip="{{ '.'.join(tinc_subnet.split(".")[:-1]) }}.{{ ansible_default_ipv4.address.split(".")[-1] }}"
 
+- debug:
+    msg: "{{ safe_hostname }} => {{ vpn_ip }}"
+
 - name: Stat host's SSH key
   connection: local
   stat:
