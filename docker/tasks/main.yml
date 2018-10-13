@@ -1,11 +1,17 @@
 ---
-# Configures a docker host
+# Configures a Docker host
 
-- name: Add HTTPS transport support to apt
-  apt: name=apt-transport-https,ca-certificates,curl,gnupg2 state=latest update_cache=yes
+- name: Add HTTPS transport support to APT
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - python3-pip
   become: true
 
-- name: Add dockers official GPG key
+- name: Add Docker's official GPG key
   shell: curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
   become: true
   args:
@@ -18,6 +24,16 @@
 - name: Install latest version of docker
   apt: name=docker-ce state=latest update_cache=yes
   become: true
+
+- name: Copy configuration
+  template:
+    src: templates/daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+  notify: Restart docker daemon
 
 - name: Install docker-compose
   shell: pip3 install docker-compose

@@ -1,0 +1,6 @@
+---
+# Restart the Docker daemon
+
+- name: Restart docker daemon
+  service: name=docker state=restarted
+  become: true

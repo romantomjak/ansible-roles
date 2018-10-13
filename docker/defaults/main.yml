@@ -1,0 +1,4 @@
+---
+# Override these in playbook with 'vars:' block
+
+docker_log_driver: "json-file"
