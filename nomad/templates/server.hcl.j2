@@ -1,0 +1,16 @@
+datacenter = "{{ nomad_datacenter }}"
+data_dir = "/opt/nomad"
+
+server {
+  enabled = true
+  bootstrap_expect = {{ nomad_bootstrap_expect }}
+  encrypt = "{{ nomad_encrypt }}"
+
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+}
+
+consul {
+  token = "{{ nomad_consul_token }}"
+}

@@ -1,0 +1,14 @@
+datacenter = "{{ nomad_datacenter }}"
+data_dir = "/opt/nomad"
+
+client {
+  enabled = true
+
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+}
+
+consul {
+  token = "{{ nomad_consul_token }}"
+}
