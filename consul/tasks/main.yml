@@ -1,0 +1,74 @@
+---
+# Installs Consul agent
+
+- name: Create group
+  group: name=consul state=present
+  become: true
+
+- name: Create user
+  user:
+    name: consul
+    groups: consul
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/consul.d
+  become: true
+
+- name: Install unzip
+  apt: name=unzip state=latest update_cache=yes
+  become: true
+
+- name: Download and install Consul
+  unarchive:
+    creates: /usr/local/bin/consul
+    src: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  become: true
+  template:
+    src: templates/consul.service.j2
+    dest: /etc/systemd/system/consul.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+
+- name: Create data directory
+  file:
+    path: /opt/consul
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Copy server configuration
+  template:
+    src: templates/server.hcl.j2
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: 0640
+  become: true
+  when: consul_server
+
+- name: Copy client configuration
+  template:
+    src: templates/client.hcl.j2
+    dest: /etc/consul.d/client.hcl
+    owner: consul
+    group: consul
+    mode: 0640
+  become: true
+  when: not consul_server
+
+- name: Start Consul
+  systemd: name=consul enabled=yes state=restarted daemon_reload=true
+  become: true
