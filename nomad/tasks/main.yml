@@ -17,8 +17,8 @@
 - name: Install unzip and linux container userspace tools
   apt: name={{ item }} state=latest update_cache=yes
   with_items:
-   - unzip
-   - liblxc1
+    - unzip
+    - liblxc1
   become: true
 
 - name: Download and install Nomad

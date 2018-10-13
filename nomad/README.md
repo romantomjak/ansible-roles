@@ -23,6 +23,8 @@ Nomad clients can be deployed with the same configuration - just change `nomad_s
     - nomad
 ```
 
+Typically any agent running in client mode must be run with root level privilege. Nomad makes use of operating system primitives for resource isolation which require elevated permissions. The agent will function as non-root, but certain task drivers will not be available.
+
 More configuration options and explanations in the [defaults/main.yml](/nomad/defaults/main.yml)
 
 ## Nomad's Consul integration
