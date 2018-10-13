@@ -72,3 +72,20 @@
 - name: Start Consul
   systemd: name=consul enabled=yes state=restarted daemon_reload=true
   become: true
+
+- name: Add Agent Token
+  uri:
+    url: http://127.0.0.1:8500/v1/acl/create
+    method: PUT
+    headers:
+      X-Consul-Token: "{{ consul_acl_master_token }}"
+    body: >
+      {
+        "ID": "{{ consul_acl_agent_token }}",
+        "Name": "Agent Token",
+        "Type": "client",
+        "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"read\" }"
+      }
+    body_format: json
+  when: consul_server
+

@@ -36,7 +36,7 @@ The ACL agent token is used for the following operations by the agent:
 - Updating the agent's node entry using the Catalog API, including updating its node metadata, tagged addresses, and network coordinates
 - Performing anti-entropy syncing, in particular reading the node metadata and services registered with the catalog
 
-Here's an example policy sufficient to accomplish the above:
+Here's a sufficient example policy that will be added to the agent token specified via `consul_acl_agent_token`:
 
 ```hcl
 node "" {
