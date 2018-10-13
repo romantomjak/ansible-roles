@@ -3,13 +3,16 @@
 
 - name: Create user '{{ common_username }}'
   user: name={{ common_username }} groups={{ common_user_groups }} shell=/bin/bash password={{ common_user_password | password_hash('sha512') }}
+  become: true
 
 - name: Add sudo rights to '{{ common_username }}'
   user: name={{ common_username }} append=true groups=sudo
+  become: true
   when: common_sudo
 
 - name: Install ssh key for '{{ common_username }}'
   authorized_key: user={{ common_username }} key={{ common_ssh_pubkey }}
+  become: true
   when: common_use_pki
 
 - name: Enable sudoers includes  
