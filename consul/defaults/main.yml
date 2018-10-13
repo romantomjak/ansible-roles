@@ -32,7 +32,7 @@ consul_acl_master_token: b1gs33cr3t
 # In "allow" mode, ACLs are a blacklist: any operation not specifically
 # prohibited is allowed. In "deny" mode, ACLs are a whitelist: any operation
 # not specifically allowed is blocked
-consul_acl_default_policy: allow
+consul_acl_default_policy: deny
 
 # The acl_agent_token is a special token that is used for an agent's internal 
 # operations. It isn't used directly for any user-initiated operations.

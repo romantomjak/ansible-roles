@@ -1,6 +1,6 @@
 # consul
 
-Example playbook for deploying Consul nodes.
+Example playbook for deploying Consul nodes with default ACL policy of "deny".
 
 ---
 
@@ -19,7 +19,7 @@ Consul clients can be deployed with the same configuration - just change `consul
     consul_encrypt: Luj2FZWwlt8475wD1WtwUQ==
     consul_retry_join: '["172.16.0.11"]'
     consul_acl_master_token: b1gs33cr3t
-    consul_acl_default_policy: allow
+    consul_acl_default_policy: deny
     consul_acl_agent_token: fe3b8d40-0ee0-8783-6cc2-ab1aa9bb16c1
   roles:
     - consul
