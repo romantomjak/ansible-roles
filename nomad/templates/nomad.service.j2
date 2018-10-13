@@ -1,0 +1,20 @@
+[Unit]
+Description="HashiCorp Nomad - A flexible container orchestration tool"
+Documentation=https://www.nomadproject.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/nomad.d/{% if nomad_server %}server.hcl{% else %}client.hcl{% endif %}
+
+
+[Service]
+User=nomad
+Group=nomad
+ExecStart=/usr/local/sbin/nomad agent -config=/etc/nomad.d/{% if nomad_server %}server.hcl{% else %}client.hcl{% endif %}
+
+ExecReload=/usr/local/sbin/nomad reload
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

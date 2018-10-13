@@ -1,0 +1,27 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Nomad version to install
+nomad_version: 0.8.6
+
+# This flag is used to control if an agent is in server or client mode
+nomad_server: true
+
+# The datacenter in which the agent is running
+nomad_datacenter: dc1
+
+# The number of Nomad servers you will use; three or five is recommended.
+nomad_bootstrap_expect: 3
+
+# The secret key to use for encryption of Nomad network traffic
+nomad_encrypt: cg8StVXbQJ0gPvMd9o7yrg==
+
+# The server_join stanza specifies how the Nomad agent will discover and
+# connect to Nomad servers.
+nomad_retry_join: ["172.16.0.11"]
+
+# Specifies the token used to provide a per-request ACL token.
+# This option overrides the Consul Agent's default token. If the token is 
+# not set here or on the Consul agent, it will default to Consul's anonymous 
+# policy, which may or may not allow writes.
+nomad_consul_token: b1gs33cr3t

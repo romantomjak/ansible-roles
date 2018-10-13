@@ -1,0 +1,75 @@
+---
+# Installs Nomad agent
+
+- name: Create group
+  group: name=nomad state=present
+  become: true
+
+- name: Create user
+  user:
+    name: nomad
+    groups: nomad
+    shell: /bin/false
+    create_home: true
+    home: /etc/nomad.d
+  become: true
+
+- name: Install unzip and linux container userspace tools
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+   - unzip
+   - liblxc1
+  become: true
+
+- name: Download and install Nomad
+  unarchive:
+    src: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64-lxc.zip
+    dest: /usr/local/sbin
+    remote_src: yes
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Create data directory
+  file:
+    path: /opt/nomad
+    state: directory
+    owner: nomad
+    group: nomad
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Copy server configuration
+  template:
+    src: templates/server.hcl.j2
+    dest: /etc/nomad.d/server.hcl
+    owner: nomad
+    group: nomad
+    mode: 0640
+  become: true
+  when: nomad_server
+
+- name: Copy client configuration
+  template:
+    src: templates/client.hcl.j2
+    dest: /etc/nomad.d/client.hcl
+    owner: nomad
+    group: nomad
+    mode: 0640
+  become: true
+  when: not nomad_server
+
+- name: Start Nomad
+  systemd: name=nomad enabled=yes state=restarted daemon_reload=true
+  become: true
