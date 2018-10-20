@@ -1,0 +1,18 @@
+[Unit]
+Description="Traefik - The Cloud Native Edge Router"
+Documentation=https://traefik.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/traefik/traefik.toml
+
+[Service]
+User=traefik
+Group=traefik
+Environment="CONSUL_HTTP_TOKEN={{ traefik_consul_token }}"
+ExecStart=/usr/local/bin/traefik --configFile=/etc/traefik/traefik.toml
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

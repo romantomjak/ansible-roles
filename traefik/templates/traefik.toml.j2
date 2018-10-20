@@ -1,0 +1,40 @@
+logLevel = "INFO"
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+{% if traefik_dashboard_enabled %}
+  [entryPoints.dashboard]
+  address = ":8080"
+    [entryPoints.dashboard.whiteList]
+    sourceRange = {{ traefik_dashboard_trusted_ip_range | to_json }}
+{% endif %}
+
+[acme]
+email = "{{ traefik_acme_email }}"
+storage = "/etc/traefik/acme.json"
+onDemand = false
+onHostRule = true
+caServer = "{{ traefik_acme_ca_server }}"
+entryPoint = "https"
+  [acme.tlsChallenge]
+
+[api]
+entryPoint = "dashboard"
+dashboard = {{ traefik_dashboard_enabled | to_json }}
+
+[consulCatalog]
+endpoint = "{{ traefik_consul_endpoint }}"
+exposedByDefault = {{ traefik_consul_exposed_by_default | to_json }}
+
+[traefikLog]
+filePath = "/var/log/traefik/traefik.log"
+
+[accessLog]
+filePath = "/var/log/traefik/access.log"
