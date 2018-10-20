@@ -7,7 +7,7 @@ consul_version: 1.3.0
 # This flag is used to control if an agent is in server or client mode
 consul_server: true
 
-# The datacenter in which the agent is running
+# The data center in which the agent is running
 consul_datacenter: dc1
 
 # The number of Consul servers you will use; three or five is recommended.
@@ -22,17 +22,22 @@ consul_encrypt: Luj2FZWwlt8475wD1WtwUQ==
 # manually join the Consul cluster nodes together
 consul_retry_join: ["172.16.0.11"]
 
-# Only used for servers in the acl_datacenter.
-# This token will be created with management-level permissions if it does not
-# exist. It allows operators to bootstrap the ACL system with a token ID that
-# is well-known.
-consul_acl_master_token: b1gs33cr3t
+# Used to change the address that is advertised to other nodes in the cluster.
+# By default it picks the first private IPv4 address. If you have multiple - 
+# set one here.
+consul_advertise_addr: null
 
 # Determines whitelist or blacklist mode
 # In "allow" mode, ACLs are a blacklist: any operation not specifically
 # prohibited is allowed. In "deny" mode, ACLs are a whitelist: any operation
 # not specifically allowed is blocked
 consul_acl_default_policy: deny
+
+# Only used for servers in the primary_datacenter.
+# This token will be created with management-level permissions if it does not
+# exist. It allows operators to bootstrap the ACL system with a token ID that
+# is well-known.
+consul_acl_master_token: b1gs33cr3t
 
 # The acl_agent_token is a special token that is used for an agent's internal 
 # operations. It isn't used directly for any user-initiated operations.
