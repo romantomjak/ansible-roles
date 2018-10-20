@@ -3,8 +3,8 @@ data_dir = "/opt/consul"
 encrypt = "{{ consul_encrypt }}"
 
 acl_datacenter = "{{ consul_datacenter }}"
-acl_master_token = "{{ consul_acl_master_token }}"
 acl_default_policy = "{{ consul_acl_default_policy }}"
+acl_master_token = "{{ consul_acl_master_token }}"
 acl_agent_token = "{{ consul_acl_agent_token }}"
 
 retry_join = {{ consul_retry_join | to_json }}
