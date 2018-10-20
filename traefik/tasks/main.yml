@@ -1,0 +1,65 @@
+---
+# Installs Traefik edge router
+
+- name: Create group
+  group: name=traefik state=present
+  become: true
+
+- name: Create user
+  user:
+    name: traefik
+    groups: traefik
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/traefik
+  become: true
+
+- name: Install POSIX capabilities tools
+  apt: name=libcap2-bin state=latest update_cache=yes
+  become: true
+
+- name: Download and install Traefik
+  get_url:
+    url: https://github.com/containous/traefik/releases/download/v{{ traefik_version }}/traefik_linux-amd64
+    dest: /usr/local/bin/traefik
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Give Traefik the ability to bind to privileged ports without running the process as root
+  capabilities:
+    path: /usr/local/bin/traefik
+    capability: cap_net_bind_service=+ep
+    state: present
+  become: true
+
+- name: Copy server configuration
+  template:
+    src: templates/traefik.toml.j2
+    dest: /etc/traefik/traefik.toml
+    owner: traefik
+    group: traefik
+    mode: 0640
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/traefik.service.j2
+    dest: /etc/systemd/system/traefik.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Create directory for keeping logs
+  file:
+    path: "/var/log/traefik"
+    state: directory
+    owner: traefik
+    group: traefik
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Start Traefik
+  systemd: name=traefik enabled=yes state=restarted daemon_reload=true
+  become: true

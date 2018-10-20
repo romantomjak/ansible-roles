@@ -1,0 +1,38 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Traefik version to install
+traefik_version: 1.7.3
+
+# Email address used for automatic SSL registration.
+# LetsEncrypt may contact you on this email address occasionally. Usually,
+# this is to warn you of certificate being close to expiry date.
+traefik_acme_email: test@traefik.io
+
+# The CA server to use.
+# By default is set to staging environment. This will allow you to get things
+# right before issuing trusted certificates and reduce the chance of you 
+# running up against rate limits.
+traefik_acme_ca_server: "https://acme-staging-v02.api.letsencrypt.org/directory"
+
+# Consul server endpoint
+traefik_consul_endpoint: 127.0.0.1:8500
+
+# Consul Token with read access for Catalog API. See readme
+traefik_consul_token: b1gs33cr3t
+
+# Do not expose Consul catalog services by default in Traefik.
+# You can expose services manually, by adding tags in consul, e.g.
+# ["traefik.enable=true", "traefik.frontend.rule=Host:helloworld.com"]
+traefik_consul_exposed_by_default: false
+
+# Enables Traefik dashboard.
+# Warning: Enabling API will expose Træfik's configuration. It is not 
+# recommended in production, unless secured by authentication, 
+# authorizations or IP white listing.
+traefik_dashboard_enabled: false
+
+# Enables Traefik's dashboard IP white listing.
+# Warning: This setting has no effect unless traefik_dashboard_enabled
+# is set to true.
+traefik_dashboard_trusted_ip_range: ["127.0.0.0/24"]
