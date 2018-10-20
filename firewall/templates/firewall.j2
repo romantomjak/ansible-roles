@@ -7,17 +7,15 @@
 #  Accept all established inbound connections
 -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-#  Allow all outbound traffic - you can modify this to only allow certain traffic
--A OUTPUT -j ACCEPT
+{% if firewall_allow_ping %}
+#  Allow ping
+-A INPUT -p icmp -j ACCEPT
+{% endif %}
 
-{% if firewall_allow_http or firewall_allow_https %}
+{% if firewall_allow_web %}
 #  Allow HTTP and HTTPS connections from anywhere (the normal ports for websites and SSL).
-{% if firewall_allow_http %}
 -A INPUT -p tcp --dport 80 -j ACCEPT
-{% endif %}
-{% if firewall_allow_https %}
 -A INPUT -p tcp --dport 443 -j ACCEPT
-{% endif %}
 {% endif %}
 
 {% if firewall_allow_ssh %}
@@ -26,9 +24,17 @@
 -A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
 {% endif %}
 
-{% if firewall_allow_ping %}
-#  Allow ping
--A INPUT -p icmp -j ACCEPT
+{% if firewall_open_ports %}
+#  Port/protocol pairs
+{% for port in firewall_open_ports|map('lower') %}
+{% set port = port.split('/') %}
+{% if port|length > 1 %}
+-A INPUT -p {{ port[1] }} --dport {{ port[0] }} -j ACCEPT
+{% else %}
+-A INPUT -p tcp --dport {{ port[0] }} -j ACCEPT
+-A INPUT -p udp --dport {{ port[0] }} -j ACCEPT
+{% endif %}
+{% endfor %}
 {% endif %}
 
 {% if firewall_whitelisted_ips %}
@@ -49,5 +55,8 @@
 #  Drop all other inbound - default deny unless explicitly allowed policy
 -A INPUT -j DROP
 -A FORWARD -j DROP
+
+#  Allow all outbound traffic - you can modify this to only allow certain traffic
+-A OUTPUT -j ACCEPT
 
 COMMIT
