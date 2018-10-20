@@ -25,3 +25,10 @@ nomad_retry_join: ["172.16.0.11"]
 # not set here or on the Consul agent, it will default to Consul's anonymous 
 # policy, which may or may not allow writes.
 nomad_consul_token: b1gs33cr3t
+
+# Specifies the name of the interface to force network fingerprinting on. 
+# All IP addresses except those scoped local for IPV6 on the chosen interface
+# are fingerprinted. The scheduler chooses from those IP addresses when
+# allocating ports for tasks. This is useful for binding docker ports only
+# on local interfaces, e.g., eth1. Only applies to clients.
+nomad_network_interface: null
