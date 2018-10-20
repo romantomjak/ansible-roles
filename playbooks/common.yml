@@ -1,9 +1,0 @@
----
-# Common server configuration
-
-- name: Applying common settings
-  hosts: all
-  roles:
-    - common
-    - firewall
-    - docker
