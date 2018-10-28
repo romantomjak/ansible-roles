@@ -1,0 +1,61 @@
+---
+# Installs Vault server
+
+- name: Disable swap
+  sysctl: name=vm.swappiness value=0
+  become: true
+
+- name: Resolve interface IP
+  shell: ip -4 -o addr show {{ vault_bind }} scope global | awk 'NR=={{ vault_bind_seq }} {gsub(/\/.*/,"",$4); print $4}'
+  register: vault_ip
+
+- name: Create group
+  group: name=vault state=present
+  become: true
+
+- name: Create user
+  user:
+    name: vault
+    groups: vault
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/vault.d
+  become: true
+
+- name: Install unzip
+  apt: name=unzip state=latest update_cache=yes
+  become: true
+
+- name: Download and install Vault
+  unarchive:
+    creates: /usr/local/bin/vault
+    src: https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/vault.service.j2
+    dest: /etc/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/vault.hcl.j2
+    dest: /etc/vault.d/vault.hcl
+    owner: vault
+    group: vault
+    mode: 0640
+  become: true
+
+- name: Start Vault
+  systemd: name=vault enabled=yes state=restarted daemon_reload=true
+  become: true

@@ -1,0 +1,28 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Vault version to install
+vault_version: 0.11.4
+
+# Disables the server from executing the mlock syscall.
+# mlock prevents memory from being swapped to disk. Disabling mlock is not 
+# recommended unless the systems running Vault only use encrypted swap or
+# do not use swap at all.
+vault_disable_mlock: true
+
+# Consul Token. See readme
+vault_consul_token: b1gs33cr3t
+
+# Specifies the interface to bind to for listening.
+# This is used in conjunction with vault_bind_seq for automatic
+# configuration of api_address and cluster_address parameters.
+vault_bind: eth0
+
+# Index for an IP for the interface defined in vault_bind.
+# This is useful if your interface has more than one IP.
+vault_bind_seq: 1
+
+# Allows accessing the API and UI from localhost.
+# This is not required, the UI is also accessible from the IP of vault_bind
+# interface.
+vault_bind_localhost: false
