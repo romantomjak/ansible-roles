@@ -14,8 +14,6 @@ Nomad clients can be deployed with the same configuration - just change `nomad_s
   hosts: all
   vars:
     nomad_server: true
-    nomad_bootstrap_expect: 3
-    nomad_datacenter: dc1
     nomad_encrypt: cg8StVXbQJ0gPvMd9o7yrg==
     nomad_retry_join: ["172.16.0.11"]
     nomad_consul_token: b1gs33cr3t

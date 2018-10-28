@@ -10,8 +10,6 @@ Example playbook for provisioning Docker nodes.
 
 - name: Provision Docker node
   hosts: all
-  vars:
-    docker_log_driver: "json-file"
   roles:
     - docker
 ```
