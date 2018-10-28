@@ -18,6 +18,7 @@ Consul clients can be deployed with the same configuration - just change `consul
     consul_retry_join: ["172.16.0.11"]
     consul_acl_master_token: b1gs33cr3t
     consul_acl_agent_token: fe3b8d40-0ee0-8783-6cc2-ab1aa9bb16c1
+    consul_advertise_bind: eth0
   roles:
     - consul
 ```

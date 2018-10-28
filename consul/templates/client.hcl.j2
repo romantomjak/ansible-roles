@@ -6,9 +6,7 @@ acl_datacenter = "{{ consul_datacenter }}"
 acl_default_policy = "{{ consul_acl_default_policy }}"
 acl_agent_token = "{{ consul_acl_agent_token }}"
 
-{% if consul_advertise_addr %}
-advertise_addr = "{{ consul_advertise_addr }}"
-{% endif %}
+advertise_addr = "{{ consul_ip.stdout }}"
 
 retry_join = {{ consul_retry_join | to_json }}
 
