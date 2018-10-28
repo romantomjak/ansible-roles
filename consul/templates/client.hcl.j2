@@ -1,6 +1,7 @@
 datacenter = "{{ consul_datacenter }}"
 data_dir = "/opt/consul"
 encrypt = "{{ consul_encrypt }}"
+enable_syslog = {{ consul_enable_syslog | to_json }}
 
 acl_datacenter = "{{ consul_datacenter }}"
 acl_default_policy = "{{ consul_acl_default_policy }}"

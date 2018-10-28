@@ -13,6 +13,9 @@ consul_datacenter: dc1
 # The number of Consul servers you will use; three or five is recommended.
 consul_bootstrap_expect: 3
 
+# Specifies if the agent should log to syslog.
+consul_enable_syslog: false
+
 # The secret key to use for encryption of Consul network traffic
 consul_encrypt: Luj2FZWwlt8475wD1WtwUQ==
 
