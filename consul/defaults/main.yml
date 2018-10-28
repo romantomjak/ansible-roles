@@ -22,14 +22,11 @@ consul_encrypt: Luj2FZWwlt8475wD1WtwUQ==
 # manually join the Consul cluster nodes together
 consul_retry_join: ["172.16.0.11"]
 
-# Used to change the address that is advertised to other nodes in the cluster.
-# This is used in conjunction with consul_advertise_bind_seq for automatic
-# configuration of advertise_addr.
-consul_advertise_bind: eth0
+# The address that should be bound to for internal cluster communications.
+consul_bind_addr: 0.0.0.0
 
-# Index for an IP for the interface defined in consul_advertise_bind.
-# This is useful if your interface has more than one IP.
-consul_advertise_bind_seq: 1
+# Used to change the address that is advertised to other nodes in the cluster.
+consul_advertise_addr: null
 
 # Determines whitelist or blacklist mode
 # In "allow" mode, ACLs are a blacklist: any operation not specifically

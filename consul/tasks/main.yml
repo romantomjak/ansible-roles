@@ -1,10 +1,6 @@
 ---
 # Installs Consul agent
 
-- name: Resolve interface IP
-  shell: ip -4 -o addr show {{ consul_advertise_bind }} scope global | awk 'NR=={{ consul_advertise_bind_seq }} {gsub(/\/.*/,"",$4); print $4}'
-  register: consul_ip
-
 - name: Create group
   group: name=consul state=present
   become: true
