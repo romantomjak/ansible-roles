@@ -17,7 +17,6 @@ Example playbook:
 - name: Provision Traefik node
   hosts: all
   vars:
-    traefik_version: 1.7.3
     traefik_acme_email: test@traefik.io
     traefik_acme_ca_server: https://acme-staging-v02.api.letsencrypt.org/directory
     traefik_consul_token: b1gs33cr3t

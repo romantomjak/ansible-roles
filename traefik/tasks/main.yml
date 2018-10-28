@@ -15,22 +15,11 @@
     home: /etc/traefik
   become: true
 
-- name: Install POSIX capabilities tools
-  apt: name=libcap2-bin state=latest update_cache=yes
-  become: true
-
 - name: Download and install Traefik
   get_url:
     url: https://github.com/containous/traefik/releases/download/v{{ traefik_version }}/traefik_linux-amd64
     dest: /usr/local/bin/traefik
     mode: "u=rwx,g=rx,o=rx"
-  become: true
-
-- name: Give Traefik the ability to bind to privileged ports without running the process as root
-  capabilities:
-    path: /usr/local/bin/traefik
-    capability: cap_net_bind_service=+ep
-    state: present
   become: true
 
 - name: Copy server configuration
