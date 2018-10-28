@@ -7,15 +7,9 @@ storage "consul" {
   token = "{{ vault_consul_token }}"
 }
 
-{% if vault_bind_localhost and "127.0.0.1:8200" not in vault_ip.stdout %}
 listener "tcp" {
   address = "127.0.0.1:8200"
-  tls_disable = 1
-}
-{% endif %}
-
-listener "tcp" {
-  address = "{{ vault_ip.stdout }}:8200"
+  cluster_address = "{{ vault_ip.stdout }}:8201"
   tls_disable = 1
 }
 

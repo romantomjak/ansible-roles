@@ -21,8 +21,3 @@ vault_bind: eth0
 # Index for an IP for the interface defined in vault_bind.
 # This is useful if your interface has more than one IP.
 vault_bind_seq: 1
-
-# Allows accessing the API and UI from localhost.
-# This is not required, the UI is also accessible from the IP of vault_bind
-# interface.
-vault_bind_localhost: false
