@@ -1,0 +1,46 @@
+datacenter = "{{ nomad_datacenter }}"
+data_dir = "/opt/nomad"
+enable_syslog = {{ nomad_enable_syslog }}
+bind_addr = {{ nomad_bind_addr | to_json }}
+
+{% if nomad_addresses.http is defined or nomad_addresses.rpc is defined or nomad_addresses.serf is defined %}
+addresses {
+  {% if nomad_addresses.http is defined %}http = {{ nomad_addresses.http | to_json }}{% endif %}
+  {% if nomad_addresses.rpc is defined %}rpc = {{ nomad_addresses.rpc | to_json }}{% endif %}
+  {% if nomad_addresses.serf is defined %}serf = {{ nomad_addresses.serf | to_json }}{% endif %}
+
+}
+{% endif %}
+
+{% if nomad_advertise.http is defined or nomad_advertise.rpc is defined or nomad_advertise.serf is defined %}
+advertise {
+  {% if nomad_advertise.http is defined %}http = {{ nomad_advertise.http | to_json }}{% endif %}
+  {% if nomad_advertise.rpc is defined %}rpc = {{ nomad_advertise.rpc | to_json }}{% endif %}
+  {% if nomad_advertise.serf is defined %}serf = {{ nomad_advertise.serf | to_json }}{% endif %}
+
+}
+{% endif %}
+
+consul {
+  token = "{{ nomad_consul_token }}"
+}
+
+{% if nomad_server %}
+server {
+  enabled = true
+  bootstrap_expect = {{ nomad_bootstrap_expect }}
+  encrypt = "{{ nomad_encrypt }}"
+
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+}
+{% else %}
+client {
+  enabled = true
+
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+}
+{% endif %}

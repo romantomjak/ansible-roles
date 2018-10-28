@@ -7,14 +7,38 @@ nomad_version: 0.8.6
 # This flag is used to control if an agent is in server or client mode
 nomad_server: true
 
-# The datacenter in which the agent is running
+# The data center in which the agent is running
 nomad_datacenter: dc1
 
 # The number of Nomad servers you will use; three or five is recommended.
 nomad_bootstrap_expect: 3
 
+# Specifies if the agent should log to syslog.
+nomad_enable_syslog: false
+
 # The secret key to use for encryption of Nomad network traffic
 nomad_encrypt: cg8StVXbQJ0gPvMd9o7yrg==
+
+# Specifies which address the Nomad agent should bind to for network services,
+# including the HTTP interface as well as the internal gossip protocol and 
+# RPC mechanism.
+nomad_bind_addr: 0.0.0.0
+
+# Specifies the bind address for individual network services.
+# Any values configured in this stanza take precedence over the default
+# nomad_bind_addr address.
+nomad_addresses:
+  http: null
+  rpc: null
+  serf: null
+
+# Specifies the advertise address for individual network services.
+# This can be used to advertise a different address to the peers of a server
+# or a client node.
+nomad_advertise:
+  http: null
+  rpc: null
+  serf: null
 
 # The server_join stanza specifies how the Nomad agent will discover and
 # connect to Nomad servers.

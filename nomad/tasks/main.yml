@@ -50,25 +50,14 @@
     recurse: yes
   become: true
 
-- name: Copy server configuration
+- name: Copy configuration
   template:
-    src: templates/server.hcl.j2
-    dest: /etc/nomad.d/server.hcl
+    src: templates/nomad.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
     owner: nomad
     group: nomad
     mode: 0640
   become: true
-  when: nomad_server
-
-- name: Copy client configuration
-  template:
-    src: templates/client.hcl.j2
-    dest: /etc/nomad.d/client.hcl
-    owner: nomad
-    group: nomad
-    mode: 0640
-  become: true
-  when: not nomad_server
 
 - name: Start Nomad
   systemd: name=nomad enabled=yes state=restarted daemon_reload=true
