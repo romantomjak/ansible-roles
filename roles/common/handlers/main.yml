@@ -1,6 +1,0 @@
----
-# Restart the SSH daemon
-
-- name: Restart sshd
-  service: name=sshd state=restarted
-  become: true
