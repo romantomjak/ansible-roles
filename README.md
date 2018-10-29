@@ -4,7 +4,7 @@ Roles and playbooks for debian based hosts
 
 ---
 
-I'm following the philosophy that each role should *just work* without changing any of the arguments and while it's great for playing around, you shouldn't run this role in production without checking out the `<role>/defaults/main.yml` as that's where I describe what can be customized.
+I'm following the philosophy that each role should *just work* without changing any of the arguments and while it's great for playing around, you shouldn't run this role in production without checking out the `<role>/defaults/main.yml` and `<role>/README.md` as that's where I describe what can be customized and offer advice and sample playbooks.
 
 ## How to use this
 
@@ -45,17 +45,6 @@ and when the upstream changes and you would like to pull the latest changes:
 $ git submodule update --remote --merge
 ```
 
-### Bootstraping remote hosts
-
-This will install `python3` and `pip3` on all hosts defined in `inventory` file:
-
-```shell
-$ ansible all -u root -m raw -a "apt-get install -y python3 python3-pip"
-```
-
-it is also a good time to run the `common.yml` playbook as this will install 
-basic packages, create an user and harden ssh config.
-
 ### Syntax check
 
 ```shell
@@ -71,15 +60,6 @@ $ ansible-playbook -i "myhost.com," helloworld.yml
 ```
 
 Note the comma (,) at the end; this signals that it's a list, not a file.
-
-### Python3 support
-
-Usually set per host as an inventory variable:
-
-```
-[docker]
-my_docker_host ansible_python_interpreter=/usr/bin/python3
-```
 
 ## Notes
 
