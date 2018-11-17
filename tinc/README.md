@@ -4,13 +4,29 @@ Example playbook for deploying a mesh network on a number of hosts.
 
 ---
 
-There are numerous ways this can be achieved, but for the sake of simplicity each node will be identified via the last octet of it's public IP address. So, for example, if you're using the `10.10.1.0/32` subnet and the node is reachable from the internet on `xxx.xxx.xxx.289` then it will also be reachable via `10.10.1.289` on the VPN.
+There are numerous ways this can be achieved, but for the sake of simplicity each node will be identified via the `vpn_ip` host var.
 
-Things to be aware of:
+**Warning** To use this playbook you will need to install `ipaddr()` filter (not required on remote hosts):
 
-- Each host must have a unique hostname - this is used when setting up tinc node. No worries if they're not, ansible will warn you when it's not the case
+```sh
+$ pip install netaddr
+```
+
+Here's an example inventory file for the default `10.10.1.0/32` network:
+
+```ini
+1.1.1.1 vpn_ip=10.10.1.10
+8.8.8.8 vpn_ip=10.10.1.20
+8.8.4.4 vpn_ip=10.10.1.30
+```
+
+This will automatically create a mesh network between all hosts on which the play is running on.
+
+Other things to be aware of:
+
+- Inventory groups are supported by changing the `hosts: all` to `hosts: <my_inventory_group>` in the example playbook below
 - Make sure port 655 can be reached on TCP and UDP - tinc uses them to establish a connection
-- By default, a mesh network with a name of `mytinc` and a subnet `10.10.1.0/32` will be created
+- By default, a mesh network with a name of `mytinc` and a network `10.10.1.0/32` will be created
 - tinc daemon can be started/stopped: `service tinc@mytinc start`
 
 ## How does it work?
@@ -50,7 +66,7 @@ Example playbook:
         msg: "Build root: {{ build_dir }}"
 
 - name: Provision tinc server
-  hosts: all
+  hosts: all  # alternatively, change this to your inventory group
   vars:
     tinc_build_root: "{{ hostvars['localhost']['build_dir'] }}"
   roles:
