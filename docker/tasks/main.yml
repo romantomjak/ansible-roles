@@ -35,6 +35,6 @@
   become: true
   notify: Restart docker daemon
 
-- name: Install docker-compose
-  shell: pip3 install docker-compose
+- name: Install latest docker-compose
+  shell: pip3 install -U docker-compose
   become: true
