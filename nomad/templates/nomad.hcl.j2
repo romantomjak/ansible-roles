@@ -39,8 +39,8 @@ server {
 client {
   enabled = true
 
-{% if nomad_network_interface %}
-  network_interface = "{{ nomad_network_interface }}"
+{% if nomad_client_network_interface %}
+  network_interface = "{{ nomad_client_network_interface }}"
 {% endif %}
 
   server_join {

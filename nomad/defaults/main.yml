@@ -55,4 +55,4 @@ nomad_consul_token: b1gs33cr3t
 # are fingerprinted. The scheduler chooses from those IP addresses when
 # allocating ports for tasks. This is useful for binding docker ports only
 # on local interfaces, e.g., eth1. Only applies to clients.
-nomad_network_interface: null
+nomad_client_network_interface: null
