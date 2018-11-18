@@ -37,9 +37,10 @@
     src: templates/tinc.host.j2
     dest: "{{ tinc_build_root }}/hosts/{{ safe_hostname }}"
 
+# the following bit is important - tinc expects keys to be in PEM format
 - name: "Append public key to host configuration files"
   connection: local
-  shell: cat {{ safe_hostname }}.pub >> "hosts/{{ safe_hostname }}"
+  shell: ssh-keygen -f {{ safe_hostname }}.pub -e -m pem >> "hosts/{{ safe_hostname }}"
   args:
     chdir: "{{ tinc_build_root }}/"
   notify: Synchronize host configurations

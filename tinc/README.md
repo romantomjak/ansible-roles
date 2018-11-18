@@ -46,7 +46,17 @@ Each playbook run generates new SSH keys for every node, so it can also be easil
 
 **Delete build folder** - deletes temporary build root, removing all traces of generated SSH keys.
 
-Example playbook:
+## Troubleshooting network configuration
+
+To start tinc in debug mode run:
+
+```sh
+$ tincd -n <network_name> -D
+```
+
+Hitting `Ctrl + c` will increase the log level, so you can see all the messages between the two servers. To exit, hit `Ctrl + \`.
+
+## Example playbook
 
 ```yml
 ---
