@@ -12,7 +12,7 @@ There are numerous ways this can be achieved, but for the sake of simplicity eac
 $ pip install netaddr
 ```
 
-Here's an example inventory file for the default `10.10.1.0/32` network:
+Here's an example inventory file for the default `10.10.1.0/24` network:
 
 ```ini
 1.1.1.1 vpn_ip=10.10.1.10
@@ -26,7 +26,7 @@ Other things to be aware of:
 
 - Inventory groups are supported by changing the `hosts: all` to `hosts: <my_inventory_group>` in the example playbook below
 - Make sure port 655 can be reached on TCP and UDP - tinc uses them to establish a connection
-- By default, a mesh network with a name of `mytinc` and a network `10.10.1.0/32` will be created
+- By default, a mesh network with a name of `mytinc` and a network `10.10.1.0/24` will be created
 - tinc daemon can be started/stopped: `service tinc@mytinc start`
 
 ## How does it work?
