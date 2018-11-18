@@ -7,6 +7,9 @@ nomad_version: 0.8.6
 # This flag is used to control if an agent is in server or client mode
 nomad_server: true
 
+# Specifies the region the Nomad agent is a member of.
+nomad_region: global
+
 # The data center in which the agent is running
 nomad_datacenter: dc1
 

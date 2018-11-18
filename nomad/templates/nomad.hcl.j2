@@ -1,4 +1,6 @@
+region = "{{ nomad_region }}"
 datacenter = "{{ nomad_datacenter }}"
+
 data_dir = "/opt/nomad"
 enable_syslog = {{ nomad_enable_syslog | to_json }}
 bind_addr = {{ nomad_bind_addr | to_json }}
