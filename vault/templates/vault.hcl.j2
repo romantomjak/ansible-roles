@@ -9,7 +9,6 @@ storage "consul" {
 
 listener "tcp" {
   address = "127.0.0.1:8200"
-  cluster_address = "{{ vault_ip.stdout }}:8201"
   tls_disable = 1
 }
 

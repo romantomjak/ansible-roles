@@ -27,7 +27,7 @@ By default `docker` driver will bind on public IPs, to change this behavior, you
 
 More configuration options and explanations in the [defaults/main.yml](/nomad/defaults/main.yml)
 
-## Nomad's Consul integration
+## Consul integration
 
 One thing to be aware of is that, if like me, you have configured your Consul with a default policy of _deny_, you will need to make sure that Agent token has at least the following permissions:
 
@@ -44,3 +44,7 @@ agent "" {
   policy = "write"
 }
 ```
+
+## Vault integration
+
+Please see the [Nomad and Vault integration documentation](https://www.nomadproject.io/guides/operations/vault-integration/index.html).

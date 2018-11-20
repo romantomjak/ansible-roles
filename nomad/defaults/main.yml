@@ -71,3 +71,21 @@ nomad_client_network_interface: null
 #   }
 # }
 nomad_client_docker_auth_path: null
+
+# Specifies if the Vault integration should be activated.
+# For more information on the architecture and setup, please see the Nomad and
+# Vault integration documentation.
+nomad_vault_enabled: false
+
+# Specifies the address to the Vault server. Consul DNS Forwarding is required
+# for DNS resolving to work. Otherwise use an IP address here.
+nomad_vault_address: "https://vault.service.consul:8200"
+
+# Specifies the parent Vault token to use to derive child tokens for jobs
+# requesting tokens.
+nomad_vault_token: "debecfdc-9ed7-ea22-c6ee-948f22cdd474"
+
+# Specifies the role to create tokens from. The token given to Nomad does not
+# have to be created from this role but must have "update" capability on
+# "auth/token/create/" path in Vault.
+nomad_vault_create_from_role: "nomad-cluster"

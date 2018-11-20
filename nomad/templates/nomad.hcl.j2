@@ -57,3 +57,15 @@ client {
   }
 }
 {% endif %}
+
+{% if nomad_vault_enabled %}
+vault {
+  enabled = true
+  address = "{{ nomad_vault_address }}"
+
+  {% if nomad_server %}
+  token = "{{ nomad_vault_token }}"
+  create_from_role = "{{ nomad_vault_create_from_role }}"
+  {% endif %}
+}
+{% endif %}
