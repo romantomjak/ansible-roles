@@ -42,6 +42,12 @@ server {
 client {
   enabled = true
 
+{% if nomad_client_docker_auth_path %}
+  options {
+    "docker.auth.config" = "{{ nomad_client_docker_auth_path }}"
+  }
+{% endif %}
+
 {% if nomad_client_network_interface %}
   network_interface = "{{ nomad_client_network_interface }}"
 {% endif %}

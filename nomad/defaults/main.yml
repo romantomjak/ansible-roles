@@ -59,3 +59,15 @@ nomad_consul_token: b1gs33cr3t
 # allocating ports for tasks. This is useful for binding docker ports only
 # on local interfaces, e.g., eth1. Only applies to clients.
 nomad_client_network_interface: null
+
+# Allows an operator to specify a JSON file which is in the dockercfg format
+# containing authentication information for a private registry, from either
+# (in order) auths, credHelpers or credsStore.
+# {
+#   "auths": {
+#     "https://gcr.io": {
+#       "auth" : "<BASE64DATA>"
+#     }
+#   }
+# }
+nomad_client_docker_auth_path: null
