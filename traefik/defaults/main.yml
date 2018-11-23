@@ -2,7 +2,7 @@
 # Override these in playbook with 'vars:' block
 
 # The Traefik version to install
-traefik_version: 1.7.3
+traefik_version: 1.7.4
 
 # Email address used for automatic SSL registration.
 # LetsEncrypt may contact you on this email address occasionally. Usually,
