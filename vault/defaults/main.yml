@@ -2,7 +2,7 @@
 # Override these in playbook with 'vars:' block
 
 # The Vault version to install
-vault_version: 0.11.4
+vault_version: 1.0.0
 
 # Disables the server from executing the mlock syscall.
 # mlock prevents memory from being swapped to disk. Disabling mlock is not 
