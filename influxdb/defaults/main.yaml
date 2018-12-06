@@ -1,0 +1,12 @@
+---
+# Override this in play
+
+# Initial admin user details. Password must not include special symbols or
+# influx CLI will not create the user.
+influxdb_username: admin
+influxdb_password: influxdb4ever
+
+# Specifies the path where log entries should be written. If unspecified,
+# the default is to write to stderr, which intermingles HTTP logs with
+# internal InfluxDB logging.
+influxdb_access_log: /var/log/influxdb/access.log
