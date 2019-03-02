@@ -1,0 +1,56 @@
+---
+# Configures a Elasticsearch host
+
+- assert:
+    that:
+      - "elasticsearch_minimum_master_nodes != none"
+    msg: "Please verify that elasticsearch_minimum_master_nodes is configured. See the README on how to do that."
+
+- name: Disable swap
+  sysctl: name=vm.swappiness value=0
+  become: true
+
+- name: Add HTTPS transport support to APT
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+  become: true
+
+- name: Add Elasticsearch's official GPG key
+  shell: curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add elasticsearch stable repository
+  template: src=elasticsearch.list.j2 dest=/etc/apt/sources.list.d/elasticsearch.list
+  become: true
+
+- name: Install latest version of elasticsearch
+  apt: name=elasticsearch state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy JVM configuration
+  template:
+    src: templates/jvm.options.j2
+    dest: /etc/elasticsearch/jvm.options
+    owner: root
+    group: elasticsearch
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Start Elasticsearch
+  systemd: name=elasticsearch enabled=yes state=restarted daemon_reload=true
+  become: true

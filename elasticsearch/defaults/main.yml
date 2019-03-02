@@ -1,0 +1,32 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Use a descriptive name for your cluster
+cluster_name: my-application
+
+# Specifies the interface to bind to for listening.
+# The node will bind to this hostname or IP address and advertise it to other
+# nodes in the cluster. Accepts an IP address, hostname, a special value, or
+# an array of any combination of these.
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-network.html#network-interface-values
+elasticsearch_bind_addr: "_local_"
+
+# JVM heap size.
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+elasticsearch_heap_size: 1g
+
+# Discovery settings.
+# Elasticsearch uses a custom discovery implementation called "Zen Discovery" 
+# for node-to-node clustering and master election. Pass an initial list of 
+# hosts to perform discovery when new node is started.
+elasticsearch_zen_discovery_nodes: ["127.0.0.1", "[::1]"]
+
+# Minimum number of master-eligible nodes.
+# To prevent data loss, it is vital to configure the this setting, so that
+# each master-eligible node knows the minimum number of master-eligible nodes
+# that must be visible in order to form a cluster.
+# Example: If there are three master-eligible nodes, then minimum master nodes
+# should be set to (3 / 2) + 1 or 2.
+elasticsearch_minimum_master_nodes: null
