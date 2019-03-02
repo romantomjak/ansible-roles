@@ -1,0 +1,8 @@
+---
+# Override these in playbook with 'vars:' block
+
+# JVM heap size.
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+logstash_heap_size: 1g
