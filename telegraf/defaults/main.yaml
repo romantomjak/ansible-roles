@@ -1,0 +1,7 @@
+---
+# Override this in play
+
+# Configuration for sending metrics to InfluxDB with HTTP Basic Auth
+telegraf_influxdb_urls: ["http://127.0.0.1:8086"]
+telegraf_influxdb_user: telegraf
+telegraf_influxdb_password: metricsmetricsmetricsmetrics
