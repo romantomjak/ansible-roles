@@ -1,0 +1,28 @@
+---
+# Installs Telegraf
+
+- name: Add GPG key
+  shell: curl -fsSL https://repos.influxdata.com/influxdb.key | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add InfluxDB stable repository
+  shell: echo 'deb https://repos.influxdata.com/debian stretch stable' > /etc/apt/sources.list.d/influxdb.list
+  args:
+    creates: /etc/apt/sources.list.d/influxdb.list
+  become: true
+
+- name: Install Telegraf
+  apt: name=telegraf state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template: src=telegraf.conf.j2 dest=/etc/telegraf/telegraf.conf
+  become: true
+  notify:
+    - Restart Telegraf
+
+- name: Enable and start Telegraf service
+  service: name=telegraf enabled=yes state=started
+  become: true
