@@ -25,11 +25,11 @@
   args:
     warn: False
 
-- name: Add elasticsearch stable repository
+- name: Add Elasticsearch's stable repository
   template: src=elasticsearch.list.j2 dest=/etc/apt/sources.list.d/elasticsearch.list
   become: true
 
-- name: Install latest version of elasticsearch
+- name: Install latest version of Elasticsearch
   apt: name=elasticsearch state=latest update_cache=yes
   become: true
 
