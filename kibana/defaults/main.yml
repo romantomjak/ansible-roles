@@ -1,0 +1,19 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Kibana is served by a back end server.
+# This setting specifies the port to use.
+kibana_server_port: 5601
+
+# Specifies the address to which the Kibana server will bind.
+# The default is 'localhost', which usually means remote machines will not be
+# able to connect. To allow connections from remote users, set this parameter
+# to a non-loopback address.
+kibana_server_host: "localhost"
+
+# The Kibana server's name.
+# A human-readable display name that identifies this Kibana instance.
+kibana_server_name: "your-hostname"
+
+# The URLs of the Elasticsearch instances to use for all your queries.
+kibana_elasticsearch_hosts: ["http://localhost:9200"]

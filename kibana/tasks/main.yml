@@ -1,0 +1,42 @@
+---
+# Configures a Kibana host
+
+- name: Disable swap
+  sysctl: name=vm.swappiness value=0
+  become: true
+
+- name: Add HTTPS transport support to APT
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+  become: true
+
+- name: Add Elasticsearch's official GPG key
+  shell: curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add Elasticsearch's stable repository
+  template: src=elasticsearch.list.j2 dest=/etc/apt/sources.list.d/elasticsearch.list
+  become: true
+
+- name: Install latest version of Kibana
+  apt: name=kibana state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Start Kibana
+  systemd: name=kibana enabled=yes state=restarted daemon_reload=true
+  become: true
