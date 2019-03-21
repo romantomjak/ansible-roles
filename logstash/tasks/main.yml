@@ -28,7 +28,7 @@
   apt: name=logstash state=latest update_cache=yes
   become: true
 
-- name: Copy configuration
+- name: Copy daemon configuration
   template:
     src: templates/logstash.yml.j2
     dest: /etc/logstash/logstash.yml
@@ -41,6 +41,15 @@
   template:
     src: templates/jvm.options.j2
     dest: /etc/logstash/jvm.options
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/logstash.conf.j2
+    dest: /etc/logstash/conf.d/logstash.conf
     owner: root
     group: root
     mode: "u=rwx,g=rwx,o=rwx"

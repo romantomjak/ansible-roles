@@ -1,6 +1,6 @@
 # logstash
 
-Example playbook for provisioning logstash nodes.
+Example playbook for provisioning Logstash nodes.
 
 ---
 
@@ -12,6 +12,9 @@ Example playbook for provisioning logstash nodes.
   hosts: all
   vars:
     logstash_heap_size: 1g
+    logstash_beats_enabled: true
+    logstash_beats_port: 5044
+    logstash_beats_elasticsearch_hosts: ["127.0.0.1"]
   roles:
     - logstash
 ```

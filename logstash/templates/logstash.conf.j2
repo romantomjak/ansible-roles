@@ -1,0 +1,33 @@
+input {
+
+{% if logstash_beats_enabled %}
+  beats {
+    port => {{ logstash_beats_port }}
+  }
+{% endif %}
+
+}
+
+output {
+
+{% if logstash_beats_enabled %}
+  elasticsearch {
+    hosts => {{ logstash_beats_elasticsearch_hosts | to_json }}
+    manage_template => false
+    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}" 
+    document_type => "%{[@metadata][type]}" 
+  }
+{% endif %}
+
+{% if logstash_s3_backup_enabled %}
+  s3 {
+    access_key_id => "{{ logstash_s3_backup_access_key_id  }}"
+    secret_access_key => "{{ logstash_s3_backup_secret_access_key  }}"
+    region => "{{ logstash_s3_backup_region }}"
+    bucket => "{{ logstash_s3_backup_bucket  }}"
+    canned_acl => "{{ logstash_s3_backup_canned_acl }}"
+    codec => "{{ logstash_s3_backup_encoding }}"
+  }
+{% endif %}
+
+}
