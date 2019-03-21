@@ -1,0 +1,20 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Make sure Kibana is running before you perform this step.
+# Before you can use the dashboards, you need to create the index pattern
+# filebeat-* and load the dashboards into Kibana. 
+filebeat_setup_dashboards_enabled: false
+filebeat_setup_kibana_host: "localhost:5601"
+
+# Module configuration
+# https://www.elastic.co/guide/en/beats/filebeat/6.6/filebeat-modules.html
+filebeat_enabled_modules: ['system']
+
+# Elasticsearch output
+filebeat_output_elasticsearch_enabled: false
+filebeat_output_elasticsearch_hosts: ["localhost:9200"]
+
+# Logstash output
+filebeat_output_logstash_enabled: true
+filebeat_output_logstash_hosts: ["localhost:5044"]

@@ -1,0 +1,43 @@
+---
+# Configures a Filebeat host
+
+- name: Add HTTPS transport support to APT
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+  become: true
+
+- name: Add Elasticsearch's official GPG key
+  shell: curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add Elasticsearch's stable repository
+  template: src=elasticsearch.list.j2 dest=/etc/apt/sources.list.d/elasticsearch.list
+  become: true
+
+- name: Install latest version of Filebeat
+  apt: name=filebeat state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Enable modules
+  shell: filebeat modules enable {{ item }}
+  with_items: "{{ filebeat_enabled_modules }}"
+  become: true
+
+- name: Start Filebeat
+  systemd: name=filebeat enabled=yes state=restarted daemon_reload=true
+  become: true
