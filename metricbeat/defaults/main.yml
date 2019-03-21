@@ -1,11 +1,19 @@
 ---
 # Override these in playbook with 'vars:' block
 
-# Module configuration
+# Make sure Kibana is running before you perform this step.
+# Before you can use the dashboards, you need to create the index pattern
+# metricbeat-* and load the dashboards into Kibana. 
+metricbeat_setup_dashboards_enabled: false
+metricbeat_setup_kibana_host: "localhost:5601"
+
+# Module configuration.
+# Metricbeat uses modules to collect metrics. By default collects only system metrics.
 # https://www.elastic.co/guide/en/beats/metricbeat/6.6/metricbeat-modules.html
 metricbeat_enabled_modules: ['system']
 
-# Elasticsearch output
+# Elasticsearch output.
+# Recommended output for Metricbeat.
 metricbeat_output_elasticsearch_enabled: true
 metricbeat_output_elasticsearch_hosts: ["localhost:9200"]
 
