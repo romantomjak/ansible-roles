@@ -1,0 +1,14 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Module configuration
+# https://www.elastic.co/guide/en/beats/metricbeat/6.6/metricbeat-modules.html
+metricbeat_enabled_modules: ['system']
+
+# Elasticsearch output
+metricbeat_output_elasticsearch_enabled: true
+metricbeat_output_elasticsearch_hosts: ["localhost:9200"]
+
+# Logstash output
+metricbeat_output_logstash_enabled: false
+metricbeat_output_logstash_hosts: ["localhost:5044"]
