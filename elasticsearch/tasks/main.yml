@@ -3,8 +3,8 @@
 
 - assert:
     that:
-      - "elasticsearch_minimum_master_nodes != none"
-    msg: "Please verify that elasticsearch_minimum_master_nodes is configured. See the README on how to do that."
+      - "elasticsearch_minimum_master_eligible_nodes != none"
+    msg: "Please verify that elasticsearch_minimum_master_eligible_nodes is configured. See the README on how to do that."
 
 - name: Disable swap
   sysctl: name=vm.swappiness value=0
@@ -49,6 +49,22 @@
     owner: root
     group: elasticsearch
     mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Remove plugins before installing them
+  shell: bin/elasticsearch-plugin remove -s {{ item }}
+  args:
+    chdir: /usr/share/elasticsearch
+    removes: /usr/share/elasticsearch/plugins/{{ item }}
+  with_items: "{{ elasticsearch_installed_plugins }}"
+  become: true
+
+- name: Install plugins
+  shell: bin/elasticsearch-plugin install -s -b {{ item }}
+  args:
+    chdir: /usr/share/elasticsearch
+    creates: /usr/share/elasticsearch/plugins/{{ item }}
+  with_items: "{{ elasticsearch_installed_plugins }}"
   become: true
 
 - name: Start Elasticsearch

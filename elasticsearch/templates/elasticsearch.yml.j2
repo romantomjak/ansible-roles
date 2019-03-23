@@ -14,7 +14,7 @@
 #
 # Use a descriptive name for your cluster:
 #
-cluster.name: {{ cluster_name }}
+cluster.name: {{ elasticsearch_cluster_name }}
 #
 # ------------------------------------ Node ------------------------------------
 #
@@ -26,6 +26,20 @@ node.name: ${HOSTNAME}
 # Add custom attributes to the node:
 #
 #node.attr.rack: r1
+#
+# Master node configuration
+#
+# Master nodes perform cluster-wide actions, such as managing indices and determining
+# which data nodes should store particular data shards
+#
+node.master: {{ elasticsearch_node_master_eligible }}
+#
+# Data node configuration
+#
+# Data nodes hold shards of your indexed documents, and handle CRUD, search, and aggregation
+# operations. As a general rule, data nodes consume a significant amount of CPU, memory, and I/O.
+#
+node.data: {{ elasticsearch_node_data_node }}
 #
 # ----------------------------------- Paths ------------------------------------
 #
@@ -70,7 +84,7 @@ discovery.zen.ping.unicast.hosts: {{ elasticsearch_zen_discovery_nodes | to_json
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
-discovery.zen.minimum_master_nodes: {{ elasticsearch_minimum_master_nodes }}
+discovery.zen.minimum_master_nodes: {{ elasticsearch_minimum_master_eligible_nodes }}
 #
 # For more information, consult the zen discovery module documentation.
 #

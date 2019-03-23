@@ -1,8 +1,19 @@
 ---
 # Override these in playbook with 'vars:' block
 
+# Plugins.
+# Enhance the basic Elasticsearch functionality in a custom manner.
+# Add custom mapping types, custom analyzers (in a more built in fashion),
+# custom script engines, custom discovery and more.
+# https://www.elastic.co/guide/en/elasticsearch/plugins/6.6/index.html
+# WARNING: This may fail when plugin changes configuration file format!
+# WARNING: Some plugins require additional permissions!
+# See http://docs.oracle.com/javase/8/docs/technotes/guides/security/permissions.html
+# for descriptions of what these permissions allow and the associated risks.
+elasticsearch_installed_plugins: []
+
 # Use a descriptive name for your cluster
-cluster_name: my-application
+elasticsearch_cluster_name: my-application
 
 # Specifies the interface to bind to for listening.
 # The node will bind to this hostname or IP address and advertise it to other
@@ -22,6 +33,20 @@ elasticsearch_heap_size: 1g
 # for node-to-node clustering and master election. Pass an initial list of 
 # hosts to perform discovery when new node is started.
 elasticsearch_zen_discovery_nodes: ["127.0.0.1", "[::1]"]
+
+# Master node configuration.
+# Master nodes perform cluster-wide actions, such as managing indices and determining
+# which data nodes should store particular data shards. By default, every Elasticsearch
+# node is a "master-eligible" data node. For a small cluster, this is usually fine; a large
+# Elasticsearch cluster, however, should be configured with dedicated master nodes
+# so that the master node's stability can't be compromised by intensive data node work.
+elasticsearch_node_master_eligible: true
+
+# Data node configuration.
+# Data nodes hold shards of your indexed documents, and handle CRUD, search, and aggregation
+# operations. As a general rule, data nodes consume a significant amount of CPU, memory, and I/O.
+# This configuration option can restrict the node from becoming a data node.
+elasticsearch_node_data_node: true
 
 # Minimum number of master-eligible nodes.
 # To prevent data loss, it is vital to configure the this setting, so that
