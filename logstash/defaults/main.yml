@@ -14,7 +14,10 @@ logstash_beats_port: 5044
 logstash_beats_elasticsearch_hosts: ["127.0.0.1"]
 
 # S3 configuration.
-# Batches and uploads logstash events into Amazon S3.
+# Batches and uploads logstash events into Amazon S3. The important bits here
+# are prefix, size_file and time_file. These will control the amount of files
+# on s3.
+# https://www.elastic.co/guide/en/logstash/6.6/plugins-outputs-s3.html
 logstash_s3_backup_enabled: false
 logstash_s3_backup_access_key_id: "123"
 logstash_s3_backup_secret_access_key: "secret"
@@ -22,3 +25,6 @@ logstash_s3_backup_region: "eu-west-1"
 logstash_s3_backup_bucket: "your_bucket"
 logstash_s3_backup_canned_acl: "private"
 logstash_s3_backup_encoding: "gzip"
+logstash_s3_backup_prefix: "%{+YYYY}/%{+MM}/%{+dd}"
+logstash_s3_backup_size_file: 5242880
+logstash_s3_backup_time_file: 15

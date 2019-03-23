@@ -27,6 +27,9 @@ output {
     bucket => "{{ logstash_s3_backup_bucket  }}"
     canned_acl => "{{ logstash_s3_backup_canned_acl }}"
     codec => "{{ logstash_s3_backup_encoding }}"
+    prefix => "{{ logstash_s3_backup_prefix }}"
+    size_file => {{ logstash_s3_backup_size_file }}
+    time_file => {{ logstash_s3_backup_time_file }}
   }
 {% endif %}
 
