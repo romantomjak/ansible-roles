@@ -2,10 +2,9 @@
 # Override these in playbook with 'vars:' block
 
 # JVM heap size.
-# Make sure that the heap size is set to about half the memory available
-# on the system and that the owner of the process is allowed to use this
-# limit.
-logstash_heap_size: 1g
+# This will vary wildly depending on your needs, but I reckon anywhere
+# from 128m up to 1g will be sufficient.
+logstash_heap_size: 128m
 
 # Beats configuration.
 # If given an array it will load balance requests across the specified hosts.
