@@ -14,8 +14,7 @@ output {
   elasticsearch {
     hosts => {{ logstash_beats_elasticsearch_hosts | to_json }}
     manage_template => false
-    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}" 
-    document_type => "%{[@metadata][type]}" 
+    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
   }
 {% endif %}
 
