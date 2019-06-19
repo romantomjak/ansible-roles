@@ -23,7 +23,7 @@
 
 - name: Download and install Nomad
   unarchive:
-    src: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64-lxc.zip
+    src: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip
     dest: /usr/local/sbin
     remote_src: yes
     owner: root
