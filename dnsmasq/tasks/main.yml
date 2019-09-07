@@ -1,0 +1,26 @@
+---
+# Installs dnsmasq DNS server
+
+- name: Install dnsmasq
+  apt: name=dnsmasq state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template: src=dnsmasq.conf.j2 dest=/etc/dnsmasq.conf
+  become: true
+  notify:
+    - Restart dnsmasq
+
+- name: Add dnsmasq to dhcp client options to persist configuration
+  lineinfile:
+    path: /etc/dhcp/dhclient.conf
+    regexp: '^#prepend domain-name-servers 127.0.0.1;'
+    line: prepend domain-name-servers 127.0.0.1;
+  become: true
+
+- name: Update resolv.conf to begin using dnsmasq
+  lineinfile:
+    path: /etc/resolv.conf
+    insertbefore: BOF
+    line: nameserver 127.0.0.1
+  become: true

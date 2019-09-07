@@ -1,0 +1,6 @@
+---
+# Restart the dnsmasq service
+
+- name: Restart dnsmasq
+  service: name=dnsmasq state=restarted
+  become: true

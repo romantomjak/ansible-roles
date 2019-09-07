@@ -1,0 +1,17 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Listen on this specific port instead of the standard DNS port (53).
+# Setting this to zero completely disables DNS function, leaving only DHCP
+# and/or TFTP.
+dnsmasq_port: 53
+
+# Upstream DNS servers
+dnsmasq_resolv_file: /etc/resolv.conf
+
+# Listen for DHCP and DNS requests only on specified interfaces + loopback
+dnsmasq_interfaces: []
+
+# Add other name servers here.
+# For example, to resolve .consul domains use: /consul/127.0.0.1#8600
+dnsmasq_other_servers: []
