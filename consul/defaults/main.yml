@@ -19,6 +19,11 @@ consul_enable_syslog: false
 # The secret key to use for encryption of Consul network traffic
 consul_encrypt: Luj2FZWwlt8475wD1WtwUQ==
 
+# The addresses of upstream DNS servers that are used to recursively resolve
+# queries when Consul is used as the DNS server for a node. If the record is 
+# outside of the "consul." domain, the query will be resolved upstream.
+consul_recursors: []
+
 # The retry_join parameter allows you to configure all Consul agents to
 # automatically form a cluster using a common Consul server accessed via DNS
 # address, IP address or using Cloud Auto-join. This removes the need to
@@ -27,6 +32,12 @@ consul_retry_join: ["172.16.0.11"]
 
 # The address that should be bound to for internal cluster communications.
 consul_bind_addr: 0.0.0.0
+
+# Nested dictionary that allows setting the bind ports for the following keys:
+# dns, http, https, grpc, serf_lan, serf_wan, server, sidecar_min_port and
+# sidecar_max_port.
+# https://www.consul.io/docs/agent/options.html#ports
+consul_ports: {}
 
 # Used to change the address that is advertised to other nodes in the cluster.
 consul_advertise_addr: null

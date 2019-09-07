@@ -37,3 +37,19 @@ The ACL agent token is used for the following operations by the agent:
 ## Anonymous Token policy
 
 This token is used when a request is made to Consul without specifying a bearer token. By default it will allow listing of all nodes and peform DNS lookups.
+
+## Using Consul as the DNS Server for a Node
+
+One of the primary query interfaces for Consul is DNS. To use Consul as the DNS server for a node, you'll have to change Consul's DNS port to 53 and also specify upstream DNS resolvers that will resolve records outside of the "consul" domain.
+
+```yml
+- name: Provision Consul node
+  hosts: all
+  vars:
+    # ...
+    consul_ports:
+      dns: 53
+    consul_recursors: ["1.1.1.1", "1.0.0.1"]
+  roles:
+    - consul
+```

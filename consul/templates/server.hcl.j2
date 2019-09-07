@@ -16,7 +16,19 @@ bind_addr = {{ consul_bind_addr | to_json }}
 advertise_addr = {{ consul_advertise_addr | to_json }}
 {% endif %}
 
+{% if consul_recursors %}
+recursors = {{ consul_recursors | to_json }}
+{% endif %}
+
 retry_join = {{ consul_retry_join | to_json }}
+
+{% if consul_ports %}
+ports = {
+{% for key, val in consul_ports.items() %}
+    {{ key }} = {{ val }}
+{% endfor %}
+}
+{% endif %}
 
 performance {
   raft_multiplier = 1
