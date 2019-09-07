@@ -1,4 +1,7 @@
 {
     "log-driver": "{{ docker_log_driver }}",
     "bip": "{{ docker_bridge_ip }}"
+    {% if docker_dns %}
+    ,"dns": {{ docker_dns | to_json }}
+    {% endif %}
 }
