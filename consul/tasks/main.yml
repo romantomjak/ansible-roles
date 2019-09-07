@@ -100,7 +100,7 @@
         "ID": "anonymous",
         "Name": "Anonymous Token",
         "Type": "client",
-        "Rules": "node \"\" { policy = \"read\" } service \"consul\" { policy = \"read\" } service \"nomad\" { policy = \"read\" } service \"vault\" { policy = \"read\" }"
+        "Rules": "node \"\" { policy = \"read\" } service \"\" { policy = \"read\" }"
       }
     body_format: json
   when: consul_server
