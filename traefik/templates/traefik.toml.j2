@@ -9,6 +9,12 @@
   [entryPoints.traefik]
     address = "127.0.0.1:8080"
 {% endif %}
+{% if traefik_extra_entrypoints is defined %}
+{% for key, value in traefik_extra_entrypoints.items() %}
+  [entryPoints.{{ key }}]
+    address = "{{ value }}"
+{% endfor %}
+{% endif %}
 
 [providers]
   [providers.consulCatalog]

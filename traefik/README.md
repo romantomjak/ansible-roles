@@ -22,6 +22,8 @@ Example playbook:
     traefik_consul_token: b1gs33cr3t
     traefik_dashboard_enabled: true
     traefik_dashboard_trusted_ip_range: ["127.0.0.0/24"]
+    traefik_extra_entrypoints:
+      vpn: ":1194"
   roles:
     - traefik
 ```
