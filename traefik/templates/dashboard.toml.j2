@@ -1,0 +1,32 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+{% if traefik_dashboard_enabled %}
+# This file configures Traefik API and dashboard to only be available
+# from localhost
+
+[http.routers]
+  [http.routers.api]
+    entrypoints = ["traefik"]
+    rule = "Host(`localhost`) && PathPrefix(`/api`)"
+    service = "api@internal"
+    middlewares = ["dashboard_ipwhitelist"]
+
+  [http.routers.dashboard]
+    entrypoints = ["traefik"]
+    rule = "Host(`localhost`) && PathPrefix(`/`)"
+    service = "dashboard@internal"
+    middlewares = ["dashboard_redirect", "dashboard_stripprefix", "dashboard_ipwhitelist"]
+
+[http.middlewares]
+  [http.middlewares.dashboard_redirect.redirectRegex]
+    regex = "`^(http://[^:/]+(:[0-9]+)?)/$`"
+    replacement = "${1}/dashboard/"
+
+  [http.middlewares.dashboard_stripprefix.stripPrefix]
+    prefixes = ["/dashboard/", "/dashboard"]
+
+  [http.middlewares.dashboard_ipwhitelist.ipWhiteList]
+    sourceRange = {{ traefik_dashboard_trusted_ip_range | to_json }}
+{% else %}
+# Dashboard is disabled via configuration. See the "traefik_dashboard_enabled" flag.
+{% endif %}

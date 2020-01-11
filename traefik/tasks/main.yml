@@ -16,16 +16,47 @@
   become: true
 
 - name: Download and install Traefik
-  get_url:
-    url: https://github.com/containous/traefik/releases/download/v{{ traefik_version }}/traefik_linux-amd64
-    dest: /usr/local/bin/traefik
+  unarchive:
+    creates: /usr/local/bin/traefik
+    src: https://github.com/containous/traefik/releases/download/v{{ traefik_version }}/traefik_v{{ traefik_version }}_linux_amd64.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    owner: root
+    group: root
     mode: "u=rwx,g=rx,o=rx"
   become: true
 
-- name: Copy server configuration
+- name: Copy configuration
   template:
     src: templates/traefik.toml.j2
     dest: /etc/traefik/traefik.toml
+    owner: traefik
+    group: traefik
+    mode: 0640
+  become: true
+
+- name: Create directory for dynamic configuration
+  file:
+    path: "/etc/traefik/dynamic"
+    state: directory
+    owner: traefik
+    group: traefik
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy dashboard configuration
+  template:
+    src: templates/dashboard.toml.j2
+    dest: /etc/traefik/dynamic/dashboard.toml
+    owner: traefik
+    group: traefik
+    mode: 0640
+  become: true
+
+- name: Copy https redirect configuration
+  template:
+    src: templates/redirect-to-https.toml.j2
+    dest: /etc/traefik/dynamic/redirect-to-https.toml
     owner: traefik
     group: traefik
     mode: 0640

@@ -2,7 +2,7 @@
 # Override these in playbook with 'vars:' block
 
 # The Traefik version to install
-traefik_version: 1.7.9
+traefik_version: 2.1.2
 
 # Email address used for automatic SSL registration.
 # LetsEncrypt may contact you on this email address occasionally. Usually,
@@ -23,7 +23,7 @@ traefik_consul_token: b1gs33cr3t
 
 # Do not expose Consul catalog services by default in Traefik.
 # You can expose services manually, by adding tags in consul, e.g.
-# ["traefik.enable=true", "traefik.frontend.rule=Host:helloworld.com"]
+# ["traefik.enable=true", "traefik.http.routers.myrouter.rule=Host(`helloworld.com`)
 traefik_consul_exposed_by_default: false
 
 # Enables Traefik dashboard.

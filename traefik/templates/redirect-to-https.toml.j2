@@ -1,0 +1,21 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+# This file defines a router that is attached to a dummy service and
+# a middleware that automatically redirects all HTTP requests to HTTPS
+
+[http.routers]
+  [http.routers.redirect-to-https]
+    entryPoints = ["http"]
+    rule = "HostRegexp(`{host:.+}`)"
+    service = "noop"
+    middlewares = ["https-redirect"]
+
+[http.services]
+  # noop service, the URL will be never called
+  [http.services.noop.loadBalancer]
+    [[http.services.noop.loadBalancer.servers]]
+      url = "http://127.0.0.1"
+
+[http.middlewares]
+  [http.middlewares.https-redirect.redirectScheme]
+    scheme = "https"

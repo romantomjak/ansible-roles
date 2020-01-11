@@ -1,40 +1,39 @@
-logLevel = "INFO"
-defaultEntryPoints = ["http", "https"]
+# {{ ansible_managed }}. Created on {{ template_run_date }}
 
 [entryPoints]
   [entryPoints.http]
-  address = ":80"
-    [entryPoints.http.redirect]
-    entryPoint = "https"
+    address = ":80"
   [entryPoints.https]
-  address = ":443"
-    [entryPoints.https.tls]
+    address = ":443"
 {% if traefik_dashboard_enabled %}
-  [entryPoints.dashboard]
-  address = ":8080"
-    [entryPoints.dashboard.whiteList]
-    sourceRange = {{ traefik_dashboard_trusted_ip_range | to_json }}
+  [entryPoints.traefik]
+    address = "127.0.0.1:8080"
 {% endif %}
 
-[acme]
-email = "{{ traefik_acme_email }}"
-storage = "/etc/traefik/acme.json"
-onDemand = false
-onHostRule = true
-caServer = "{{ traefik_acme_ca_server }}"
-entryPoint = "https"
-  [acme.tlsChallenge]
+[providers]
+  [providers.consulCatalog]
+    exposedByDefault = {{ traefik_consul_exposed_by_default | to_json }}
+    [providers.consulCatalog.endpoint]
+      address = "{{ traefik_consul_endpoint }}"
+  [providers.file]
+    directory = "/etc/traefik/dynamic"
 
+{% if traefik_dashboard_enabled %}
 [api]
-entryPoint = "dashboard"
-dashboard = {{ traefik_dashboard_enabled | to_json }}
+  dashboard = true
+{% endif %}
 
-[consulCatalog]
-endpoint = "{{ traefik_consul_endpoint }}"
-exposedByDefault = {{ traefik_consul_exposed_by_default | to_json }}
-
-[traefikLog]
-filePath = "/var/log/traefik/traefik.log"
+[log]
+  level = "INFO"
+  filePath = "/var/log/traefik/traefik.log"
 
 [accessLog]
-filePath = "/var/log/traefik/access.log"
+  filePath = "/var/log/traefik/access.log"
+
+[certificatesResolvers]
+  [certificatesResolvers.default]
+    [certificatesResolvers.default.acme]
+      email = "{{ traefik_acme_email }}"
+      caServer = "{{ traefik_acme_ca_server }}"
+      storage = "/etc/traefik/acme.json"
+      [certificatesResolvers.default.acme.tlsChallenge]
