@@ -52,6 +52,10 @@ client {
   network_interface = "{{ nomad_client_network_interface }}"
 {% endif %}
 
+{% if nomad_client_network_speed %}
+  network_speed = "{{ nomad_client_network_speed }}"
+{% endif %}
+
   server_join {
     retry_join = {{ nomad_retry_join | to_json }}
   }
