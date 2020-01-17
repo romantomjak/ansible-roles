@@ -2,7 +2,7 @@
 # Override these in playbook with 'vars:' block
 
 # The Nomad version to install
-nomad_version: 0.9.3
+nomad_version: 0.10.2
 
 # This flag is used to control if an agent is in server or client mode
 nomad_server: true
