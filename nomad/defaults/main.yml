@@ -76,6 +76,14 @@ nomad_client_network_speed: null
 # }
 nomad_client_docker_auth_path: null
 
+# A list of allowed Linux capabilities. Defaults to capabilities allowed by
+# docker by default.
+nomad_client_docker_allowed_caps: [
+  "CHOWN", "DAC_OVERRIDE", "FSETID", "FOWNER", "MKNOD", "NET_RAW", "SETGID",
+  "SETUID", "SETFCAP", "SETPCAP", "NET_BIND_SERVICE", "SYS_CHROOT", "KILL",
+  "AUDIT_WRITE"
+]
+
 # Specifies if the Vault integration should be activated.
 # For more information on the architecture and setup, please see the Nomad and
 # Vault integration documentation.
