@@ -1,1 +1,1 @@
-deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+deb [arch={{ docker_architecture }}] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
