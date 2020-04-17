@@ -1,19 +1,24 @@
 ---
 # Installs InfluxDB
 
-- name: Add GPG key
+- name: Add HTTPS transport support to APT
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'python3-pip']
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Add Influxdb's official GPG key
   shell: curl -fsSL https://repos.influxdata.com/influxdb.key | apt-key add -
   become: true
   args:
     warn: False
 
 - name: Add InfluxDB stable repository
-  shell: echo 'deb https://repos.influxdata.com/debian stretch stable' > /etc/apt/sources.list.d/influxdb.list
-  args:
-    creates: /etc/apt/sources.list.d/influxdb.list
+  template: src=influxdb.list.j2 dest=/etc/apt/sources.list.d/influxdb.list
   become: true
 
-- name: Install InfluxDB
+- name: Install latest version of InfluxDB
   apt: name=influxdb state=latest update_cache=yes
   become: true
 

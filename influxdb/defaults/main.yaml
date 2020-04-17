@@ -10,3 +10,6 @@ influxdb_password: influxdb4ever
 # the default is to write to stderr, which intermingles HTTP logs with
 # internal InfluxDB logging.
 influxdb_access_log: /var/log/influxdb/access.log
+
+# InfluxDB is supported on amd64, i386, armhf, armel and arm64 architectures
+influxdb_architecture: amd64
