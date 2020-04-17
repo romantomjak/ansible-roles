@@ -32,8 +32,8 @@
   file:
     path: "/var/log/influxdb"
     state: directory
-    owner: root
-    group: root
+    owner: influxdb
+    group: influxdb
     mode: "u=rw,g=r,o=r"
   become: true
 
