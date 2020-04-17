@@ -2,13 +2,10 @@
 # Configures a Docker host
 
 - name: Add HTTPS transport support to APT
-  apt: name={{ item }} state=latest update_cache=yes
-  with_items:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gnupg2
-    - python3-pip
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'python3-pip']
+    state: latest
+    update_cache: yes
   become: true
 
 - name: Add Docker's official GPG key
