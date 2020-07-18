@@ -1,0 +1,22 @@
+---
+# Override this in play
+
+# Database type can be either "mysql", "postgres" or "sqlite3"
+grafana_database_type: sqlite3
+grafana_database_host: 127.0.0.1
+grafana_database_port: 3306
+grafana_database_name: grafana
+grafana_database_user: root
+grafana_database_password:
+
+# The following options can be used to disable creation of admin user on first
+# start of grafana
+grafana_disable_initial_admin_creation: false
+grafana_admin_user: admin
+grafana_admin_password: admin
+
+# Disable user signup / registration
+grafana_allow_sign_up: true
+
+# Grafana is supported on amd64, i386, armhf, armel and arm64 architectures
+grafana_architecture: amd64

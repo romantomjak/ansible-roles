@@ -1,0 +1,33 @@
+---
+# Installs Grafana
+
+- name: Add HTTPS transport support to APT
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'python3-pip']
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Add Grafana's official GPG key
+  shell: curl -fsSL https://packages.grafana.com/gpg.key | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add Grafana stable repository
+  template: src=grafana.list.j2 dest=/etc/apt/sources.list.d/grafana.list
+  become: true
+
+- name: Install latest version of Grafana
+  apt: name=grafana state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template: src=grafana.ini.j2 dest=/etc/grafana/grafana.ini
+  become: true
+  notify:
+    - Restart Grafana
+
+- name: Enable and start Grafana service
+  service: name=grafana-server enabled=yes state=started
+  become: true
