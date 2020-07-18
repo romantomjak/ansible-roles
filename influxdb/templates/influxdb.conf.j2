@@ -468,7 +468,7 @@
 {% for listener in influxdb_udp_listeners %}
 [[udp]]
   enabled = {{ listener.enabled | default(false) | to_json }}
-  bind-address = {{ listener.bind_address or default(":8089") | to_json }}
+  bind-address = {{ listener.bind_address | default(":8089") | to_json }}
   database = {{ listener.database | default("udp") | to_json }}
   retention-policy = {{ listener.retention_policy | default("") | to_json }}
 
