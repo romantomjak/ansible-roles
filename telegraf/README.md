@@ -4,15 +4,6 @@ Example playbook for deploying Telegraf agent for collecting logs and metrics
 
 ---
 
-For this role to work correctly you need to make sure you have created a user for the agent:
-
-```sh
-influx -execute "CREATE USER <username> WITH PASSWORD '<password>'"
-influx -execute "GRANT ALL ON <database_name> TO <username>"
-```
-
-Example playbook:
-
 ```yml
 ---
 # Deploys Telegraf agent
@@ -26,3 +17,12 @@ Example playbook:
   roles:
     - telegraf
 ```
+
+Make sure that you have created a user for the agent or else you won't see any metrics:
+
+```sh
+influx -execute "CREATE USER <username> WITH PASSWORD '<password>'"
+influx -execute "GRANT ALL ON <database_name> TO <username>"
+```
+
+More configuration options and explanations in the [defaults/main.yml](/grafana/defaults/main.yml)
