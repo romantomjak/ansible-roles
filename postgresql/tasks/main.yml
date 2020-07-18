@@ -19,7 +19,14 @@
   become: true
 
 - name: Install latest version of PostgreSQL packages
-  apt: name=postgresql-{{ postgresql_version }},postgresql-client-{{ postgresql_version }},libpq-dev,python-psycopg2 state=latest update_cache=yes
+  apt:
+    name:
+      - postgresql-{{ postgresql_version }}
+      - postgresql-client-{{ postgresql_version }}
+      - libpq-dev
+      - python-psycopg2
+    state: latest
+    update_cache: yes
   become: true
 
 - name: Enable and start PostgreSQL service
