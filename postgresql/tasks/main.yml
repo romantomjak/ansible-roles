@@ -1,0 +1,27 @@
+---
+# Installs PostgreSQL server
+
+- name: Add HTTPS transport support to APT
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'python3-pip']
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Add PostgreSQL's official GPG key
+  shell: curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+  become: true
+  args:
+    warn: False
+
+- name: Add PostgreSQL stable repository
+  template: src=postgresql.list.j2 dest=/etc/apt/sources.list.d/postgresql.list
+  become: true
+
+- name: Install latest version of PostgreSQL packages
+  apt: name=postgresql-{{ postgresql_version }},postgresql-client-{{ postgresql_version }},libpq-dev,python-psycopg2 state=latest update_cache=yes
+  become: true
+
+- name: Enable and start PostgreSQL service
+  service: name=postgresql@{{ postgresql_version }}-main enabled=yes state=started
+  become: true

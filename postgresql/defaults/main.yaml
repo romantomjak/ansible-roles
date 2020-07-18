@@ -1,0 +1,8 @@
+---
+# Override this in play
+
+# Install a specific version of postgresql, e.g. 10, 11 or 12
+postgresql_version: 12
+
+# PostgreSQL is supported on amd64, i386, arm64 and ppc64el architectures
+postgresql_architecture: amd64
