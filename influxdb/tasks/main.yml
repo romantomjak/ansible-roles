@@ -18,8 +18,14 @@
   template: src=influxdb.list.j2 dest=/etc/apt/sources.list.d/influxdb.list
   become: true
 
-- name: Install latest version of InfluxDB
-  apt: name=influxdb state=latest update_cache=yes
+- name: Install latest version of InfluxDB and utilities
+  apt:
+    name:
+      - influxdb
+      - python-influxdb
+      - python-requests
+    state: latest
+    update_cache: yes
   become: true
 
 - name: Copy configuration
