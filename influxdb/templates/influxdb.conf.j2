@@ -1,3 +1,5 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
 ### Welcome to the InfluxDB configuration file.
 
 # The values in this file override the default values used by the system if
@@ -463,27 +465,29 @@
 ### Controls the listeners for InfluxDB line protocol data via UDP.
 ###
 
+{% for listener in influxdb_udp_listeners %}
 [[udp]]
-  # enabled = false
-  # bind-address = ":8089"
-  # database = "udp"
-  # retention-policy = ""
+  enabled = {{ listener.enabled | default(false) | to_json }}
+  bind-address = {{ listener.bind_address or default(":8089") | to_json }}
+  database = {{ listener.database | default("udp") | to_json }}
+  retention-policy = {{ listener.retention_policy | default("") | to_json }}
 
   # These next lines control how batching works. You should have this enabled
   # otherwise you could get dropped metrics or poor performance. Batching
   # will buffer points in memory if you have many coming in.
 
   # Flush if this many points get buffered
-  # batch-size = 5000
+  batch-size = {{ listener.batch_size | default(5000) }}
 
   # Number of batches that may be pending in memory
-  # batch-pending = 10
+  batch-pending = {{ listener.batch_pending | default(10) }}
 
   # Will flush at least this often even if we haven't hit buffer limit
-  # batch-timeout = "1s"
+  batch-timeout = {{ listener.batch_timeout | default("1s") | to_json }}
 
   # UDP Read buffer size, 0 means OS default. UDP listener will fail if set above OS max.
-  # read-buffer = 0
+  read-buffer = {{ listener.read_buffer | default(0) }}
+{% endfor %}
 
 ###
 ### [continuous_queries]

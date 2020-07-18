@@ -13,3 +13,20 @@ influxdb_access_log: /var/log/influxdb/access.log
 
 # InfluxDB is supported on amd64, i386, armhf, armel and arm64 architectures
 influxdb_architecture: amd64
+
+# UDP listeners for InfluxDB line protocol.
+# Batching will buffer up to 'batch-size' points in memory for up to
+# 'batch-pending' batches at a time.
+# https://docs.influxdata.com/influxdb/v1.8/supported_protocols/udp/#configuration
+influxdb_udp_listeners: [
+  {
+    "enabled": false,
+    "bind_address": ":8089",
+    "database": "udp",
+    "retention_policy": "",
+    "batch_size": 5000,
+    "batch_pending": 10,
+    "batch_timeout": "1s",
+    "read_buffer": 0
+  }
+]
