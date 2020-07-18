@@ -1,6 +1,9 @@
 ---
 # Override this in play
 
+# InfluxDB is supported on amd64, i386, armhf, armel and arm64 architectures
+telegraf_architecture: amd64
+
 # Configuration for sending metrics to InfluxDB with HTTP Basic Auth
 telegraf_influxdb_urls: ["http://127.0.0.1:8086"]
 telegraf_influxdb_user: telegraf
