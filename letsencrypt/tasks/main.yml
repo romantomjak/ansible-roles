@@ -2,5 +2,5 @@
 # Installs LetsEncrypt's Certbot
 
 - name: Install Certbot
-  apt: name=certbot state=latest update_cache=yes default_release=stretch-backports
+  apt: name=certbot state=latest update_cache=yes
   become: true
