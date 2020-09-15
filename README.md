@@ -36,7 +36,7 @@ roles_path = ansible/common:ansible/roles
 On recent Git versions it's enough with:
 
 ```shell
-$ git submodule add https://github.com/romantomjak/ansible-roles ansible/common
+$ git submodule add git@github.com:romantomjak/ansible-roles ansible/common
 ```
 
 and when the upstream changes and you would like to pull the latest changes:
