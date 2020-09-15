@@ -17,4 +17,4 @@ To create users or databases you can use [PostgreSQL ansible modules](https://do
     - postgresql
 ```
 
-More configuration options and explanations in the [defaults/main.yml](/grafana/defaults/main.yml)
+More configuration options and explanations in the [defaults/main.yml](/postgresql/defaults/main.yml)
