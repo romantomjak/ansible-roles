@@ -1,0 +1,81 @@
+---
+# Installs etcd agent
+
+- name: Create group
+  group: name=etcd state=present
+  become: true
+
+- name: Create user
+  user:
+    name: etcd
+    groups: etcd
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/etcd.d
+  become: true
+
+- name: Download and install etcd
+  unarchive:
+    creates: /usr/local/bin/etcd
+    src: https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    include:
+      - etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}/etcd
+      - etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}/etcdctl
+      - etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}/etcdutl
+    extra_opts:
+     - --strip-components=1
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Create data directory
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: 0775
+    recurse: yes
+  become: true
+
+- name: Resolve member name
+  set_fact:
+    etcd_name: "{{ hostvars[inventory_hostname]['ansible_facts']['hostname'] }}"
+  when: etcd_use_hostname_as_member_name
+
+- name: Resolve client urls
+  set_fact:
+    etcd_listen_client_urls: "{{ etcd_listen_client_urls | union(['http://127.0.0.1:' ~ etcd_client_port]) }}"
+  when: etcd_accept_clients_from_localhost and etcd_client_interface != 'lo' 
+
+- name: Resolve cluster members
+  set_fact:
+    etcd_initial_cluster: "{{ etcd_initial_cluster | default([]) | union([ hostvars[item]['ansible_facts']['hostname'] ~ '=http://' ~ hostvars[item]['ansible_' ~ etcd_peer_interface]['ipv4']['address'] ~ ':' ~ etcd_peer_port ]) }}"
+  with_items: "{{ ansible_play_hosts }}"
+  when: etcd_use_ansible_hosts_to_seed_cluster_members
+
+- name: Copy configuration
+  template:
+    src: templates/etcd.yml.j2
+    dest: /etc/etcd.d/etcd.yml
+    owner: etcd
+    group: etcd
+    mode: 0640
+  become: true
+
+- name: Start etcd
+  systemd: name=etcd enabled=yes state=restarted daemon_reload=true
+  become: true

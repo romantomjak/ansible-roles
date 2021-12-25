@@ -1,0 +1,77 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The etcd version to install
+etcd_version: 3.5.1
+
+# etcd is supported on amd64, arm64, ppc64le and s390x architectures
+etcd_architecture: amd64
+
+# Human-readable name for this member.
+etcd_name: "default"
+
+# Override the member name with the remote machine's hostname. Useful when each
+# machine has a unique hostname.
+etcd_use_hostname_as_member_name: false
+
+# Path to the data directory.
+etcd_data_dir: "/opt/etcd/{{ etcd_name }}"
+
+# The interface on which to listen for incoming connections. This setting
+# affects default values for both - client and peer settings.
+etcd_interface: lo
+
+# The interface on which to listen for client connections. Overrides the
+# value specified by etcd_interface.
+etcd_client_interface: "{{ etcd_interface }}"
+
+# The interface on which to listen for peer connections. Overrides the
+# value specified by etcd_interface.
+etcd_peer_interface: "{{ etcd_interface }}"
+
+# The port on which to listen for incoming client connections.
+etcd_client_port: 2379
+
+# The port on which to listen for incoming peer connections.
+etcd_peer_port: 2380
+
+# List of URLs to listen on for client traffic.
+# Defaults to ["http://localhost:2379"].
+etcd_listen_client_urls: ["http://{{ hostvars[inventory_hostname]['ansible_' + etcd_client_interface]['ipv4']['address'] }}:{{ etcd_client_port }}"]
+
+# Accept client connections from localhost in addition to etcd_listen_client_urls.
+etcd_accept_clients_from_localhost: true
+
+# List of this member's client URLs to advertise to the public. The client URLs
+# advertised should be accessible to machines that talk to etcd cluster. etcd
+# client libraries parse these URLs to connect to the cluster.
+# Defaults to: ["http://localhost:2379"].
+etcd_advertise_client_urls: ["http://{{ hostvars[inventory_hostname]['ansible_' + etcd_client_interface]['ipv4']['address'] }}:{{ etcd_client_port }}"]
+
+# List of URLs to listen on for peer traffic.
+# Defaults to: ["http://localhost:2380"].
+etcd_listen_peer_urls: ["http://{{ hostvars[inventory_hostname]['ansible_' + etcd_peer_interface]['ipv4']['address'] }}:{{ etcd_peer_port }}"]
+
+# List of this member's peer URLs to advertise to the rest of the cluster.
+# Defaults to: ["http://localhost:2380"].
+etcd_initial_advertise_peer_urls: ["http://{{ hostvars[inventory_hostname]['ansible_' + etcd_peer_interface]['ipv4']['address'] }}:{{ etcd_peer_port }}"]
+
+# Initial cluster configuration for bootstrapping. Useful when all IPs
+# are known ahead of time. The items in this array have to be defined
+# in the following pattern: <member-name>=<scheme>://<ip>:<port>.
+# Defaults to: ["default=http://localhost:2380"].
+etcd_initial_cluster: ["{{ etcd_name }}=http://{{ hostvars[inventory_hostname]['ansible_' + etcd_peer_interface]['ipv4']['address'] }}:{{ etcd_peer_port }}"]
+
+# Seed the initial cluster configuration from ansible hosts on which the
+# playbook is being executed. Useful when the IPs of hosts are not known
+# upfront. Enabling this setting will override values defined by the
+# etcd_initial_cluster setting.
+etcd_use_ansible_hosts_to_seed_cluster_members: false
+
+# Initial cluster token for the etcd cluster during bootstrap.
+# Specifying this can protect you from unintended cross-cluster interaction
+# when running multiple clusters.
+etcd_initial_cluster_token: etcd-cluster
+
+# Initial cluster state. Can be either 'new' or 'existing'.
+etcd_initial_cluster_state: new

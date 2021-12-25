@@ -1,0 +1,19 @@
+[Unit]
+Description="etcd - a strongly consistent, distributed key-value store"
+Documentation=https://etcd.io/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/etcd.d/etcd.yml
+
+[Service]
+User=etcd
+Group=etcd
+ExecStart=/usr/local/bin/etcd -config-file=/etc/etcd.d/etcd.yml
+Type=notify
+Restart=always
+RestartSec=5s
+LimitNOFILE=65536
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
