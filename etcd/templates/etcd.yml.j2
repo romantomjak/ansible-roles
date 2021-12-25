@@ -1,0 +1,327 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+###
+### Member
+###
+
+# Human-readable name for this member.
+name: {{ etcd_name }}
+
+# Path to the data directory.
+data-dir: {{ etcd_data_dir }}
+
+# Path to the dedicated wal directory.
+wal-dir:
+
+# Number of committed transactions to trigger a snapshot to disk.
+snapshot-count: 100000
+
+# Time (in milliseconds) of a heartbeat interval.
+heartbeat-interval: 100
+
+# Time (in milliseconds) for an election to timeout. See tuning documentation
+# for details.
+election-timeout: 1000
+
+# Whether to fast-forward initial election ticks on boot for faster election.
+initial-election-tick-advance: true
+
+# List of URLs to listen on for peer traffic.
+listen-peer-urls: {{ etcd_listen_peer_urls | join(',') }}
+
+# List of URLs to listen on for client traffic.
+listen-client-urls: {{ etcd_listen_client_urls | join(',') }}
+
+# Maximum number of snapshot files to retain (0 is unlimited).
+max-snapshots: 5
+
+# Maximum number of wal files to retain (0 is unlimited).
+max-wals: 5
+
+# Raise alarms when backend size exceeds the given quota (0 defaults to low space quota).
+quota-backend-bytes: 0
+
+# BackendFreelistType specifies the type of freelist that boltdb backend uses(array and map are supported types).
+backend-bbolt-freelist-type: 'map'
+
+# BackendBatchInterval is the maximum time before commit the backend transaction.
+backend-batch-interval: 0
+
+# BackendBatchLimit is the maximum operations before commit the backend transaction.
+backend-batch-limit: 0
+
+# Maximum number of operations permitted in a transaction.
+max-txn-ops: 128
+
+# Maximum client request size in bytes the server will accept.
+max-request-bytes: 1572864
+
+# Minimum duration interval that a client should wait before pinging server.
+# In nanoseconds. Defaults to 5000000000 (5s)
+grpc-keepalive-min-time: 5000000000
+
+# Frequency duration of server-to-client ping to check if a connection is alive (0 to disable).
+# In nanoseconds. Defaults to 72000000000000 (20h)
+grpc-keepalive-interval: 72000000000000
+
+# Additional duration of wait before closing a non-responsive connection (0 to disable).
+# In nanoseconds. Defaults to 20000000000 (20s)
+grpc-keepalive-timeout: 20000000000
+
+# Enable to set socket option SO_REUSEPORT on listeners allowing rebinding of a port already in use.
+socket-reuse-port: false
+
+# Enable to set socket option SO_REUSEADDR on listeners allowing binding to an address in TIME_WAIT state.
+socket-reuse-address: false
+
+###
+### Clustering
+###
+
+# List of this member's peer URLs to advertise to the rest of the cluster.
+initial-advertise-peer-urls: {{ etcd_initial_advertise_peer_urls | join(',') }}
+
+# Initial cluster configuration for bootstrapping.
+initial-cluster: {{ etcd_initial_cluster | join(',') }}
+
+# Initial cluster state ('new' or 'existing').
+initial-cluster-state: {{ etcd_initial_cluster_state }}
+
+# Initial cluster token for the etcd cluster during bootstrap.
+# Specifying this can protect you from unintended cross-cluster interaction when running multiple clusters.
+initial-cluster-token: {{ etcd_initial_cluster_token }}
+
+# List of this member's client URLs to advertise to the public.
+# The client URLs advertised should be accessible to machines that talk to etcd cluster. etcd client libraries parse these URLs to connect to the cluster.
+advertise-client-urls: {{ etcd_advertise_client_urls | join(',') }}
+
+# Discovery URL used to bootstrap the cluster.
+discovery: 
+
+# Expected behavior ('exit' or 'proxy') when discovery services fails.
+# "proxy" supports v2 API only.
+discovery-fallback: 'proxy'
+
+# HTTP proxy to use for traffic to discovery service.
+discovery-proxy: 
+
+# DNS srv domain used to bootstrap the cluster.
+discovery-srv: 
+
+# Suffix to the dns srv name queried when bootstrapping.
+discovery-srv-name: 
+
+# Reject reconfiguration requests that would cause quorum loss.
+strict-reconfig-check: true
+
+# Enable to run an additional Raft election phase.
+pre-vote: true
+
+# Auto compaction retention length. 0 means disable auto compaction.
+auto-compaction-retention: '0'
+
+# Interpret 'auto-compaction-retention' one of: periodic|revision. 'periodic' for duration based retention, defaulting to hours if no time unit is provided (e.g. '5m'). 'revision' for revision number based retention.
+auto-compaction-mode: 'periodic'
+
+# Accept etcd V2 client requests. Deprecated and to be decommissioned in v3.6.
+enable-v2: false
+
+# Phase of v2store deprecation. Allows to opt-in for higher compatibility mode.
+# Supported values:
+#   'not-yet'                // Issues a warning if v2store have meaningful content (default in v3.5)
+#   'write-only'             // Custom v2 state is not allowed (planned default in v3.6)
+#   'write-only-drop-data'   // Custom v2 state will get DELETED !
+#   'gone'                   // v2store is not maintained any longer. (planned default in v3.7)
+v2-deprecation: 'not-yet'
+
+###
+### Security
+###
+
+# Path to the client server TLS cert file.
+cert-file: ''
+
+# Path to the client server TLS key file.
+key-file: ''
+
+# Enable client cert authentication.
+client-cert-auth: false
+
+# Path to the client certificate revocation list file.
+client-crl-file: ''
+
+# Allowed TLS hostname for client cert authentication.
+client-cert-allowed-hostname: ''
+
+# Path to the client server TLS trusted CA cert file.
+trusted-ca-file: ''
+
+# Client TLS using generated certificates.
+auto-tls: false
+
+# Path to the peer server TLS cert file.
+peer-cert-file: ''
+
+# Path to the peer server TLS key file.
+peer-key-file: ''
+
+# Enable peer client cert authentication.
+peer-client-cert-auth: false
+
+# Path to the peer server TLS trusted CA file.
+peer-trusted-ca-file: ''
+
+# Required CN for client certs connecting to the peer endpoint.
+peer-cert-allowed-cn: ''
+
+# Allowed TLS hostname for inter peer authentication.
+peer-cert-allowed-hostname: ''
+
+# Peer TLS using self-generated certificates if --peer-key-file and --peer-cert-file are not provided.
+peer-auto-tls: false
+
+# The validity period of the client and peer certificates that are automatically generated by etcd when you specify ClientAutoTLS and PeerAutoTLS, the unit is year, and the default is 1.
+self-signed-cert-validity: 1
+
+# Path to the peer certificate revocation list file.
+peer-crl-file: ''
+
+# Comma-separated list of supported TLS cipher suites between client/server and peers (empty will be auto-populated by Go).
+cipher-suites: []
+
+# Comma-separated whitelist of origins for CORS, or cross-origin resource sharing, (empty or * means allow all).
+cors: '*'
+
+# Acceptable hostnames from HTTP client requests, if server is not secure (empty or * means allow all).
+host-whitelist: '*'
+
+###
+### Auth
+###
+
+# Specify a v3 authentication token type and its options ('simple' or 'jwt').
+auth-token: 'simple'
+
+# Specify the cost / strength of the bcrypt algorithm for hashing auth passwords. Valid values are between 4 and 31.
+bcrypt-cost: 10
+
+# Time (in seconds) of the auth-token-ttl.
+auth-token-ttl: 300
+
+###
+### Profiling and Monitoring
+###
+
+# Enable runtime profiling data via HTTP server. Address is at client URL + "/debug/pprof/"
+enable-pprof: false
+
+# Set level of detail for exported metrics, specify 'extensive' to include server side grpc histogram metrics.
+metrics: 'basic'
+
+# List of URLs to listen on for the metrics and health endpoints.
+listen-metrics-urls: ''
+
+###
+### Logging
+###
+
+# Currently only supports 'zap' for structured logging.
+logger: 'zap'
+
+# Specify 'stdout' or 'stderr' to skip journald logging even when running under systemd, or list of comma separated output targets.
+log-outputs: ['default']
+
+# Configures log level. Only supports debug, info, warn, error, panic, or fatal.
+log-level: 'info'
+
+# Enable log rotation of a single log-outputs file target.
+enable-log-rotation: false
+
+# Configures log rotation if enabled with a JSON logger config. MaxSize(MB), MaxAge(days,0=no limit), MaxBackups(0=no limit), LocalTime(use computers local time), Compress(gzip)". 
+log-rotation-config-json: '{"maxsize": 100, "maxage": 0, "maxbackups": 0, "localtime": false, "compress": false}'
+
+###
+### Experimental distributed tracing
+###
+
+# Enable experimental distributed tracing.
+experimental-enable-distributed-tracing: false
+
+# Distributed tracing collector address.
+experimental-distributed-tracing-address: 'localhost:4317'
+
+# Distributed tracing service name, must be same across all etcd instances.
+experimental-distributed-tracing-service-name: 'etcd'
+
+# Distributed tracing instance ID, must be unique per each etcd instance.
+experimental-distributed-tracing-instance-id: ''
+
+###
+### v2 Proxy (to be deprecated in v3.6)
+###
+
+# Proxy mode setting ('off', 'readonly' or 'on').
+proxy: 'off'
+
+# Time (in milliseconds) an endpoint will be held in a failed state.
+proxy-failure-wait: 5000
+
+# Time (in milliseconds) of the endpoints refresh interval.
+proxy-refresh-interval: 30000
+
+# Time (in milliseconds) for a dial to timeout.
+proxy-dial-timeout: 1000
+
+# Time (in milliseconds) for a write to timeout.
+proxy-write-timeout: 5000
+
+# Time (in milliseconds) for a read to timeout.
+proxy-read-timeout: 0
+
+###
+### Experimental feature
+###
+
+# Enable to check data corruption before serving any client/peer traffic.
+experimental-initial-corrupt-check: false
+
+# Duration of time between cluster corruption check passes.
+experimental-corrupt-check-time: 0
+
+# Serve v2 requests through the v3 backend under a given prefix. Deprecated and to be decommissioned in v3.6.
+experimental-enable-v2v3: ''
+
+# ExperimentalEnableLeaseCheckpoint enables primary lessor to persist lease remainingTTL to prevent indefinite auto-renewal of long lived leases.
+experimental-enable-lease-checkpoint: false
+
+# ExperimentalCompactionBatchLimit sets the maximum revisions deleted in each compaction batch.
+experimental-compaction-batch-limit: 1000
+
+# Skip verification of SAN field in client certificate for peer connections.
+experimental-peer-skip-client-san-verification: false
+
+# Duration of periodical watch progress notification.
+# In nanoseconds. Defaults to 600000000000 (10m).
+experimental-watch-progress-notify-interval: 600000000000
+
+# Warning is generated if requests take more than this duration.
+# In nanoseconds. Defaults to 100000000 (100ms).
+experimental-warning-apply-duration: 100000000
+  
+# Enable the write transaction to use a shared buffer in its readonly check operations.
+experimental-txn-mode-write-with-shared-buffer: true
+
+# Enable the defrag during etcd server bootstrap on condition that it will free at least the provided threshold of disk space. Needs to be set to non-zero value to take effect.
+experimental-bootstrap-defrag-threshold-megabytes: 0
+
+###
+### Unsafe feature
+###
+
+# CAUTIOUS with unsafe flag! It may break the guarantees given by the consensus protocol!
+
+# Force to create a new one-member cluster.
+force-new-cluster: false
+
+# Disables fsync, unsafe, will cause data loss.
+unsafe-no-fsync: false
