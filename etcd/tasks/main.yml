@@ -63,8 +63,12 @@
 
 - name: Resolve cluster members
   set_fact:
-    etcd_initial_cluster: "{{ etcd_initial_cluster | default([]) | union([ hostvars[item]['ansible_facts']['hostname'] ~ '=http://' ~ hostvars[item]['ansible_' ~ etcd_peer_interface]['ipv4']['address'] ~ ':' ~ etcd_peer_port ]) }}"
-  with_items: "{{ ansible_play_hosts }}"
+    etcd_initial_cluster: >-
+      {% set cluster_members = [] %}
+      {%- for host in ansible_play_hosts -%}
+        {{ cluster_members.append(hostvars[host]['ansible_facts']['hostname'] ~ '=http://' ~ hostvars[host]['ansible_' ~ etcd_peer_interface]['ipv4']['address'] ~ ':' ~ etcd_peer_port) }}
+      {%- endfor -%}
+      {{ cluster_members }}
   when: etcd_use_ansible_hosts_to_seed_cluster_members
 
 - name: Copy configuration
