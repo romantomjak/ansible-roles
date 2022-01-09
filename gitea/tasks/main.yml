@@ -43,12 +43,13 @@
     owner: "{{ gitea_user }}"
     group: "{{ gitea_group }}"
     mode: 0750
-    recurse: yes
   with_items:
     - "{{ gitea_working_directory }}/custom"
     - "{{ gitea_working_directory }}/data"
     - "{{ gitea_working_directory }}/log"
   become: true
+
+- include_tasks: secrets.yml
 
 - name: Create configuration directory
   file:
@@ -57,29 +58,7 @@
     owner: root
     group: "{{ gitea_group }}"
     mode: 0755
-    recurse: yes
   become: true
-
-- name: Generate internal token
-  shell: gitea generate secret INTERNAL_TOKEN
-  register: gitea_generate_internal_token
-  become: true
-
-- name: Generate secret key
-  shell: gitea generate secret SECRET_KEY
-  register: gitea_generate_secret_key
-  become: true
-
-- name: Generate LFS JWT secret
-  shell: gitea generate secret JWT_SECRET
-  register: gitea_generate_lfs_jwt_secret
-  become: true
-
-- name: Set secret facts
-  set_fact:
-    gitea_internal_token: "{{ gitea_generate_internal_token.stdout }}"
-    gitea_secret_key: "{{ gitea_generate_secret_key.stdout }}"
-    gitea_lfs_jwt_secret: "{{ gitea_generate_lfs_jwt_secret.stdout }}"
 
 - name: Copy configuration
   template:
@@ -87,7 +66,7 @@
     dest: /etc/gitea/app.ini
     owner: "{{ gitea_user }}"
     group: "{{ gitea_group }}"
-    mode: 0640
+    mode: 0600
   become: true
   notify:
     - Restart Gitea
