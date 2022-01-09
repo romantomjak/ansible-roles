@@ -1,0 +1,78 @@
+APP_NAME = Gitea: Git with a cup of tea
+RUN_USER = {{ gitea_user }}
+RUN_MODE = prod
+
+[security]
+INTERNAL_TOKEN     = {{ gitea_internal_token }}
+INSTALL_LOCK       = true
+SECRET_KEY         = {{ gitea_secret_key }}
+PASSWORD_HASH_ALGO = pbkdf2
+
+[database]
+DB_TYPE  = {{ gitea_database_type }}
+HOST     = {{ gitea_database_host }}
+NAME     = {{ gitea_database_name }}
+USER     = {{ gitea_database_user }}
+PASSWD   = `{{ gitea_database_password }}`
+SCHEMA   = 
+SSL_MODE = disable
+CHARSET  = utf8
+PATH     = {{ gitea_working_directory }}/data/gitea.db
+LOG_SQL  = false
+
+[repository]
+ROOT = {{ gitea_working_directory }}/data/gitea-repositories
+
+[server]
+SSH_DOMAIN       = {{ gitea_ssh_domain }}
+DOMAIN           = {{ gitea_domain }}
+HTTP_PORT        = {{ gitea_http_port }}
+ROOT_URL         = {{ gitea_protocol }}://{{ gitea_domain }}/
+DISABLE_SSH      = false
+SSH_PORT         = 22
+LFS_START_SERVER = true
+LFS_CONTENT_PATH = {{ gitea_working_directory }}/data/lfs
+LFS_JWT_SECRET   = {{ gitea_lfs_jwt_secret }}
+OFFLINE_MODE     = false
+{% if gitea_cert_file %}
+CERT_FILE = {{ gitea_cert_file }}
+{% endif %}
+{% if gitea_key_file %}
+KEY_FILE = {{ gitea_key_file }}
+{% endif %}
+{% if gitea_redirect_other_port and gitea_protocol == "https" %}
+REDIRECT_OTHER_PORT = true
+PORT_TO_REDIRECT = {{ gitea_port_to_redirect }}
+{% endif %}
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM            = false
+ENABLE_NOTIFY_MAIL                = false
+DISABLE_REGISTRATION              = false
+ALLOW_ONLY_EXTERNAL_REGISTRATION  = false
+ENABLE_CAPTCHA                    = false
+REQUIRE_SIGNIN_VIEW               = false
+DEFAULT_KEEP_EMAIL_PRIVATE        = false
+DEFAULT_ALLOW_CREATE_ORGANIZATION = true
+DEFAULT_ENABLE_TIMETRACKING       = true
+NO_REPLY_ADDRESS                  = noreply.localhost
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[openid]
+ENABLE_OPENID_SIGNIN = true
+ENABLE_OPENID_SIGNUP = true
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = console
+LEVEL     = info
+ROOT_PATH = {{ gitea_working_directory }}/log
+ROUTER    = console

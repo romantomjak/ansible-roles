@@ -1,0 +1,5 @@
+---
+
+- name: Restart Gitea
+  service: name=gitea state=restarted
+  become: true

@@ -1,0 +1,59 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Gitea version to install
+gitea_version: 1.15.9
+
+# Default path for Gitea working directory. It must be an absolute path.
+gitea_working_directory: /var/lib/gitea
+
+# The user and group Gitea will run as. This should be a dedicated system
+# account. Setting this incorrectly will cause Gitea to not start.
+gitea_user: git
+gitea_group: git
+
+# The database type in use [mysql, postgres, mssql, sqlite3].
+gitea_database_type: mysql
+
+# Database host address and port or absolute path for unix socket [mysql,
+# postgres] (ex: /var/run/mysqld/mysqld.sock).
+gitea_database_host: 127.0.0.1:3306
+
+# Database name.
+gitea_database_name: gitea
+
+# Database username.
+gitea_database_user: root
+
+# Database user password.
+gitea_database_password: 
+
+# Domain name of this server.
+gitea_domain: localhost
+
+# Domain name of this server, used for displayed clone URL.
+gitea_ssh_domain: "{{ gitea_domain }}"
+
+# Protocol [http, https, fcgi, http+unix, fcgi+unix].
+gitea_protocol: http
+
+# HTTP listen address.
+gitea_http_addr: 0.0.0.0
+
+# HTTP listen port.
+gitea_http_port: 3000
+
+# Cert file path used for HTTPS. When chaining, the server certificate must
+# come first, then intermediate CA certificates (if any).
+gitea_cert_file: 
+
+# Key file path used for HTTPS.
+gitea_key_file: 
+
+# If true and gitea_protocol is https, allows redirecting http requests on
+# gitea_port_to_redirect to the https port Gitea listens on.
+gitea_redirect_other_port: false
+
+# Port for the http redirection service to listen on. Used when
+# gitea_redirect_other_port is true.
+gitea_port_to_redirect: 80

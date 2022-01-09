@@ -1,0 +1,31 @@
+[Unit]
+Description=Gitea (Git with a cup of tea)
+After=syslog.target
+After=network.target
+
+{% if gitea_database_type == "mysql" %}
+Wants=mysql.service
+After=mysql.service
+{% endif %}
+
+{% if gitea_database_type == "postgres" %}
+Wants=postgresql.service
+After=postgresql.service
+{% endif %}
+
+[Service]
+LimitMEMLOCK=infinity
+LimitNOFILE=65535
+RestartSec=2s
+Type=simple
+User={{ gitea_user }}
+Group={{ gitea_group }}
+WorkingDirectory={{ gitea_working_directory }}
+ExecStart=/usr/local/sbin/gitea web --config /etc/gitea/app.ini
+Restart=always
+Environment=USER={{ gitea_user }} HOME=/home/{{ gitea_user }} GITEA_WORK_DIR={{ gitea_working_directory }}
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
