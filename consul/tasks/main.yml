@@ -48,13 +48,22 @@
 
 - name: Copy agent configuration
   template:
-    src: "templates/{{ consul_agent_type }}.hcl.j2"
-    dest: /etc/consul.d/consul.hcl
+    src: "templates/agent.hcl.j2"
+    dest: /etc/consul.d/agent.hcl
     owner: consul
     group: consul
     mode: 0644
   become: true
-  when: consul_agent_type 
+
+- name: Copy server configuration
+  template:
+    src: "templates/server.hcl.j2"
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: 0644
+  become: true
+  when: consul_agent_type == server
 
 - name: Start Consul
   systemd: name=consul enabled=yes state=restarted daemon_reload=true

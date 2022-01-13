@@ -1,13 +1,13 @@
 ---
 
 - name: Check CA public certificate
-  stat: path="/etc/consul.d/consul-agent-ca.pem"
+  stat: path="/etc/consul.d/pki/consul-agent-ca.pem"
   register: consul_ca_cert_stat
 
 - name: Distribute CA public certificate
   copy:
     content: "{{ consul_tls_ca_cert }}"
-    dest: /etc/consul.d/consul-agent-ca.pem
+    dest: /etc/consul.d/pki/consul-agent-ca.pem
     owner: consul
     group: consul
     mode: "u=rw,g=r,o=r"
@@ -15,13 +15,13 @@
   when: consul_ca_cert_stat.stat.exists == false
 
 - name: Check agent certificate
-  stat: path="/etc/consul.d/{{ consul_datacenter }}-{{ consul_agent_type }}-consul-0-key.pem"
+  stat: path="/etc/consul.d/pki/{{ consul_datacenter }}-{{ consul_agent_type }}-consul-0.pem"
   register: consul_agent_cert_stat
 
 - name: Temporary place CA private key on disk to generate agent certificate
   copy:
     content: "{{ consul_tls_ca_key }}"
-    dest: /etc/consul.d/consul-agent-ca-key.pem
+    dest: /etc/consul.d/pki/consul-agent-ca-key.pem
     owner: consul
     group: consul
     mode: "u=rw,g=,o="
@@ -31,19 +31,19 @@
 - name: Generate agent certificate
   shell:
     cmd: consul tls cert create -{{ consul_agent_type }} -dc "{{ consul_datacenter }}"
-    chdir: /etc/consul.d/
+    chdir: /etc/consul.d/pki/
   become: true
   when: consul_agent_cert_stat.stat.exists == false
 
 - name: Remove CA private key (if wrote to disk to generate server certificate)
   file:
-    path: /etc/consul.d/consul-agent-ca-key.pem
+    path: /etc/consul.d/pki/consul-agent-ca-key.pem
     state: absent
   become: true
 
 - name: Fix server certificate file permissions
   file:
-    path: "/etc/consul.d/{{ item }}"
+    path: "/etc/consul.d/pki/{{ item }}"
     owner: consul
     group: consul
     mode: "u=rw,g=,o="
