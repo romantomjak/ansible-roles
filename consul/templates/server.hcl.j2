@@ -1,14 +1,20 @@
 # {{ ansible_managed }}. Created on {{ template_run_date }}
 
 datacenter = "{{ consul_datacenter }}"
-data_dir = "/opt/consul"
+data_dir = "{{ consul_data_dir }}"
 encrypt = "{{ consul_encrypt }}"
 enable_syslog = {{ consul_enable_syslog | to_json }}
 
-acl_datacenter = "{{ consul_datacenter }}"
-acl_default_policy = "{{ consul_acl_default_policy }}"
-acl_master_token = "{{ consul_acl_master_token }}"
-acl_agent_token = "{{ consul_acl_agent_token }}"
+acl {
+  enabled = true
+  default_policy = "{{ consul_acl_default_policy }}"
+  tokens {
+    agent = "{{ consul_acl_agent_token }}"
+    initial_management = "{{ consul_acl_initial_management_token }}"
+  } 
+}
+
+primary_datacenter = "{{ consul_datacenter }}"
 
 bind_addr = {{ consul_bind_addr | to_json }}
 
@@ -30,10 +36,6 @@ ports = {
 }
 {% endif %}
 
-performance {
-  raft_multiplier = 1
-}
-
 connect {
   enabled = true
 }
@@ -41,4 +43,14 @@ connect {
 server = true
 bootstrap_expect = {{ consul_bootstrap_expect }}
 
-ui = true
+ui_config {
+  enabled = true
+}
+
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true
+
+ca_file = "/etc/consul.d/consul-agent-ca.pem"
+cert_file = "/etc/consul.d/{{ consul_datacenter }}-server-consul-0.pem"
+key_file = "/etc/consul.d/{{ consul_datacenter }}-server-consul-0-key.pem"
