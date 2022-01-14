@@ -115,13 +115,13 @@ def request(module, method, endpoint, token, data=None, scheme="http", host="loc
 
     resp, info = fetch_url(module, url, method=method, data=data, headers=headers)
 
-    if info["status"] != 200:
+    if info.get("status") != 200:
         module.fail_json(
-            msg="Consul API ",
+            msg=f"Consul API error: {info.get('msg')}",
             method=method,
             url=url,
-            status_code=info["status"],
-            response=info["body"],
+            status_code=info.get("status"),
+            response=info.get("body"),
         )
 
     return json.loads(resp.read())

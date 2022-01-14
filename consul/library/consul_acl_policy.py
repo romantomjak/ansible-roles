@@ -85,6 +85,7 @@ def update_policy(module: AnsibleModule, configuration: Configuration, policy_id
 
 def create_policy(module: AnsibleModule, configuration: Configuration):
     configured_policy = Policy(
+        id=configuration.id,
         name=configuration.name,
         description=configuration.description,
         rules=configuration.rules,
@@ -109,13 +110,13 @@ def request(module, method, endpoint, token, data=None, scheme="http", host="loc
 
     resp, info = fetch_url(module, url, method=method, data=data, headers=headers)
 
-    if info["status"] != 200:
+    if info.get("status") != 200:
         module.fail_json(
-            msg="Consul API ",
+            msg=f"Consul API error: {info.get('msg')}",
             method=method,
             url=url,
-            status_code=info["status"],
-            response=info["body"],
+            status_code=info.get("status"),
+            response=info.get("body"),
         )
 
     return json.loads(resp.read())
@@ -123,10 +124,10 @@ def request(module, method, endpoint, token, data=None, scheme="http", host="loc
 
 def main():
     module_args = dict(
-        id=dict(),
+        id=dict(default=""),
         name=dict(default=""),
         description=dict(default=""),
-        rules=dict(),
+        rules=dict(default=""),
         datacenters=dict(type="list", elements="str"),
         state=dict(choices=["present", "absent"], default="present"),
         scheme=dict(default="http"),
