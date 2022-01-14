@@ -49,7 +49,7 @@
 - name: Copy agent configuration
   template:
     src: "templates/agent.hcl.j2"
-    dest: /etc/consul.d/agent.hcl
+    dest: /etc/consul.d/consul.hcl
     owner: consul
     group: consul
     mode: 0644
@@ -63,7 +63,7 @@
     group: consul
     mode: 0644
   become: true
-  when: consul_agent_type == server
+  when: consul_agent_type == 'server'
 
 - name: Start Consul
   systemd: name=consul enabled=yes state=restarted daemon_reload=true
@@ -73,7 +73,19 @@
   consul_acl_policy:
     name: "{{ ansible_hostname }}"
     rules: |
+      # Allow the agent to register its own node in the Catalog and update its network coordinates
       node "{{ ansible_hostname }}" {
+        policy = "write"
+      }
+      # Allows the agent to detect and diff services registered to itself with what is known in the Catalog
+      node_prefix "" {
+        policy = "read"
+      }
+      service_prefix "" {
+        policy = "read"
+      }
+      # Allow agent to manage itself
+      agent "{{ ansible_hostname }}" {
         policy = "write"
       }
     datacenters:
@@ -82,36 +94,36 @@
     mgmt_token: "{{ consul_acl_initial_management_token }}"
   register: consul_acl_agent_policy_output
 
-- name: Create agent token
-  consul_acl_token:
-    description: "{{ ansible_hostname }} agent token"
-    policies:
-      - id: consul_acl_agent_policy_output.policy.id
-    local: true
-    state: present
-    mgmt_token: "{{ consul_acl_initial_management_token }}"
+# - name: Create agent token
+#   consul_acl_token:
+#     description: "{{ ansible_hostname }} agent token"
+#     policies:
+#       - id: consul_acl_agent_policy_output.policy.id
+#     local: true
+#     state: present
+#     mgmt_token: "{{ consul_acl_initial_management_token }}"
 
-- name: Create a policy to allow DNS queries and service lookups
-  consul_acl_policy:
-    name: "dns-requests"
-    rules: |
-      node_prefix "" {
-        policy = "read"
-      }
-      service_prefix "" {
-        policy = "read"
-      }
-    datacenters:
-      - "{{ consul_datacenter }}"
-    state: present
-    mgmt_token: "{{ consul_acl_initial_management_token }}"
-  register: consul_acl_dns_policy_output
+# - name: Create a policy to allow DNS queries and service lookups
+#   consul_acl_policy:
+#     name: "dns-requests"
+#     rules: |
+#       node_prefix "" {
+#         policy = "read"
+#       }
+#       service_prefix "" {
+#         policy = "read"
+#       }
+#     datacenters:
+#       - "{{ consul_datacenter }}"
+#     state: present
+#     mgmt_token: "{{ consul_acl_initial_management_token }}"
+#   register: consul_acl_dns_policy_output
 
-- name: Create an anonymous token
-  consul_acl_token:
-    secret_id: anonymous
-    description: "Anonymous Token"
-    policies:
-      - id: consul_acl_dns_policy_output.policy.id
-    state: present
-    mgmt_token: "{{ consul_acl_initial_management_token }}"
+# - name: Create an anonymous token
+#   consul_acl_token:
+#     secret_id: anonymous
+#     description: "Anonymous Token"
+#     policies:
+#       - id: consul_acl_dns_policy_output.policy.id
+#     state: present
+#     mgmt_token: "{{ consul_acl_initial_management_token }}"
