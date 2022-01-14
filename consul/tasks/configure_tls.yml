@@ -1,7 +1,17 @@
 ---
 
+- name: Ensure PKI directory exists
+  file:
+    path: /etc/consul.d/pki
+    state: directory
+    owner: "consul"
+    group: "consul"
+    mode: 0740
+  become: true
+
 - name: Check CA public certificate
   stat: path="/etc/consul.d/pki/consul-agent-ca.pem"
+  become: true
   register: consul_ca_cert_stat
 
 - name: Distribute CA public certificate
@@ -16,6 +26,7 @@
 
 - name: Check agent certificate
   stat: path="/etc/consul.d/pki/{{ consul_datacenter }}-{{ consul_agent_type }}-consul-0.pem"
+  become: true
   register: consul_agent_cert_stat
 
 - name: Temporary place CA private key on disk to generate agent certificate
