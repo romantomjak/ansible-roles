@@ -48,11 +48,11 @@ ports = {
 #
 
 {% if consul_recursors %}
-recursors = "{{ consul_recursors }}"
+recursors = {{ consul_recursors | to_json }}
 {% endif %}
 
 {% if consul_retry_join %}
-retry_join = "{{ consul_retry_join }}"
+retry_join = {{ consul_retry_join | to_json }}
 {% endif %}
 
 #
