@@ -1,8 +1,8 @@
 ---
 # Override these in playbook with 'vars:' block
 
-# This flag is used to control if an agent is in server or client mode
-nomad_server: true
+# Controls whether an agent is in server or client mode.
+nomad_agent_type: server
 
 # Specifies the region the Nomad agent is a member of.
 nomad_region: global

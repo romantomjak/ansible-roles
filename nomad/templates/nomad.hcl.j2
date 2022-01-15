@@ -28,7 +28,7 @@ consul {
   token = "{{ nomad_consul_token }}"
 }
 
-{% if nomad_server %}
+{% if nomad_agent_type == 'server' %}
 server {
   enabled = true
   bootstrap_expect = {{ nomad_bootstrap_expect }}
@@ -61,7 +61,7 @@ vault {
   enabled = true
   address = "{{ nomad_vault_address }}"
 
-  {% if nomad_server %}
+  {% if nomad_agent_type == 'server' %}
   token = "{{ nomad_vault_token }}"
   create_from_role = "{{ nomad_vault_create_from_role }}"
   {% endif %}

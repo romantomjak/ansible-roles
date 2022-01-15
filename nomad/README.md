@@ -4,7 +4,7 @@ Example playbook for deploying Nomad nodes.
 
 ---
 
-Nomad clients can be deployed with the same configuration - just change `nomad_server` to say `false`.
+Nomad clients can be deployed with the same configuration - just change `nomad_agent_type` to say `client`.
 
 ```yml
 ---
@@ -13,7 +13,7 @@ Nomad clients can be deployed with the same configuration - just change `nomad_s
 - name: Provision Nomad node
   hosts: all
   vars:
-    nomad_server: true
+    nomad_agent_type: server
     nomad_encrypt: cg8StVXbQJ0gPvMd9o7yrg==
     nomad_retry_join: ["172.16.0.11"]
     nomad_consul_token: b1gs33cr3t
