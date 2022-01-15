@@ -21,3 +21,7 @@ vault_bind: eth0
 # Index for an IP for the interface defined in vault_bind.
 # This is useful if your interface has more than one IP.
 vault_bind_seq: 1
+
+# Specifies if TLS will be disabled. Vault assumes TLS by default, so you must
+# explicitly disable TLS to opt-in to insecure communication.
+vault_tls_disable: true

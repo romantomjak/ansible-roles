@@ -9,12 +9,12 @@ storage "consul" {
 
 listener "tcp" {
   address = "127.0.0.1:8200"
-  tls_disable = 1
+  tls_disable = "{{ vault_tls_disable | to_json }}"
 }
 
 listener "tcp" {
   address = "{{ vault_ip.stdout }}:8200"
-  tls_disable = 1
+  tls_disable = "{{ vault_tls_disable | to_json }}"
 }
 
 api_addr = "http://{{ vault_ip.stdout }}:8200"
