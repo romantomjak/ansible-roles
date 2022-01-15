@@ -56,19 +56,16 @@ This will ask for one of the unseal keys you got from when you were initializing
 If using ACLs in Consul, you'll need appropriate permissions for the token. The following will work for most use-cases:
 
 ```hcl
-key "vault/" {
-  policy = "write"
-}
-node "" {
+key_prefix "vault/" {
   policy = "write"
 }
 service "vault" {
   policy = "write"
 }
-agent "" {
+agent_prefix "" {
   policy = "write"
 }
-session "" {
+session_prefix "" {
   policy = "write"
 }
 ```
