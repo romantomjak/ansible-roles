@@ -54,6 +54,8 @@
     group: consul
     mode: 0644
   become: true
+  notify:
+    - Restart Consul
 
 - name: Copy server configuration
   template:
@@ -64,9 +66,11 @@
     mode: 0644
   become: true
   when: consul_agent_type == 'server'
+  notify:
+    - Restart Consul
 
 - name: Start Consul
-  systemd: name=consul enabled=yes state=restarted daemon_reload=true
+  systemd: name=consul enabled=yes state=started daemon_reload=true
   become: true
 
 - include_tasks: acls.yml
