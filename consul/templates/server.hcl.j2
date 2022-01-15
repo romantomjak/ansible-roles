@@ -1,44 +1,15 @@
 # {{ ansible_managed }}. Created on {{ template_run_date }}
 
-datacenter = "{{ consul_datacenter }}"
-data_dir = "/opt/consul"
-encrypt = "{{ consul_encrypt }}"
-enable_syslog = {{ consul_enable_syslog | to_json }}
+server = true
 
-acl_datacenter = "{{ consul_datacenter }}"
-acl_default_policy = "{{ consul_acl_default_policy }}"
-acl_master_token = "{{ consul_acl_master_token }}"
-acl_agent_token = "{{ consul_acl_agent_token }}"
-
-bind_addr = {{ consul_bind_addr | to_json }}
-
-{% if consul_advertise_addr %}
-advertise_addr = {{ consul_advertise_addr | to_json }}
-{% endif %}
-
-{% if consul_recursors %}
-recursors = {{ consul_recursors | to_json }}
-{% endif %}
-
-retry_join = {{ consul_retry_join | to_json }}
-
-{% if consul_ports %}
-ports = {
-{% for key, val in consul_ports.items() %}
-    {{ key }} = {{ val }}
-{% endfor %}
-}
-{% endif %}
-
-performance {
-  raft_multiplier = 1
+acl {
+  tokens {
+    initial_management = "{{ consul_acl_initial_management_token }}"
+  } 
 }
 
 connect {
-  enabled = true
+  enabled = {{ consul_connect_enabled | to_json }}
 }
 
-server = true
 bootstrap_expect = {{ consul_bootstrap_expect }}
-
-ui = true
