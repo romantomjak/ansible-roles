@@ -5,6 +5,15 @@ storage "consul" {
   address = "127.0.0.1:8500"
   path = "vault/"
   token = "{{ vault_consul_token }}"
+  {% if vault_consul_tls_ca_file %}
+  tls_ca_file = "{{ vault_consul_tls_ca_file }}"
+  {% endif %}
+  {% if vault_consul_tls_cert_file %}
+  tls_cert_file = "{{ vault_consul_tls_cert_file }}"
+  {% endif %}
+  {% if vault_consul_tls_key_file %}
+  tls_key_file = "{{ vault_consul_tls_key_file }}"
+  {% endif %}
 }
 
 listener "tcp" {

@@ -10,8 +10,21 @@ vault_version: 1.3.1
 # do not use swap at all.
 vault_disable_mlock: true
 
-# Consul Token. See readme
+# Specifies the Consul ACL token with permission to read and write from the
+# path in Consul's key-value store. See readme.
 vault_consul_token: b1gs33cr3t
+
+# Specifies the path to the CA certificate used for Consul communication. This
+# should be set according to the ca_file setting in Consul.
+vault_consul_tls_ca_file: 
+
+# Specifies the path to the certificate for Consul communication. This should
+# be set according to the cert_file setting in Consul.
+vault_consul_tls_cert_file: 
+
+# Specifies the path to the private key for Consul communication. This should
+# be set according to the key_file setting in Consul.
+vault_consul_tls_key_file: 
 
 # Specifies the interface to bind to for listening.
 # This is used in conjunction with vault_bind_seq for automatic
