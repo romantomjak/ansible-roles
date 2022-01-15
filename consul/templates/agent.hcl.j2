@@ -18,11 +18,15 @@ acl {
   enabled = {{ consul_acl_enabled | to_json }}
   default_policy = "{{ consul_acl_default_policy }}"
   down_policy = "{{ consul_acl_down_policy }}"
-  enable_token_persistence = {{ consul_acl_enable_token_persistence | to_json }}
 
   tokens {
+    {% if consul_acl_agent_token %}
     agent = "{{ consul_acl_agent_token }}"
-  } 
+    {% endif %}
+    {% if consul_acl_token_default %}
+    default = "{{ consul_acl_token_default }}"
+    {% endif %}
+  }
 }
 
 ui_config {

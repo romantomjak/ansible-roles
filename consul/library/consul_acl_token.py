@@ -1,4 +1,5 @@
 import json
+from copy import copy
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -31,7 +32,10 @@ class Token:
     local: bool
 
     def to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
+        obj = copy(self.__dict__)
+        obj["accessorid"] = obj.pop("accessor_id", "")
+        obj["secretid"] = obj.pop("secret_id", "")
+        return json.dumps(obj, default=lambda o: o.__dict__)
 
     @classmethod
     def from_dict(cls, obj):
@@ -80,11 +84,11 @@ def update_token(module: AnsibleModule, configuration: Configuration, accessor_i
     )
 
     if existing_token == configured_token:
-        return Output(changed=False, policy=existing_token.to_json())
+        return Output(changed=False, token=existing_token)
 
     request(module, "PUT", f"acl/token/{accessor_id}", configuration.mgmt_token, data=configured_token.to_json(), scheme=configuration.scheme, host=configuration.host, port=configuration.port)
 
-    return Output(changed=True, policy=configured_token.to_json())
+    return Output(changed=True, token=configured_token)
 
 
 def create_token(module: AnsibleModule, configuration: Configuration):
@@ -99,7 +103,7 @@ def create_token(module: AnsibleModule, configuration: Configuration):
 
     json_resp = request(module, "PUT", "acl/token", configuration.mgmt_token, data=configured_token.to_json(), scheme=configuration.scheme, host=configuration.host, port=configuration.port)
 
-    return Output(changed=True, policy=Token.from_dict(json_resp).to_json())
+    return Output(changed=True, token=Token.from_dict(json_resp))
 
 
 def remove_token(module: AnsibleModule, configuration: Configuration):
@@ -184,7 +188,7 @@ def main():
     result["changed"] = output.changed
 
     if output.token is not None:
-        result["token"] = output.token
+        result["token"] = output.token.__dict__
 
     module.exit_json(**result)
 

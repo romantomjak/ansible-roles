@@ -1,4 +1,5 @@
 ---
+# Sets up TLS encryption between agents
 
 - name: Ensure PKI directory exists
   file:

@@ -2,16 +2,6 @@
 
 server = true
 
-primary_datacenter = "{{ consul_datacenter }}"
-
-datacenter = "{{ consul_datacenter }}"
-
-encrypt = "{{ consul_encrypt }}"
-
-data_dir = "{{ consul_data_dir }}"
-
-enable_syslog = {{ consul_enable_syslog | to_json }}
-
 acl {
   tokens {
     initial_management = "{{ consul_acl_initial_management_token }}"

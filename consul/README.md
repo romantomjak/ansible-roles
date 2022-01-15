@@ -26,7 +26,7 @@ Consul clients can be deployed with the same configuration - just change `consul
     - consul
 ```
 
-By default this will deploy a TLS enabled consul server.
+By default a TLS enabled consul cluster will be deployed.
 
 More configuration options and explanations in the [defaults/main.yml](/consul/defaults/main.yml)
 
@@ -34,8 +34,10 @@ More configuration options and explanations in the [defaults/main.yml](/consul/d
 
 Gossip is encrypted with a symmetric key, since gossip between nodes is done over UDP. All agents must have the same encryption key.
 
+You can generate the key before starting Consul, as long as you have the Consul binary installed in your path:
+
 ```shell
-consul keygen
+$ consul keygen
 qDOPBEr+/oUVeOFQOnVypxwDaHzLrD+lvjo5vCEBbZ0=
 ```
 
@@ -54,15 +56,6 @@ $ consul tls ca create
 The CA certificate, consul-agent-ca.pem, contains the public key necessary to validate Consul certificates and therefore must be distributed to every node that runs a consul agent.
 
 The CA key, consul-agent-ca-key.pem, will be used to sign certificates for Consul nodes and must be kept private. Possession of this key allows anyone to run Consul as a trusted server or generate new valid certificates for the datacenter and obtain access to all Consul data, including ACL tokens.
-
-## Agent Token policy
-
-The `consul_acl_agent_token` is a special token that is used for an agent's internal operations. It isn't used directly for any user-initiated operations.
-
-The ACL agent token is used for the following operations by the agent:
-
-- Updating the agent's node entry using the Catalog API, including updating its node metadata, tagged addresses, and network coordinates
-- Performing anti-entropy syncing, in particular reading the node metadata and services registered with the catalog
 
 ## Anonymous Token policy
 

@@ -76,11 +76,11 @@ def update_policy(module: AnsibleModule, configuration: Configuration, policy_id
     )
 
     if existing_policy == configured_policy:
-        return Output(changed=False, policy=existing_policy.to_json())
+        return Output(changed=False, policy=existing_policy)
 
     request(module, "PUT", f"acl/policy/{policy_id}", configuration.mgmt_token, data=configured_policy.to_json(), scheme=configuration.scheme, host=configuration.host, port=configuration.port)
 
-    return Output(changed=True, policy=configured_policy.to_json())
+    return Output(changed=True, policy=configured_policy)
 
 
 def create_policy(module: AnsibleModule, configuration: Configuration):
@@ -94,7 +94,7 @@ def create_policy(module: AnsibleModule, configuration: Configuration):
 
     json_resp = request(module, "PUT", "acl/policy", configuration.mgmt_token, data=configured_policy.to_json(), scheme=configuration.scheme, host=configuration.host, port=configuration.port)
 
-    return Output(changed=True, policy=Policy.from_dict(json_resp).to_json())
+    return Output(changed=True, policy=Policy.from_dict(json_resp))
 
 
 def remove_policy(module: AnsibleModule, configuration: Configuration):
@@ -177,7 +177,7 @@ def main():
     result["changed"] = output.changed
 
     if output.policy is not None:
-        result["policy"] = output.policy
+        result["policy"] = output.policy.__dict__
 
     module.exit_json(**result)
 
