@@ -61,6 +61,7 @@
       - "DNS.1 = {{ nomad_agent_type }}.{{ nomad_region }}.nomad"
       - DNS.2 = localhost
       - IP.1 = 127.0.0.1
+      - "IP.2 = {{ ansible_default_ipv4.address }}"
   become: true
   register: nomad_agent_csr_config_output
   when: nomad_agent_private_key_output.changed
