@@ -1,0 +1,11 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Fabio version to install
+fabio_version: 1.5.15
+
+# Fabio is supported on amd64, arm and 386 architectures
+fabio_architecture: amd64
+
+# The ACL token for consul
+fabio_consul_token:

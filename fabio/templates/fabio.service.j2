@@ -1,0 +1,17 @@
+[Unit]
+Description="fabio - fast, modern, zero-conf load balancing HTTP(S) and TCP router"
+Documentation=https://fabiolb.net/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/fabio/fabio.properties
+
+[Service]
+User=fabio
+Group=fabio
+KillMode=process
+ExecStart=/usr/local/bin/fabio -cfg=/etc/fabio/fabio.properties
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

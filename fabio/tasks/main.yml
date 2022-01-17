@@ -1,0 +1,49 @@
+---
+# Installs fabio load balancer
+
+- name: Create group
+  group: name=fabio state=present
+  become: true
+
+- name: Create user
+  user:
+    name: fabio
+    groups: fabio
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/fabio
+  become: true
+
+- name: Download and install fabio
+  get_url:
+    url: https://github.com/fabiolb/fabio/releases/download/v{{ fabio_version }}/fabio-{{ fabio_version }}-go1.15.5-{{ ansible_system | lower }}_{{ fabio_architecture }}
+    dest: /usr/local/bin/fabio
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/fabio.service.j2
+    dest: /etc/systemd/system/fabio.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/fabio.properties.j2
+    dest: /etc/fabio/fabio.properties
+    owner: fabio
+    group: fabio
+    mode: 0640
+  become: true
+  notify:
+    - Restart Fabio
+
+- name: Start Fabio
+  systemd: name=fabio enabled=yes state=started daemon_reload=true
+  become: true

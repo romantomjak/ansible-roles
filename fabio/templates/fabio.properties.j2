@@ -1,0 +1,5 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+{% if fabio_consul_token %}
+registry.consul.token = {{ fabio_consul_token }}
+{% endif %}
