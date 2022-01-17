@@ -56,6 +56,18 @@ client {
 }
 {% endif %}
 
+tls {
+  http = true
+  rpc = true
+
+  ca_file = "{{ nomad_tls_ca_file }}"
+  cert_file = "{{ nomad_tls_cert_file }}"
+  key_file = "{{ nomad_tls_key_file }}"
+
+  verify_server_hostname = true
+  verify_https_client = true
+}
+
 {% if nomad_vault_enabled %}
 vault {
   enabled = true

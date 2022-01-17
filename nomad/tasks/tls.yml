@@ -1,0 +1,93 @@
+---
+# Sets up TLS encryption between agents
+
+- name: Ensure PKI directory exists
+  file:
+    path: "{{ nomad_tls_cert_file | dirname }}"
+    state: directory
+    owner: nomad
+    group: nomad
+    mode: 0740
+  register: nomad_tls_cert_destination
+  become: true
+
+- set_fact:
+    nomad_tls_file_prefix: "{{ nomad_tls_cert_destination.path }}/{{ nomad_tls_cert_file | basename | splitext | first }}"
+
+- name: Check CA public certificate
+  stat: path="{{ nomad_tls_ca_file }}"
+  become: true
+  register: nomad_ca_cert_stat
+
+- name: Copy public CA certificate
+  copy:
+    content: "{{ nomad_tls_ca_cert }}"
+    dest: "{{ nomad_tls_ca_file }}"
+    owner: nomad
+    group: nomad
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: nomad_ca_cert_stat.stat.exists == false
+
+- name: Check agent certificate
+  stat: path="{{ nomad_tls_cert_file }}"
+  become: true
+  register: nomad_agent_cert_stat
+
+- name: Temporary place CA private key on disk to generate agent certificate
+  copy:
+    content: "{{ nomad_tls_ca_key }}"
+    dest: /etc/nomad.d/pki/nomad-agent-ca-key.pem
+    owner: nomad
+    group: nomad
+    mode: "u=rw,g=,o="
+  become: true
+  when: nomad_agent_cert_stat.stat.exists == false
+
+- name: Generate agents private key
+  shell:
+    cmd: "openssl ecparam -genkey -name prime256v1 -noout -out {{ nomad_tls_key_file }}"
+    creates: "{{ nomad_tls_key_file }}"
+  become: true
+  register: nomad_agent_private_key_output
+
+- name: Create Certificate Signing Request (CSR) configuration
+  template:
+    src: templates/csr.cnf.j2
+    dest: "{{ nomad_tls_file_prefix }}-csr.cnf"
+  vars:
+    nomad_cert_common_name: "{{ nomad_agent_type }}.{{ nomad_region }}.nomad"
+    nomad_cert_subject_alt_names: 
+      - "DNS.1 = {{ nomad_agent_type }}.{{ nomad_region }}.nomad"
+      - DNS.2 = localhost
+      - IP.1 = 127.0.0.1
+  become: true
+  register: nomad_agent_csr_config_output
+  when: nomad_agent_private_key_output.changed
+
+- name: Generate Certificate Signing Request (CSR) from config
+  shell: "openssl req -new -key {{ nomad_tls_key_file }} -config {{ nomad_agent_csr_config_output.dest }} -out {{ nomad_tls_file_prefix }}.csr"
+  become: true
+  when: nomad_agent_private_key_output.changed
+
+- name: Generate agents cert
+  shell: "openssl x509 -req -in {{ nomad_tls_file_prefix }}.csr -CA {{ nomad_tls_ca_file }} -CAkey /etc/nomad.d/pki/nomad-agent-ca-key.pem -CAcreateserial -days {{ nomad_tls_cert_valid_days }} -extfile {{ nomad_agent_csr_config_output.dest }} -extensions v3_ext -out {{ nomad_tls_cert_file }}"
+  become: true
+  when: nomad_agent_private_key_output.changed
+
+- name: Remove CA private key (if wrote to disk to generate server certificate)
+  file:
+    path: /etc/nomad.d/pki/nomad-agent-ca-key.pem
+    state: absent
+  become: true
+
+- name: Fix server certificate file permissions
+  file:
+    path: "{{ item }}"
+    owner: nomad
+    group: nomad
+    mode: "u=rw,g=,o="
+  with_items:
+    - "{{ nomad_tls_cert_file }}"
+    - "{{ nomad_tls_key_file }}"
+  become: true
