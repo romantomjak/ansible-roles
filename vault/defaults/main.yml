@@ -48,6 +48,10 @@ vault_key_threshold: 3
 # the vault. Required when attempting to unseal a vault.
 vault_unseal_keys:
 
+# Vault token capable of enabling secrets engines. This doesn't necessarily needs
+# to be a root token.
+vault_root_token:
+
 # List of secrents engines to configure on start. List items accept the same
 # arguments as the vault CLI tool, so for example to mount PKI engine at pki/
 # provide the following input:
