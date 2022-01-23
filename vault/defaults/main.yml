@@ -47,3 +47,12 @@ vault_key_threshold: 3
 # List of key shards used to reconstruct the master key which is used to unseal
 # the vault. Required when attempting to unseal a vault.
 vault_unseal_keys:
+
+# List of secrents engines to configure on start. List items accept the same
+# arguments as the vault CLI tool, so for example to mount PKI engine at pki/
+# provide the following input:
+#
+# vault_secrets_engines:
+#   - type: pki
+#     path: pki/
+vault_secrets_engines:

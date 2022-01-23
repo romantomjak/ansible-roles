@@ -18,3 +18,17 @@
   set_fact:
     vault_is_initialized: "{{ (vault_status_output.stdout | from_json).initialized }}"
     vault_is_sealed: "{{ (vault_status_output.stdout | from_json).sealed  }}"
+
+- name: Read enabled secret engines
+  shell: vault secrets list -format=json
+  environment:
+    VAULT_ADDR: http://127.0.0.1:8200
+    VAULT_TOKEN: "{{ vault_root_token }}"
+  register: vault_enabled_secret_engines_output
+  run_once: true
+  when: vault_is_leader and vault_root_token
+
+- name: Set enabled secrets engine facts
+  set_fact:
+    vault_enabled_secrets_engines: "{{ vault_enabled_secret_engines_output.stdout | from_json }}"
+  when: vault_is_leader and vault_root_token
