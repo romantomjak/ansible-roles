@@ -1,6 +1,11 @@
 ---
 # Provision Vault server
 
+- name: Ensure enough servers are available to form a HA cluster
+  assert:
+    that: ansible_play_hosts | length >= 3
+  run_once: true
+
 - name: Install
   include_tasks: install.yml
   tags:
