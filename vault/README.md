@@ -1,6 +1,6 @@
 # vault
 
-Example playbook for deploying HA Vault nodes with raft storage.
+Example playbook for deploying HA Vault nodes with raft storage. This role is intended to be applied over 3 hosts at minimum due to a fairly intricate bootstrapping/unseal process.
 
 ---
 
@@ -8,7 +8,7 @@ Example playbook:
 
 ```yml
 ---
-# Deploys Vault node
+# Deploys Vault servers
 
 - name: Provision Vault servers
   hosts: all
@@ -18,19 +18,27 @@ Example playbook:
     vault_raft_retry_join: ['http://172.16.0.11:8200']
 ```
 
+The retry join variable needs to include all vault server IPs in order to automatically form a raft cluster on creation.
+
 More configuration options and explanations in the [defaults/main.yml](/vault/defaults/main.yml)
 
 ## Initializing the Vault
 
-This only happens once _per cluster_ when the cluster is started against a new backend that has never been used with Vault before. The keys will be printed at the end of the first playbook run. Save all of these keys somewhere, for example, in [ansible-vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
+This only happens once _per cluster_ when the cluster is started against a new backend that has never been used with Vault before.
+
+The keys will be printed only once at the end of the first playbook run when the cluster is initalized and unsealed. Save all of them somewhere safe, for example, in [ansible-vault](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
+
+Unseal keys must be provided when running the playbook against an already initialised cluster.
 
 ## Unsealing Vault
 
-Vault is unsealed automatically after you've initialized your cluster and it's performed against each Vault instance. Unsealing has to happen every time Vault starts. To unseal the Vault, you must have the threshold number of unseal keys.
+Vault is unsealed automatically after the cluster is initialized. Unsealing is performed against each Vault instance and has to happen every time Vault starts.
+
+To unseal Vault, you must have the threshold number of unseal keys. Running the playbook against an already initialized cluster requires specifying unseal keys in order to unseal Vault instances.
 
 ```yml
 ---
-# Unseal Vault node
+# Unseal Vault server
 
 - name: Unseal Vault servers
   hosts: all
