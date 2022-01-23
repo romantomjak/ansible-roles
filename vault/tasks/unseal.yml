@@ -20,16 +20,16 @@
   register: vault_init_output
   run_once: true
   no_log: yes
-  when: not vault_is_initialized
+  when: vault_is_leader and not vault_is_initialized
 
-- name: Set facts
+- name: Set secret facts
   set_fact:
     vault_unseal_keys: "{{ (vault_init_output.stdout | from_json).unseal_keys_b64 }}"
     vault_root_token: "{{ (vault_init_output.stdout | from_json).root_token }}"
-    vault_leader_initialized: true
   no_log: yes
-  when: not vault_is_initialized
+  when: vault_init_output.changed
 
+# Leader has to be unsealed first in order for other raft members to join the cluster
 - name: Unseal leader
   shell: "vault operator unseal {{ item }}"
   environment:
@@ -37,7 +37,7 @@
   loop: "{{ vault_unseal_keys }}"
   run_once: true
   no_log: yes
-  when: vault_is_sealed and vault_unseal_keys
+  when: vault_is_leader and vault_is_sealed and vault_unseal_keys
 
 - name: Wait until all servers have initiliazed
   shell: vault status -format=json
@@ -53,7 +53,7 @@
 - name: Gather facts
   include_tasks: facts.yml
 
-- name: Unseal other servers
+- name: Unseal servers
   shell: "vault operator unseal {{ item }}"
   environment:
     VAULT_ADDR: http://127.0.0.1:8200
@@ -67,4 +67,4 @@
       - "Root token: {{ vault_root_token }}"
       - "Unseal keys: {{ vault_unseal_keys }}"
   run_once: true
-  when: vault_leader_initialized is defined
+  when: vault_init_output.changed
