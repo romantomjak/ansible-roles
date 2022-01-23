@@ -20,6 +20,7 @@
     cmd: "curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg --import"
     creates: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
     warn: False
+  register: gpg_key_import_output
   become: true
 
 - name: Fix GPG key permissions
@@ -29,6 +30,7 @@
     group: root
     mode: "u=rw,g=r,o=r"
   become: true
+  when: gpg_key_import_output.changed
 
 - name: Add Hashicorp APT repository
   copy:
@@ -39,6 +41,7 @@
     group: root
     mode: "u=rw,g=r,o=r"
   become: true
+  when: gpg_key_import_output.changed
 
 - name: Install latest version of Vault
   apt: name=vault state=latest update_cache=yes
