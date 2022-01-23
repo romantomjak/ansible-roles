@@ -1,0 +1,49 @@
+---
+# Installs Vault server
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Disable swap if mlock call is enabled
+  sysctl: name=vm.swappiness value=0
+  become: true
+  when: not vault_disable_mlock
+
+- name: Import Hashicorp GPG key
+  shell:
+    cmd: "curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+    warn: False
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Add Hashicorp APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+    dest: /etc/apt/sources.list.d/hashicorp.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Install latest version of Vault
+  apt: name=vault state=latest update_cache=yes
+  become: true
+
+- name: Start Vault
+  systemd: name=vault enabled=yes state=started daemon_reload=true
+  become: true
