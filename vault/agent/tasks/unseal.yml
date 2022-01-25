@@ -9,14 +9,14 @@
 
 - name: Assert that unseal keys have been provided
   assert:
-    that: (vault_unseal_keys | type_debug == "list") and (vault_unseal_keys | length == vault_key_shares)
+    that: (vault_agent_unseal_keys | type_debug == "list") and (vault_agent_unseal_keys | length >= vault_agent_key_threshold)
   run_once: true
   when: vault_is_initialized
 
 - name: Initialize leader
-  shell: vault operator init -key-shares={{ vault_key_shares }} -key-threshold={{ vault_key_threshold }} -format=json
+  shell: vault operator init -key-shares={{ vault_agent_key_shares }} -key-threshold={{ vault_agent_key_threshold }} -format=json
   environment:
-    VAULT_ADDR: http://127.0.0.1:8200
+    VAULT_ADDR: "{{ vault_agent_api_addr }}"
   register: vault_init_output
   run_once: true
   no_log: yes
@@ -24,8 +24,8 @@
 
 - name: Set secret facts
   set_fact:
-    vault_unseal_keys: "{{ (vault_init_output.stdout | from_json).unseal_keys_b64 }}"
-    vault_root_token: "{{ (vault_init_output.stdout | from_json).root_token }}"
+    vault_agent_unseal_keys: "{{ (vault_init_output.stdout | from_json).unseal_keys_b64 }}"
+    vault_agent_root_token: "{{ (vault_init_output.stdout | from_json).root_token }}"
   no_log: yes
   when: vault_init_output.changed
 
@@ -33,16 +33,16 @@
 - name: Unseal leader
   shell: "vault operator unseal {{ item }}"
   environment:
-    VAULT_ADDR: http://127.0.0.1:8200
-  loop: "{{ vault_unseal_keys }}"
+    VAULT_ADDR: "{{ vault_agent_api_addr }}"
+  loop: "{{ vault_agent_unseal_keys }}"
   run_once: true
   no_log: yes
-  when: vault_is_leader and vault_is_sealed and vault_unseal_keys
+  when: vault_is_leader and vault_is_sealed and vault_agent_unseal_keys
 
 - name: Wait until all servers have initiliazed
   shell: vault status -format=json
   environment:
-    VAULT_ADDR: http://127.0.0.1:8200
+    VAULT_ADDR: "{{ vault_agent_api_addr }}"
   register: vault_status_output
   failed_when: vault_status_output.rc not in [0, 1, 2]
   until: (vault_status_output.stdout | from_json).initialized
@@ -56,15 +56,15 @@
 - name: Unseal servers
   shell: "vault operator unseal {{ item }}"
   environment:
-    VAULT_ADDR: http://127.0.0.1:8200
-  loop: "{{ vault_unseal_keys }}"
+    VAULT_ADDR: "{{ vault_agent_api_addr }}"
+  loop: "{{ vault_agent_unseal_keys }}"
   no_log: yes
-  when: vault_is_sealed and vault_unseal_keys
+  when: vault_is_sealed and vault_agent_unseal_keys
 
 - name: Print root token and unseal keys
   debug:
     msg:
-      - "Root token: {{ vault_root_token }}"
-      - "Unseal keys: {{ vault_unseal_keys }}"
+      - "Root token: {{ vault_agent_root_token }}"
+      - "Unseal keys: {{ vault_agent_unseal_keys }}"
   run_once: true
   when: vault_init_output.changed

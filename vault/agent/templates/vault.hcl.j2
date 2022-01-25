@@ -1,0 +1,40 @@
+# {{ ansible_managed }}.
+#
+# See https://www.vaultproject.io/docs/configuration
+
+ui = true
+disable_mlock = {{ vault_agent_disable_mlock | to_json }}
+
+storage "raft" {
+  path = "{{ vault_agent_raft_data_path }}" 
+  node_id = "{{ vault_agent_raft_node_id }}"
+
+  {% for peer in vault_agent_raft_retry_join %}
+  retry_join {
+    leader_api_addr = "{{ peer }}"
+  }
+  {% endfor %}
+}
+
+listener "tcp" {
+  address = "127.0.0.1:8200"
+  tls_disable = "{{ vault_agent_tls_disable | to_json }}"
+
+  {% if not vault_agent_tls_disable %}
+  tls_cert_file = "{{ vault_agent_tls_cert_file }}"
+  tls_key_file = "{{ vault_agent_tls_key_file }}"
+  {% endif %}
+}
+
+listener "tcp" {
+  address = "{{ vault_agent_bind_addr }}:8200"
+  tls_disable = "{{ vault_agent_tls_disable | to_json }}"
+
+  {% if not vault_agent_tls_disable %}
+  tls_cert_file = "{{ vault_agent_tls_cert_file }}"
+  tls_key_file = "{{ vault_agent_tls_key_file }}"
+  {% endif %}
+}
+
+api_addr = "http://{{ vault_agent_bind_addr }}:8200"
+cluster_addr = "http://{{ vault_agent_bind_addr }}:8201"

@@ -1,0 +1,13 @@
+---
+
+- name: Read Vault status
+  shell: vault status -format=json
+  environment:
+    VAULT_ADDR: "{{ vault_agent_api_addr }}"
+  register: vault_status_output
+  failed_when: vault_status_output.rc not in [0, 1, 2]
+
+- name: Set status facts
+  set_fact:
+    vault_is_initialized: "{{ (vault_status_output.stdout | from_json).initialized }}"
+    vault_is_sealed: "{{ (vault_status_output.stdout | from_json).sealed  }}"

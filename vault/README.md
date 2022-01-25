@@ -8,14 +8,16 @@ Example playbook:
 
 ```yml
 ---
-# Deploys Vault servers
+# Deploys Vault cluster
 
-- name: Provision Vault servers
+- name: Provision Vault agents
   hosts: all
   vars:
-    vault_disable_mlock: true
-    vault_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
-    vault_raft_retry_join: ['http://172.16.0.11:8200']
+    vault_agent_disable_mlock: true
+    vault_agent_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
+    vault_agent_raft_retry_join: ['http://172.16.0.11:8200']
+  roles:
+    - vault/agent
 ```
 
 The retry join variable needs to include all vault server IPs in order to automatically form a raft cluster on creation.
@@ -43,10 +45,12 @@ To unseal Vault, you must have the threshold number of unseal keys. Running the 
 - name: Unseal Vault servers
   hosts: all
   vars:
-    vault_disable_mlock: true
-    vault_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
-    vault_raft_retry_join: ['http://172.16.0.11:8200']
-    vault_unseal_keys: ['key1', 'key2', '...']
+    vault_agent_disable_mlock: true
+    vault_agent_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
+    vault_agent_raft_retry_join: ['http://172.16.0.11:8200']
+    vault_agent_unseal_keys: ['key1', 'key2', '...']
+  roles:
+    - vault/agent
 ```
 
 ## Consul Token

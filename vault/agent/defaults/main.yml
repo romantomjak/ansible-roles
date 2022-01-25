@@ -4,59 +4,49 @@
 # Disables the server from executing the mlock syscall. mlock prevents memory
 # from being swapped to disk. Disabling mlock is not recommended unless the
 # systems running Vault only use encrypted swap or do not use swap at all.
-vault_disable_mlock: true
+vault_agent_disable_mlock: true
 
 # The file system path where all the Vault data gets stored. All nodes in a
 # Vault cluster will have a replicated copy of Vault's data via the Raft
 # Consensus Algorithm.
-vault_raft_data_path: /opt/vault/data
+vault_agent_raft_data_path: /opt/vault/data
 
 # The identifier for the node in the Raft cluster.
-vault_raft_node_id: "{{ ansible_hostname }}"
+vault_agent_raft_node_id: "{{ ansible_hostname }}"
 
 # A list of Vault raft members to join automatically on start.
-vault_raft_retry_join: 
+vault_agent_raft_retry_join: 
 
 # Specifies the Consul ACL token with permission to read and write from the
 # path in Consul's key-value store. See readme.
-vault_consul_token: 
+vault_agent_consul_token: 
 
 # Specifies the address to bind to for listening. This can be dynamically
 # defined with a go-sockaddr template that is resolved at runtime.
-vault_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
+vault_agent_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
 
 # Specifies if TLS will be disabled. Vault assumes TLS by default, so you must
 # explicitly disable TLS to opt-in to insecure communication.
-vault_tls_disable: true
+vault_agent_tls_disable: true
 
 # The path to a PEM-encoded certificate for TLS. Required if TLS is enabled.
-vault_tls_cert_file: 
+vault_agent_tls_cert_file: 
 
 # Specifies the path to a PEM-encoded private key for the certificate. Required
 # if TLS is enabled.
-vault_tls_key_file: 
+vault_agent_tls_key_file: 
 
 # Number of key shares to split the generated master key into. This is the
 # number of "unseal keys" to generate. 
-vault_key_shares: 5
+vault_agent_key_shares: 5
 
 # Number of key shares required to reconstruct the master key. This must be less
 # than or equal to -key-shares.
-vault_key_threshold: 3
+vault_agent_key_threshold: 3
 
 # List of key shards used to reconstruct the master key which is used to unseal
 # the vault. Required when attempting to unseal a vault.
-vault_unseal_keys:
+vault_agent_unseal_keys:
 
-# Vault token capable of enabling secrets engines. This doesn't necessarily needs
-# to be a root token.
-vault_root_token:
-
-# List of secrents engines to configure on start. List items accept the same
-# arguments as the vault CLI tool, so for example to mount PKI engine at pki/
-# provide the following input:
-#
-# vault_secrets_engines:
-#   - type: pki
-#     path: pki/
-vault_secrets_engines:
+# Vault server address.
+vault_agent_api_addr: http://127.0.0.1:8200
