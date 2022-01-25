@@ -1,0 +1,12 @@
+---
+
+- name: Read enabled secrets engines
+  shell: vault secrets list -format=json
+  environment:
+    VAULT_ADDR: "{{ vault_engine_api_addr }}"
+    VAULT_TOKEN: "{{ vault_engine_token }}"
+  register: vault_enabled_secret_engines_output
+
+- name: Set enabled secrets engine facts
+  set_fact:
+    vault_enabled_secrets_engines: "{{ vault_enabled_secret_engines_output.stdout | from_json }}"

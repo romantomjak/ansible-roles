@@ -1,0 +1,20 @@
+---
+# Override these in playbook with 'vars:' block
+
+# List of secrets engines to enable. List items accept the same arguments as the
+# vault CLI tool. For example to mount PKI engine at pki_vault/ specify the
+# following configuration:
+#
+# vault_agent_secrets_engines:
+#   - type: pki
+#     path: pki_vault/
+#     config:
+#       max_lease_ttl: 43800
+vault_engine_enabled_engines:
+
+# Vault token capable of enabling secrets engines. This doesn't necessarily needs
+# to be a root token.
+vault_engine_token:
+
+# Vault server address.
+vault_engine_api_addr: http://127.0.0.1:8200

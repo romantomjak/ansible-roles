@@ -1,0 +1,29 @@
+---
+
+- name: Ensure Vault token is provided
+  assert:
+    that: vault_engine_token
+
+- name: Gather facts
+  include_tasks: facts.yml
+
+- name: Enable secrets engine
+  shell: "vault secrets enable -path {{ item.path }} {{ item.type }}"
+  environment:
+    VAULT_ADDR: "{{ vault_engine_api_addr }}"
+    VAULT_TOKEN: "{{ vault_engine_token }}"
+  no_log: true
+  loop: "{{ vault_engine_enabled_engines }}"
+  when: "item.path not in vault_enabled_secrets_engines"
+
+- name: Gather facts
+  include_tasks: facts.yml
+
+- name: Tune engine's maximum TTL
+  shell: "vault secrets tune -max-lease-ttl={{ item.config.max_lease_ttl }}h {{ item.path }}"
+  environment:
+    VAULT_ADDR: "{{ vault_engine_api_addr }}"
+    VAULT_TOKEN: "{{ vault_engine_token }}"
+  loop: "{{ vault_engine_enabled_engines }}"
+  no_log: true
+  when: "(vault_enabled_secrets_engines[item.path].config.max_lease_ttl | int) / 60 / 60 != item.config.max_lease_ttl"

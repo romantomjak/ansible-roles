@@ -16,8 +16,15 @@ Example playbook:
     vault_agent_disable_mlock: true
     vault_agent_bind_addr: !unsafe '{{ GetInterfaceIP \"eth0\" }}'
     vault_agent_raft_retry_join: ['http://172.16.0.11:8200']
+    vault_engine_token: "bigs3cr33t"
+    vault_engine_enabled_engines:
+      - type: pki
+        path: pki/
+        config:
+          max_lease_ttl: 87600
   roles:
     - vault/agent
+    - vault/engine
 ```
 
 The retry join variable needs to include all vault server IPs in order to automatically form a raft cluster on creation.
