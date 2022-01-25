@@ -1,0 +1,54 @@
+---
+
+- name: Ensure Vault token was provided
+  assert:
+    that: vault_ca_cert_token
+
+- name: List CA certificates
+  shell: "vault list -format=json {{ vault_ca_cert_engine_path }}/certs"
+  register: cert_list_output
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  failed_when: cert_list_output.rc not in [0, 1, 2]
+
+- name: Read certificate Common Names
+  shell: "vault read -field=certificate {{ vault_ca_cert_engine_path }}/cert/{{ item }} | openssl x509 -in - -noout -subject -ext basicConstraints"
+  loop: "{{ cert_list_output.stdout | from_json }}"
+  register: cert_cn_output
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  failed_when: cert_cn_output.rc not in [0, 1, 2]
+
+- name: Check if CA certificate was generated
+  set_fact:
+    vault_ca_cert_serial: >-
+      {% set ns = namespace(ca_cert_serial='') %}
+      {%- for result in cert_cn_output.results %}
+      {%- if vault_ca_cert_common_name in result.stdout and 'CA:TRUE' in result.stdout -%}
+      {% set ns.ca_cert_serial = result.item %}
+      {%- endif -%}
+      {% endfor -%}
+      {{ ns.ca_cert_serial }}
+
+- debug: msg="CA certificate already exists. Serial number {{ vault_ca_cert_serial }}"
+  when: vault_ca_cert_serial
+
+- name: Generate CA certificate
+  shell: "vault write -field=certificate {{ vault_ca_cert_engine_path }}/root/generate/internal common_name='{{ vault_ca_cert_common_name }}' ttl={{ vault_ca_cert_ttl }}h"
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  when: not vault_ca_cert_serial
+
+- name: Configure CRL URLs
+  shell: "vault write {{ vault_ca_cert_engine_path }}/config/urls issuing_certificates='{{ vault_ca_cert_api_addr }}/v1/pki/ca' crl_distribution_points='{{ vault_ca_cert_api_addr }}/v1/pki/crl'"
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  when: not vault_ca_cert_serial

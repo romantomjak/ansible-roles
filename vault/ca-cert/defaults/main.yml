@@ -1,0 +1,20 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Vault token capable of issuing certificates. This doesn't necessarily needs
+# to be a root token.
+vault_ca_cert_token:
+
+# Vault server address.
+vault_ca_cert_api_addr: http://127.0.0.1:8200
+
+# The path to the secrets engine to use for generating the CA certificate. Must
+# not include a trailing slash.
+vault_ca_cert_engine_path: pki
+
+# The CA certificate's Common Name.
+vault_ca_cert_common_name: Vault CA
+
+# The certificate validity period in hours. By default set to 10 years for root
+# CA certificates and 5 years for intermediate CAs.
+vault_ca_cert_ttl: 87600
