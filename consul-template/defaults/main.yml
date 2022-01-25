@@ -1,0 +1,29 @@
+---
+# Override these in playbook with 'vars:' block
+
+consul_template_path: /etc/consul-template/templates
+
+# Template files are used to instruct consul-template to query Vault and Consul
+# and populate specified values into the file system. The name key specifies
+# how the template will be saved on disk in consul_template_path. The destination
+# key specifies where the source template will render. The permissions key
+# specifies the unix permissions on rendered file Command key specifies an
+# optional command to run when the template is rendered. The command will only
+# run if the resulting template changes.
+#
+# consul_template_files:
+#   - name: some-file-with-secrets.txt
+#     destination: /etc/some-service/cert.pem
+#     command: systemctl reload some-service.service
+#     permissions: "700"
+#     template: !unsafe |
+#       {{range services}}# {{.Name}}{{range service .Name}}
+#       {{.Address}}{{end}}
+#       {{end}}
+consul_template_files:
+
+# The address of the Vault leader. The protocol (http(s)) portion
+# of the address is required.
+consul_template_vault_address: http://127.0.0.1:8200
+
+consul_template_vault_token:

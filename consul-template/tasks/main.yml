@@ -1,0 +1,104 @@
+---
+# Installs Consul Template service
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Create group
+  group: name="consul-template" state=present
+  become: true
+
+- name: Create user
+  user:
+    name: "consul-template"
+    groups: "consul-template"
+    shell: /bin/false
+    create_home: true
+    home: "/etc/consul-template"
+  become: true
+
+- name: Create template directory
+  file:
+    path: "{{ consul_template_path }}"
+    state: directory
+    owner: "consul-template"
+    group: "consul-template"
+    mode: 0750
+  become: true
+
+- name: Import Hashicorp GPG key
+  shell:
+    cmd: "curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+    warn: False
+  register: gpg_key_import_output
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Add Hashicorp APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+    dest: /etc/apt/sources.list.d/hashicorp.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Install latest version of Consul Template
+  apt: name=consul-template state=latest update_cache=yes
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/consul-template.service.j2
+    dest: /etc/systemd/system/consul-template.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/consul-template.hcl.j2
+    dest: /etc/consul-template/consul-template.hcl
+    owner: "consul-template"
+    group: "consul-template"
+    mode: 0700
+  become: true
+  notify:
+    - Restart Consul Template
+
+- name: Create templates
+  copy:
+    content: "{{ item.template }}"
+    dest: "{{ consul_template_path }}/{{ item.name }}"
+    owner: "consul-template"
+    group: "consul-template"
+    mode: 0700
+  become: true
+  with_items: "{{ consul_template_files }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: (consul_template_files | type_debug == "list") and (consul_template_files | length > 0)
+  notify:
+    - Reload Consul Template
+
+- name: Start Consul Template
+  systemd: name=consul-template enabled=yes state=started daemon_reload=true
+  become: true

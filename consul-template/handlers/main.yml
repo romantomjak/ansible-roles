@@ -1,0 +1,9 @@
+---
+
+- name: Restart Consul Template
+  service: name=consul-template state=restarted
+  become: true
+
+- name: Reload Consul Template
+  service: name=consul-template state=reloaded
+  become: true

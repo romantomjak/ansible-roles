@@ -1,0 +1,22 @@
+# {{ ansible_managed }}.
+#
+# See https://github.com/hashicorp/consul-template/blob/master/docs/configuration.md
+
+{% if consul_template_vault_token and consul_template_vault_address %}
+vault {
+  address = "{{ consul_template_vault_address }}"
+  token = "{{ consul_template_vault_token }}"
+  unwrap_token = false
+  renew_token  = false
+}
+{% endif %}
+
+{% for template in consul_template_files %}
+template {
+  source = "{{ consul_template_path }}/{{ template.name }}"
+  destination = "{{ template.destination }}"
+  perms = {{ template.permissions }}
+  command = "{{ template.command }}"
+}
+
+{% endfor %}

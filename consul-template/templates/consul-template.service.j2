@@ -1,0 +1,17 @@
+[Unit]
+Description=Template rendering, notifier, and supervisor for Consul and Vault data.
+After=syslog.target
+After=network.target
+ConditionFileNotEmpty=/etc/consul-template/consul-template.hcl
+
+[Service]
+LimitMEMLOCK=infinity
+LimitNOFILE=65535
+RestartSec=2s
+KillSignal=SIGINT
+ExecStart=/usr/bin/consul-template -config /etc/consul-template/consul-template.hcl
+ExecReload=/usr/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
