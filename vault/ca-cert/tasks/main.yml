@@ -4,7 +4,7 @@
   assert:
     that: vault_ca_cert_token
 
-- name: List CA certificates
+- name: List certificates
   shell: "vault list -format=json {{ vault_ca_cert_engine_path }}/certs"
   register: cert_list_output
   environment:
@@ -23,7 +23,7 @@
   no_log: true
   failed_when: cert_cn_output.rc not in [0, 1, 2]
 
-- name: Check if CA certificate was generated
+- name: Check if certificate already exists
   set_fact:
     vault_ca_cert_serial: >-
       {% set ns = namespace(ca_cert_serial='') %}
@@ -34,16 +34,16 @@
       {% endfor -%}
       {{ ns.ca_cert_serial }}
 
-- debug: msg="CA certificate already exists. Serial number {{ vault_ca_cert_serial }}"
+- debug: msg="Certificate already exists with serial number {{ vault_ca_cert_serial }}"
   when: vault_ca_cert_serial
 
-- name: Generate CA certificate
+- name: Generate root certificate
   shell: "vault write -field=certificate {{ vault_ca_cert_engine_path }}/root/generate/internal common_name='{{ vault_ca_cert_common_name }}' ttl={{ vault_ca_cert_ttl }}h"
   environment:
     VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
     VAULT_TOKEN: "{{ vault_ca_cert_token }}"
   no_log: true
-  when: not vault_ca_cert_serial
+  when: not vault_ca_cert_serial and not vault_ca_cert_issuer_engine_path
 
 - name: Configure CRL URLs
   shell: "vault write {{ vault_ca_cert_engine_path }}/config/urls issuing_certificates='{{ vault_ca_cert_api_addr }}/v1/pki/ca' crl_distribution_points='{{ vault_ca_cert_api_addr }}/v1/pki/crl'"
@@ -51,4 +51,30 @@
     VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
     VAULT_TOKEN: "{{ vault_ca_cert_token }}"
   no_log: true
-  when: not vault_ca_cert_serial
+  when: not vault_ca_cert_serial and not vault_ca_cert_issuer_engine_path
+
+- name: Generate intermediate CA certificate signing request
+  shell: "vault write -format=json {{ vault_ca_cert_engine_path }}/intermediate/generate/internal common_name='{{ vault_ca_cert_common_name }}'"
+  register: vault_ca_cert_csr_output
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  when: not vault_ca_cert_serial and vault_ca_cert_issuer_engine_path
+
+- name: Sign the CSR
+  shell: "vault write -format=json {{ vault_ca_cert_issuer_engine_path }}/root/sign-intermediate csr='{{ (vault_ca_cert_csr_output.stdout | from_json).data.csr }}' format=pem_bundle ttl='{{ vault_ca_cert_ttl }}h'"
+  register: vault_ca_cert_sign_output
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  when: not vault_ca_cert_serial and vault_ca_cert_issuer_engine_path
+
+- name: Import the signed certificate back into Vault
+  shell: "vault write {{ vault_ca_cert_issuer_engine_path }}/intermediate/set-signed certificate='{{ (vault_ca_cert_sign_output.stdout | from_json).data.certificate }}'"
+  environment:
+    VAULT_ADDR: "{{ vault_ca_cert_api_addr }}"
+    VAULT_TOKEN: "{{ vault_ca_cert_token }}"
+  no_log: true
+  when: not vault_ca_cert_serial and vault_ca_cert_issuer_engine_path

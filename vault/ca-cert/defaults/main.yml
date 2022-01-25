@@ -12,6 +12,11 @@ vault_ca_cert_api_addr: http://127.0.0.1:8200
 # not include a trailing slash.
 vault_ca_cert_engine_path: pki
 
+# The path to the secrets engine used to sign the certificate. This is only used
+# when generating intermediate CA certificates. Leave empty to generate a root
+# CA certificate. Must not include a trailing slash.
+vault_ca_cert_issuer_engine_path:
+
 # The CA certificate's Common Name.
 vault_ca_cert_common_name: Vault CA
 
