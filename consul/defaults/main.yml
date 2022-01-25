@@ -52,17 +52,6 @@ consul_client_addr: 127.0.0.1
 # Nested dictionary that allows setting the bind ports. Setting a port to -1
 # disables the port. See https://www.consul.io/docs/agent/options.html#ports
 consul_ports:
-  dns: 8600
-  http: 8500
-  https: -1
-  grpc: -1
-  serf_lan: 8301
-  serf_wan: 8302
-  server: 8300
-  sidecar_min_port: 21000
-  sidecar_max_port: 21255
-  expose_min_port: 21500
-  expose_max_port: 21755
 
 # Enables the built-in web UI server.
 consul_ui_enabled: false

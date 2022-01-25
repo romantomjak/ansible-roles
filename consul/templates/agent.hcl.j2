@@ -41,11 +41,13 @@ bind_addr = "{{ consul_bind_addr }}"
 
 client_addr = "{{ consul_client_addr }}"
 
+{% if consul_ports %}
 ports = {
 {% for key, val in consul_ports.items() %}
     {{ key }} = {{ val }}
 {% endfor %}
 }
+{% endif %}
 
 #
 # Discovery
