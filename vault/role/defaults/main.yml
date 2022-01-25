@@ -1,0 +1,28 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Vault token capable of creating roles. This doesn't necessarily needs
+# to be a root token.
+vault_role_token:
+
+# Vault server address.
+vault_role_api_addr: http://127.0.0.1:8200
+
+# The path to the secrets engine to assign the role to. Must not include a
+# trailing slash.
+vault_role_engine_path: pki
+
+# The Vault role name.
+vault_role_name: vault-dc1
+
+# Comma separated list of allowed domains.
+vault_role_allowed_domains: dc1.vault
+
+# Allowed subdomains.
+vault_role_allow_subdomains: true
+
+# Generate lease.
+vault_role_generate_lease: true
+
+# The role's certificate validity period in hours. By default set to 30 days.
+vault_role_max_ttl: 720

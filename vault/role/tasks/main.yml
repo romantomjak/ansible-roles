@@ -1,0 +1,22 @@
+---
+
+- name: Ensure Vault token is provided
+  assert:
+    that: vault_role_token
+
+- name: List roles
+  shell: "vault list -format=json {{ vault_role_engine_path }}/roles"
+  register: role_list_output
+  environment:
+    VAULT_ADDR: "{{ vault_role_api_addr }}"
+    VAULT_TOKEN: "{{ vault_role_token }}"
+  no_log: true
+  failed_when: role_list_output.rc not in [0, 1, 2]
+
+- name: Create role
+  shell: "vault write {{ vault_role_engine_path }}/roles/{{ vault_role_name }} allowed_domains='{{ vault_role_allowed_domains }}' allow_subdomains={{ vault_role_allow_subdomains }} generate_lease={{ vault_role_generate_lease }} max_ttl='{{ vault_role_max_ttl }}h'"
+  environment:
+    VAULT_ADDR: "{{ vault_role_api_addr }}"
+    VAULT_TOKEN: "{{ vault_role_token }}"
+  no_log: true
+  when: vault_role_name not in (role_list_output.stdout | from_json)
