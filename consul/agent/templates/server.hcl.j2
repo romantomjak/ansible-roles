@@ -1,0 +1,15 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+server = true
+
+acl {
+  tokens {
+    initial_management = "{{ consul_agent_acl_initial_management_token }}"
+  } 
+}
+
+connect {
+  enabled = {{ consul_agent_connect_enabled | to_json }}
+}
+
+bootstrap_expect = {{ consul_agent_bootstrap_expect }}

@@ -1,0 +1,76 @@
+# {{ ansible_managed }}.
+#
+# See https://www.consul.io/docs/agent/options
+
+primary_datacenter = "{{ consul_agent_primary_datacenter }}"
+
+datacenter = "{{ consul_agent_datacenter }}"
+
+encrypt = "{{ consul_agent_encrypt }}"
+
+data_dir = "{{ consul_agent_data_dir }}"
+
+enable_syslog = {{ consul_agent_enable_syslog | to_json }}
+
+#
+# Features
+#
+
+acl {
+  enabled = {{ consul_agent_acl_enabled | to_json }}
+  default_policy = "{{ consul_agent_acl_default_policy }}"
+  down_policy = "{{ consul_agent_acl_down_policy }}"
+
+  tokens {
+    {% if consul_agent_acl_agent_token %}
+    agent = "{{ consul_agent_acl_agent_token }}"
+    {% endif %}
+    {% if consul_agent_acl_token_default %}
+    default = "{{ consul_agent_acl_token_default }}"
+    {% endif %}
+  }
+}
+
+ui_config {
+  enabled = {{ consul_agent_ui_enabled | to_json }}
+}
+
+#
+# Network
+#
+
+bind_addr = "{{ consul_agent_bind_addr }}"
+
+client_addr = "{{ consul_agent_client_addr }}"
+
+{% if consul_agent_ports %}
+ports = {
+{% for key, val in consul_agent_ports.items() %}
+    {{ key }} = {{ val }}
+{% endfor %}
+}
+{% endif %}
+
+#
+# Discovery
+#
+
+{% if consul_agent_recursors %}
+recursors = {{ consul_agent_recursors | to_json }}
+{% endif %}
+
+{% if consul_agent_retry_join %}
+retry_join = {{ consul_agent_retry_join | to_json }}
+{% endif %}
+
+#
+# TLS
+#
+
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true
+
+ca_file = "/etc/consul.d/pki/consul-agent-ca.pem"
+cert_file = "/etc/consul.d/pki/{{ consul_agent_datacenter }}-{{ consul_agent_type }}-consul.pem"
+key_file = "/etc/consul.d/pki/{{ consul_agent_datacenter }}-{{ consul_agent_type }}-consul-key.pem"
