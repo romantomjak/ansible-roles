@@ -14,16 +14,16 @@ Consul clients can be deployed with the same configuration - just change `consul
   hosts: all
   vars:
     consul_agent_type: server
-    consul_datacenter: dc1
-    consul_bootstrap_expect: 3
-    consul_encrypt: qDOPBEr+/oUVeOFQOnVypxwDaHzLrD+lvjo5vCEBbZ0=
-    consul_retry_join: ["172.16.0.11"]
-    consul_acl_master_token: b1gs33cr3t
-    consul_acl_agent_token: fe3b8d40-0ee0-8783-6cc2-ab1aa9bb16c1
-    consul_tls_ca_cert: -----BEGIN CERTIFICATE...
-    consul_tls_ca_key: -----BEGIN EC PRIVATE KEY...
+    consul_agent_datacenter: dc1
+    consul_agent_bootstrap_expect: 3
+    consul_agent_encrypt: qDOPBEr+/oUVeOFQOnVypxwDaHzLrD+lvjo5vCEBbZ0=
+    consul_agent_retry_join: ["172.16.0.11"]
+    consul_agent_acl_master_token: b1gs33cr3t
+    consul_agent_acl_agent_token: fe3b8d40-0ee0-8783-6cc2-ab1aa9bb16c1
+    consul_agent_tls_ca_cert: -----BEGIN CERTIFICATE...
+    consul_agent_tls_ca_key: -----BEGIN EC PRIVATE KEY...
   roles:
-    - consul
+    - consul/agent
 ```
 
 By default a TLS enabled consul cluster will be deployed.
@@ -66,13 +66,13 @@ This token is used when a request is made to Consul without specifying a bearer 
 One of the primary query interfaces for Consul is DNS. To use Consul as the DNS server for a node, you'll have to change Consul's DNS port to 53 and also specify upstream DNS resolvers that will resolve records outside of the "consul" domain.
 
 ```yml
-- name: Provision Consul node
+- name: Provision Consul agent
   hosts: all
   vars:
     # ...
-    consul_ports:
+    consul_agent_ports:
       dns: 53
-    consul_recursors: ["1.1.1.1", "1.0.0.1"]
+    consul_agent_recursors: ["1.1.1.1", "1.0.0.1"]
   roles:
-    - consul
+    - consul/agent
 ```
