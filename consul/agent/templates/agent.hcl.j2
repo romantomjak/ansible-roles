@@ -67,10 +67,12 @@ retry_join = {{ consul_agent_retry_join | to_json }}
 # TLS
 #
 
+{% if consul_agent_cert_file and consul_agent_key_file %}
 verify_incoming = true
 verify_outgoing = true
 verify_server_hostname = true
 
-ca_file = "/etc/consul.d/pki/consul-agent-ca.pem"
-cert_file = "/etc/consul.d/pki/{{ consul_agent_datacenter }}-{{ consul_agent_type }}-consul.pem"
-key_file = "/etc/consul.d/pki/{{ consul_agent_datacenter }}-{{ consul_agent_type }}-consul-key.pem"
+ca_file = "{{ consul_agent_ca_file }}"
+cert_file = "{{ consul_agent_cert_file }}"
+key_file = "{{ consul_agent_key_file }}"
+{% endif %}

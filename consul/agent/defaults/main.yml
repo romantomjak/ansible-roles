@@ -86,3 +86,15 @@ consul_agent_acl_agent_token:
 # discovery on agents. When not provided, ACLs for service DNS resolution will
 # be assigned to the Anonymous token.
 consul_agent_acl_token_default: 
+
+# The path to a PEM-encoded certificate authority. The certificate authority is
+# used to check the authenticity of client and server connections.
+consul_agent_ca_file:
+
+# The path to a PEM-encoded certificate. The certificate is provided to clients
+# or servers to verify the agent's authenticity.
+consul_agent_cert_file:
+
+# The path to a PEM-encoded private key. The key is used with the certificate to
+# verify the agent's authenticity.
+consul_agent_key_file:

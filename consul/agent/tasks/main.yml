@@ -65,6 +65,16 @@
   notify:
     - Restart Consul
 
+- name: Ensure TLS certificate directory exists
+  file:
+    path: /etc/consul.d/tls
+    state: directory
+    owner: "consul"
+    group: "consul"
+    mode: 0740
+  become: true
+  when: consul_agent_cert_file and consul_agent_key_file
+
 - name: Start Consul
   systemd: name=consul enabled=yes state=started daemon_reload=true
   become: true
