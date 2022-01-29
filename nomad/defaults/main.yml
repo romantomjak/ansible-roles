@@ -24,42 +24,26 @@ nomad_encrypt: cg8StVXbQJ0gPvMd9o7yrg==
 # RPC mechanism.
 nomad_bind_addr: 0.0.0.0
 
-# Specifies the bind address for individual network services.
-# Any values configured in this stanza take precedence over the default
-# nomad_bind_addr address.
-nomad_addresses:
-  http: null
-  rpc: null
-  serf: null
-
-# Specifies the advertise address for individual network services.
-# This can be used to advertise a different address to the peers of a server
-# or a client node.
-nomad_advertise:
-  http: null
-  rpc: null
-  serf: null
-
 # The server_join stanza specifies how the Nomad agent will discover and
 # connect to Nomad servers.
-nomad_retry_join: ["172.16.0.11"]
+nomad_retry_join: 
 
 # Specifies the token used to provide a per-request ACL token.
 # This option overrides the Consul Agent's default token. If the token is 
 # not set here or on the Consul agent, it will default to Consul's anonymous 
 # policy, which may or may not allow writes.
-nomad_consul_token: b1gs33cr3t
+nomad_consul_token: 
 
 # Specifies the name of the interface to force network fingerprinting on. 
 # All IP addresses except those scoped local for IPV6 on the chosen interface
 # are fingerprinted. The scheduler chooses from those IP addresses when
 # allocating ports for tasks. This is useful for binding docker ports only
 # on local interfaces, e.g., eth1. Only applies to clients.
-nomad_client_network_interface: null
+nomad_client_network_interface: 
 
 # Specifies an override for the network link speed. Most clients can determine
 # their speed automatically, and thus in most cases this should be left unset.
-nomad_client_network_speed: null
+nomad_client_network_speed: 
 
 # Allows an operator to specify a JSON file which is in the dockercfg format
 # containing authentication information for a private registry, from either

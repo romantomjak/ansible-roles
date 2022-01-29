@@ -1,5 +1,6 @@
-#jinja2: trim_blocks:False
-# {{ ansible_managed }}. Created on {{ template_run_date }}
+# {{ ansible_managed }}.
+#
+# See https://www.nomadproject.io/docs/configuration
 
 region = "{{ nomad_region }}"
 datacenter = "{{ nomad_datacenter }}"
@@ -8,25 +9,11 @@ data_dir = "/opt/nomad"
 enable_syslog = {{ nomad_enable_syslog | to_json }}
 bind_addr = {{ nomad_bind_addr | to_json }}
 
-{% if nomad_addresses.http != none or nomad_addresses.rpc != none or nomad_addresses.serf != none %}
-addresses {
-  {% if nomad_addresses.http != none %}http = {{ nomad_addresses.http | to_json }}{% endif %}
-  {% if nomad_addresses.rpc != none %}rpc = {{ nomad_addresses.rpc | to_json }}{% endif %}
-  {% if nomad_addresses.serf != none %}serf = {{ nomad_addresses.serf | to_json }}{% endif %}
-}
-{% endif %}
-
-{% if nomad_advertise.http != none or nomad_advertise.rpc != none or nomad_advertise.serf != none %}
-advertise {
-  {% if nomad_advertise.http != none %}http = {{ nomad_advertise.http | to_json }}{% endif %}
-  {% if nomad_advertise.rpc != none %}rpc = {{ nomad_advertise.rpc | to_json }}{% endif %}
-  {% if nomad_advertise.serf != none %}serf = {{ nomad_advertise.serf | to_json }}{% endif %}
-}
-{% endif %}
-
+{% if nomad_consul_token %}
 consul {
   token = "{{ nomad_consul_token }}"
 }
+{% endif %}
 
 {% if nomad_agent_type == 'server' %}
 server {
