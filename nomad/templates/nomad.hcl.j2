@@ -56,6 +56,7 @@ client {
 }
 {% endif %}
 
+{% if nomad_tls_enable %}
 tls {
   http = true
   rpc = true
@@ -67,6 +68,7 @@ tls {
   verify_server_hostname = true
   verify_https_client = true
 }
+{% endif %}
 
 {% if nomad_vault_enabled %}
 vault {

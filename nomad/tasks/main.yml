@@ -44,8 +44,6 @@
   apt: name=nomad state=latest update_cache=yes
   become: true
 
-- include_tasks: tls.yml
-
 - name: Copy configuration
   template:
     src: templates/nomad.hcl.j2
