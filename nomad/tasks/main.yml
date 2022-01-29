@@ -12,33 +12,31 @@
 
 - name: Import Hashicorp GPG key
   shell:
-    cmd: "curl -fsSL {{ item.key }} | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/{{ item.keyring }} --import"
-    creates: "/etc/apt/trusted.gpg.d/{{ item.keyring }}"
+    cmd: "curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
     warn: False
-  with_items:
-    - key: https://apt.releases.hashicorp.com/gpg
-      keyring: hashicorp-archive-keyring.gpg
+  register: gpg_key_import_output
   become: true
 
-- name: Fix key permissions
+- name: Fix GPG key permissions
   file:
-    path: "/etc/apt/trusted.gpg.d/{{ item }}"
+    path: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
-  with_items:
-    - hashicorp-archive-keyring.gpg
   become: true
+  when: gpg_key_import_output.changed
 
 - name: Add Hashicorp APT repository
   copy:
     content: >-
       deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
-    dest: /etc/apt/sources.list.d/kubernetes.list
+    dest: /etc/apt/sources.list.d/hashicorp.list
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
   become: true
+  when: gpg_key_import_output.changed
 
 - name: Install latest version of Nomad
   apt: name=nomad state=latest update_cache=yes
