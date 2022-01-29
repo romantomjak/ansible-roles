@@ -92,7 +92,7 @@
     group: "consul-template"
     mode: 0700
   become: true
-  with_items: "{{ consul_template_files }}"
+  loop: "{{ consul_template_files }}"
   loop_control:
     label: "{{ item.name }}"
   when: (consul_template_files | type_debug == "list") and (consul_template_files | length > 0)
