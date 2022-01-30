@@ -1,0 +1,58 @@
+---
+# Installs containerd runtime
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Import Docker GPG key
+  shell:
+    cmd: "curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg"
+    warn: False
+  register: gpg_key_import_output
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Add Docker APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+    dest: /etc/apt/sources.list.d/docker.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Install latest version of containerd
+  apt: name=containerd.io state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/config.toml.j2
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  notify:
+    - Restart containerd
+
+- name: Start containerd
+  systemd: name=containerd enabled=yes state=started daemon_reload=true
+  become: true

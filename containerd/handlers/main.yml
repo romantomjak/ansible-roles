@@ -1,0 +1,5 @@
+---
+
+- name: Restart containerd
+  service: name=containerd state=restarted
+  become: true
