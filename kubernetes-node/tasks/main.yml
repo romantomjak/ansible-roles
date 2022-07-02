@@ -1,0 +1,84 @@
+---
+# Installs kubernetes components
+
+- name: Load br_netfilter module
+  modprobe: name=br_netfilter state=present
+  become: true
+
+- name: Ensure the module will be loaded after restarts
+  copy:
+    content: br_netfilter
+    dest: /etc/modules-load.d/kubernetes.conf
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Allow iptables to see bridged traffic
+  sysctl:
+    sysctl_file: /etc/sysctl.d/kubernetes.conf
+    name: "{{ item }}"
+    value: 1
+  become: true
+  with_items:
+    - net.ipv4.ip_forward
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-arptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Install CRI-O runtime
+  import_tasks: "crio.yml"
+
+- name: Import kubernetes GPG key
+  shell:
+    cmd: "curl -fsSL {{ item.key }} | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/{{ item.keyring }} --import"
+    creates: "/etc/apt/trusted.gpg.d/{{ item.keyring }}"
+    warn: False
+  with_items:
+    - key: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      keyring: kubernetes-archive-keyring.gpg
+  become: true
+
+- name: Fix key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/{{ item }}"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  with_items:
+    - kubernetes-archive-keyring.gpg
+  become: true
+
+- name: Add kubernetes APT repository
+  copy:
+    content: >-
+      deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg] https://packages.cloud.google.com/apt kubernetes-xenial main
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Install kubernetes components
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: latest
+    update_cache: yes
+  become: true
+
+# Upgrading cluster components requires special attention.
+# See https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+- name: Prevent kubernetes components from being upgraded
+  dpkg_selections: name="{{ item }}" selection=hold
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+  become: true
+
+- name: Pull kubernetes images
+  shell: kubeadm config images pull
+  become: true

@@ -1,0 +1,5 @@
+---
+
+- name: Restart CRI-O
+  service: name=crio state=restarted
+  become: true

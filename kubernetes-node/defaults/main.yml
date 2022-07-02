@@ -1,0 +1,4 @@
+---
+# Override these in playbook with 'vars:' block
+
+kubernetes_cri_o_version: 1.24
