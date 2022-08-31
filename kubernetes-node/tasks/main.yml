@@ -1,6 +1,17 @@
 ---
 # Installs kubernetes components
 
+- name: Disable swap because kubernetes can't work with swap enabled
+  shell: swapoff -a
+  become: true
+
+- name: Make sure swap is not re-enabled on restart
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+  become: true
+
 - name: Load br_netfilter module
   modprobe: name=br_netfilter state=present
   become: true
