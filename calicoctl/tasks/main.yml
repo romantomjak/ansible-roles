@@ -1,0 +1,11 @@
+---
+# Installs calicoctl for managing Calico policies and configuration
+
+- name: Download and install calicoctl
+  get_url:
+    url: https://github.com/projectcalico/calico/releases/download/v{{ calicoctl_version }}/calicoctl-{{ ansible_system | lower }}-{{ calicoctl_architecture }}
+    dest: /usr/local/bin/calicoctl
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
