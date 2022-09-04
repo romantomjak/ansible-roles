@@ -1,0 +1,10 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+#
+# Example configuration file for HAProxy 2.2. Refer to the url below
+# for full documentation and configuration examples:
+# https://docs.haproxy.org/2.2/configuration.html
+
+{% for section in haproxy_sections %}
+{{ section.name }}
+  {{ section.directives | indent(2) }}
+{% endfor %}
