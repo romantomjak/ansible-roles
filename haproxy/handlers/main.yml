@@ -1,5 +1,0 @@
----
-
-- name: Reload HAProxy
-  service: name=haproxy state=reloaded
-  become: true
