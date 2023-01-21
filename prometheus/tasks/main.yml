@@ -1,0 +1,65 @@
+---
+# Installs Prometheus monitoring and alerting toolkit
+
+- name: Create group
+  group: name=prometheus state=present
+  become: true
+
+- name: Create user
+  user:
+    name: prometheus
+    groups: prometheus
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/prometheus
+  become: true
+
+- name: Create data directory
+  file:
+    path: "{{ prometheus_db_dir }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+  become: true
+
+- name: Download and install prometheus
+  unarchive:
+    creates: /usr/local/bin/prometheus
+    src: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.{{ ansible_system | lower }}-{{ prometheus_architecture }}.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    include:
+      - prometheus-{{ prometheus_version }}.{{ ansible_system | lower }}-{{ prometheus_architecture }}/prometheus
+      - prometheus-{{ prometheus_version }}.{{ ansible_system | lower }}-{{ prometheus_architecture }}/promtool
+    extra_opts:
+     - --strip-components=1
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: 0640
+  become: true
+  notify:
+    - Restart Prometheus
+
+- name: Start Prometheus
+  systemd: name=prometheus enabled=yes state=started daemon_reload=true
+  become: true

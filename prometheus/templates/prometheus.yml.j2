@@ -1,0 +1,14 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "/etc/prometheus/rules/*.rules"
+
+scrape_configs:
+  {{ prometheus_scrape_configs | to_nice_yaml(indent=2,sort_keys=False) | indent(2,False) }}

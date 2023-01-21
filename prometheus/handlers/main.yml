@@ -1,0 +1,5 @@
+---
+
+- name: Restart Prometheus
+  service: name=prometheus state=restarted
+  become: true

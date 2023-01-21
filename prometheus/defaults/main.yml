@@ -1,0 +1,31 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Prometheus version to install
+prometheus_version: 2.41.0
+
+# Prometheus is supported on amd64, arm and 386 architectures
+prometheus_architecture: amd64
+
+# Path to directory with prometheus database
+prometheus_db_dir: /var/lib/prometheus
+
+# Data retention period
+prometheus_storage_retention: "30d"
+
+# Data retention period by size. Supported units: KB, MB, GB, TB, PB.
+prometheus_storage_retention_size: "0"
+
+# A scrape configuration containing exactly one endpoint to scrape - the Prometheus itself:
+prometheus_scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # scrape_interval is defined by the configured global (15s).
+    # scrape_timeout is defined by the global default (10s).
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]

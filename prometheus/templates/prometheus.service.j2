@@ -1,0 +1,30 @@
+[Unit]
+Description="Prometheus - an open-source systems monitoring and alerting toolkit"
+Documentation=https://prometheus.io/docs/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/prometheus/prometheus.yml
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/prometheus \
+    --storage.tsdb.path={{ prometheus_db_dir }} \
+    --storage.tsdb.retention.time={{ prometheus_storage_retention }} \
+    --storage.tsdb.retention.size={{ prometheus_storage_retention_size }} \
+    --config.file=/etc/prometheus/prometheus.yml
+
+ReadWritePaths={{ prometheus_db_dir }}
+CapabilityBoundingSet=CAP_SET_UID
+Restart=on-failure
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=true
+LimitNOFILE=65536
+NoNewPrivileges=true
+SyslogIdentifier=prometheus
+
+[Install]
+WantedBy=multi-user.target
