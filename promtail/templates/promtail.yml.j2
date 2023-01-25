@@ -1,0 +1,16 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# https://grafana.com/docs/loki/latest/clients/promtail/
+
+# Configures Promtail's behavior as an HTTP server:
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: {{ promtail_positions }}
+
+clients:
+  {{ promtail_clients | to_nice_yaml(indent=2,sort_keys=False) | indent(2,False) }}
+
+scrape_configs:
+  {{ promtail_scrape_configs | to_nice_yaml(indent=2,sort_keys=False) | indent(2,False) }}

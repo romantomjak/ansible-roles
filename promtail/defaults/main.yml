@@ -1,0 +1,33 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The Promtail version to install
+promtail_version: 2.7.1
+
+# Promtail is supported on amd64, arm64 and arm architectures
+promtail_architecture: amd64
+
+# Path to directory with Promtail database
+promtail_data_dir: /var/lib/promtail
+
+# Describes how to save read file offsets to disk. It is needed for
+# when Promtail is restarted to allow it to continue from where it
+# left off.
+promtail_positions: "{{ promtail_data_dir }}/positions.yaml"
+
+# Describes how Promtail connects to instances of Grafana Loki.
+promtail_clients:
+  - url: http://gateway:3100/loki/api/v1/push
+    tenant_id: tenant1
+
+# Describes how Promtail can scrape logs from a series of targets
+# using a specified discovery method.
+promtail_scrape_configs:
+  - job_name: docker_scrape
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'

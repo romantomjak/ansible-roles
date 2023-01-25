@@ -1,0 +1,19 @@
+[Unit]
+Description="Promtail - a log shipping agent."
+Documentation=https://grafana.com/docs/loki/latest/clients/promtail/
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/promtail/promtail.yml
+
+[Service]
+Type=simple
+User=promtail
+Group=promtail
+ExecStart=/usr/local/bin/promtail -config.file /etc/promtail/promtail.yml
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec = 120
+Restart = on-failure
+RestartSec = 2
+
+[Install]
+WantedBy=multi-user.target
