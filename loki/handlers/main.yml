@@ -1,0 +1,5 @@
+---
+
+- name: Restart Loki
+  service: name=loki state=restarted
+  become: true

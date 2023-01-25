@@ -1,0 +1,80 @@
+---
+# Installs Loki log aggregation system
+
+- name: Create group
+  group: name=loki state=present
+  become: true
+
+- name: Create user
+  user:
+    name: loki
+    groups: loki
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/loki
+  become: true
+
+- name: Create data directory
+  file:
+    path: "{{ loki_storage_path }}"
+    state: directory
+    owner: loki
+    group: loki
+    mode: 0755
+  become: true
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - unzip
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Download and install loki
+  unarchive:
+    creates: "/usr/local/bin/{{ item }}"
+    src: https://github.com/grafana/loki/releases/download/v{{ loki_version }}/{{ item }}-{{ ansible_system | lower }}-{{ loki_architecture }}.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  with_items:
+    - loki
+    - logcli
+  register: loki_binaries
+  become: true
+
+- name: Rename binaries
+  command: mv "/usr/local/bin/{{ item }}-{{ ansible_system | lower }}-{{ loki_architecture }}" "/usr/local/bin/{{ item }}"
+  with_items:
+    - loki
+    - logcli
+  when: loki_binaries.changed
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/loki.service.j2
+    dest: /etc/systemd/system/loki.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/loki.yml.j2
+    dest: /etc/loki/loki.yml
+    owner: loki
+    group: loki
+    mode: 0640
+  become: true
+  notify:
+    - Restart Loki
+
+- name: Start Loki
+  systemd: name=loki enabled=yes state=started daemon_reload=true
+  become: true

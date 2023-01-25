@@ -1,0 +1,34 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# https://grafana.com/docs/loki/
+
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  {{ loki_common | to_nice_yaml(indent=2,sort_keys=False) | indent(2,False) }}
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+ruler:
+  alertmanager_url: http://localhost:9093
+
+analytics:
+  reporting_enabled: {{ loki_analytics_enabled | to_json }}
