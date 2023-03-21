@@ -1,0 +1,64 @@
+---
+# Installs node exporter
+
+- name: Create group
+  group: name=node-exporter state=present
+  become: true
+
+- name: Create user
+  user:
+    name: node-exporter
+    groups: node-exporter
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/node-exporter
+  become: true
+
+- name: Create textfile collector dir
+  file:
+    path: "{{ node_exporter_textfile_dir }}"
+    state: directory
+    owner: node-exporter
+    group: node-exporter
+    recurse: true
+    mode: u+rwX,g+rwX,o=rX
+  become: true
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - unzip
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Download and install node exporter
+  unarchive:
+    creates: /usr/local/bin/node_exporter
+    src: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.{{ ansible_system | lower }}-{{ node_exporter_architecture }}.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    include:
+      - node_exporter-{{ node_exporter_version }}.{{ ansible_system | lower }}-{{ node_exporter_architecture }}/node_exporter
+    extra_opts:
+     - --strip-components=1
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/node-exporter.service.j2
+    dest: /etc/systemd/system/node-exporter.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  notify:
+    - Restart node exporter
+  become: true
+
+- name: Start node exporter
+  systemd: name=node-exporter enabled=yes state=started daemon_reload=true
+  become: true

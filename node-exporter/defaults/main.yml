@@ -1,0 +1,35 @@
+---
+# Override these in playbook with 'vars:' block.
+
+# The node exporter version to install.
+node_exporter_version: 1.5.0
+
+# Node exporter is supported on amd64, arm and 386 architectures.
+node_exporter_architecture: amd64
+
+# Use this together with node_exporter_enabled_collectors to only
+# enable some specific collectors.
+node_exporter_disable_default_collectors: false
+
+# Directory to read text files with metrics from.
+# See https://github.com/prometheus-community/node-exporter-textfile-collector-scripts
+node_exporter_textfile_dir: "/var/lib/node-exporter"
+
+# Enabled collectors.
+# See full list at https://github.com/prometheus/node_exporter#collectors
+node_exporter_enabled_collectors:
+  - cpu
+  - textfile:
+      directory: "{{ node_exporter_textfile_dir }}"
+
+# Use this to disable specific collectors.
+# See full list at https://github.com/prometheus/node_exporter#disabled-by-default
+node_exporter_disabled_collectors:
+  - ethtool
+  - systemd
+
+# Address on which to expose metrics and web interface.
+node_exporter_web_listen_address: ":9100"
+
+# Path under which to expose metrics.
+node_exporter_web_telemetry_path: "/metrics"
