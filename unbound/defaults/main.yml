@@ -78,3 +78,14 @@ unbound_stub_zones: []
 # Sets domain name to be insecure. The DNSSEC chain of trust is ignored towards
 # the domain name.
 unbound_insecure_domains: []
+
+# Unbound will not use localhost for sending queries. Set this to false
+# if configuring unbound_stub_zones with NSD running on the same machine.
+unbound_do_not_query_localhost: true
+
+# Configure local data, which is served in reply to queries for it.
+#
+# If you need more complicated authoritative data, with referrals, wildcards,
+# CNAME/DNAME support, or DNSSEC authoritative service, take a look at the
+# unbound_stub_zones directive.
+unbound_local_data: []

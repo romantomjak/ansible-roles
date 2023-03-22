@@ -14,6 +14,7 @@ server:
 	root-hints: {{ unbound_root_hints }}
 	prefetch: {{ (unbound_prefetch == true) | ternary('yes', 'no') }}
 	cache-min-ttl: {{ unbound_cache_min_ttl }}
+	do-not-query-localhost: {{ (unbound_do_not_query_localhost == true) | ternary('yes', 'no') }}
 
 	{% for domain in unbound_insecure_domains -%}
     domain-insecure: {{ domain }}
