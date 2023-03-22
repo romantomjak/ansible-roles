@@ -11,13 +11,13 @@ server:
     access-control: {{ acl }}
 	{% endfor %}
 
-	root-hints: {{ unbound_root_hints }}
+	root-hints: "{{ unbound_root_hints }}"
 	prefetch: {{ (unbound_prefetch == true) | ternary('yes', 'no') }}
 	cache-min-ttl: {{ unbound_cache_min_ttl }}
 	do-not-query-localhost: {{ (unbound_do_not_query_localhost == true) | ternary('yes', 'no') }}
 
 	{% for domain in unbound_insecure_domains -%}
-    domain-insecure: {{ domain }}
+    domain-insecure: "{{ domain }}"
 	{% endfor %}
 
 	{% if unbound_protect_against_dns_rebinding -%}
