@@ -1,0 +1,42 @@
+---
+# Configures unbound in a recursive caching mode
+
+- name: Install utility packages (e.g. dig, nslookup, etc)
+  apt:
+    name:
+      - bind9-dnsutils
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Install latest version of unbound
+  package: name=unbound state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template: src=unbound.conf.j2 dest=/etc/unbound/unbound.conf.d/local.conf
+  notify:
+    - Restart Unbound
+  become: true
+
+- name: Add unbound to dhcp client options to persist configuration
+  lineinfile:
+    path: /etc/dhcp/dhclient.conf
+    insertbefore: '^#prepend domain-name-servers 127.0.0.1;'
+    line: supersede domain-name-servers 127.0.0.1;
+  become: true
+
+- name: Stop and disable systemd-resolved
+  service: name=systemd-resolved enabled=no state=stopped
+  become: true
+
+- name: Update resolv.conf to begin using Unbound
+  lineinfile:
+    path: /etc/resolv.conf
+    insertbefore: BOF
+    line: nameserver 127.0.0.1
+  become: true
+
+- name: Enable and start Unbound
+  service: name=unbound enabled=yes state=started
+  become: true

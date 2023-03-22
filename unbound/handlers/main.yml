@@ -1,0 +1,6 @@
+---
+# Restart the Unbound service
+
+- name: Restart Unbound
+  service: name=unbound state=restarted
+  become: true

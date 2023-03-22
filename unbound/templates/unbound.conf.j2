@@ -1,0 +1,40 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# 
+# See https://github.com/NLnetLabs/unbound/blob/master/doc/example.conf.in
+
+server:
+	{% for interface in unbound_interfaces %}
+    interface: {{ interface }}
+	{% endfor %}
+
+	{% for acl in unbound_access_control %}
+    access-control: {{ acl }}
+	{% endfor %}
+
+	root-hints: {{ unbound_root_hints }}
+	prefetch: {{ (unbound_prefetch == true) | ternary('yes', 'no') }}
+	cache-min-ttl: {{ unbound_cache_min_ttl }}
+
+	{% if unbound_protect_against_dns_rebinding %}
+	{% for addr in unbound_private_address %}
+    private-address: {{ addr }}
+	{% endfor %}
+	{% endif %}
+
+	{% if unbound_block_ad_domains %}
+	{% for domain in unbound_blocked_ad_domains %}
+	local-zone: "{{ domain }}" redirect
+	local-data: "{{ domain }} A 127.0.0.1"
+	{% endfor %}
+	{% endif %}
+
+	{% if unbound_private_domain is defined and unbound_private_domain|length > 0 %}
+	private-domain: "{{ unbound_private_domain }}"
+	{% endif %}
+
+	local-zone: "{{ unbound_local_zone }}." static
+
+	{% for item in unbound_local_data %}
+	local-data: "{{ item.fqdn }} IN {{ item.type | default('A') }} {{ item.value }}"
+	local-data-ptr: "{{ item.value }} {{ item.fqdn[:-1] }}"
+	{% endfor %}

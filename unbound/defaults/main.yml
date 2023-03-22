@@ -1,0 +1,60 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The interfaces on which Unbound will listen on.
+unbound_interfaces:
+  - 127.0.0.1
+  - ::1
+
+# Controls which clients are allowed to make (recursive) queries
+# to this server.
+unbound_access_control:
+  - 127.0.0.1 allow
+  - ::1 allow
+
+# Read the root hints from this file. Default is nothing, using built in
+# hints for the IN class. See the dns-root-data debian package.
+unbound_root_hints: /usr/share/dns/root.hints
+
+# Perform prefetching of close to expired message cache entries.
+unbound_prefetch: true
+
+# Minimum TTL in cache to avoid abused low TTL for snoop-vertising and non-standard
+# load balancing. Typical to configure maybe 0~300 but 1800 is the maximum accepted.
+unbound_cache_min_ttl: 120
+
+# Strips these addresses from answers. Protects against 'DNS Rebinding'.
+# Only 'private-domain' and 'local-data' names are allowed to have
+# these private addresses. Please note that enabling this may break some
+# corporate network DNS functionality if domain names are resolved
+# to internal IP addresses.
+unbound_protect_against_dns_rebinding: false
+unbound_private_address:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - 169.254.0.0/16
+  - fd00::/8
+  - fe80::/10
+
+# Advertisement server domains (and their subdomains). Google's AdSense,
+# DoubleClick and Yahoo account for ~70 percent of all advertising traffic.
+# See https://github.com/blocklistproject/Lists for more inspiration.
+unbound_block_ad_domains: false
+unbound_blocked_ad_domains:
+  - doubleclick.net
+  - googlesyndication.com
+  - googleadservices.com
+  - google-analytics.com
+  - ads.youtube.com
+  - adserver.yahoo.com
+
+# Locally served zones for the machines on the LAN. This makes it possible to
+# access machines via DNS using their host name, e.g. macbook-pro.lan. If you
+# configure local data without specifying local zone, by default a transparent
+# local zone is created for the data.
+unbound_local_zone: lan
+unbound_local_data: []
+
+# Allow the domain (and its subdomains) to contain private addresses.
+unbound_private_domain: 
