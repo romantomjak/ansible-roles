@@ -20,7 +20,10 @@ Example playbook for provisioning Unbound DNS server.
       - 192.168.0.0/24 allow
       - ::1 allow
     unbound_block_ad_domains: true
-    unbound_local_zone: lan
+    unbound_protect_against_dns_rebinding: true
+    unbound_local_zones:
+      - name: lan.
+        type: static
     unbound_local_data:
       - type: A  # default, can be skipped
         fqdn: macbook-pro.lan. # note the trailing dot
