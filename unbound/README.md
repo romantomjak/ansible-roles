@@ -26,9 +26,9 @@ Example playbook for provisioning Unbound DNS server.
         type: static
     unbound_local_data:
       - type: A  # default, can be skipped
-        fqdn: macbook-pro.lan. # note the trailing dot
+        name: macbook-pro.lan. # note the trailing dot
         value: 192.0.2.51
-      - fqdn: xbox360.lan.
+      - name: xbox360.lan.
         value: 10.0.0.3
   roles:
     - unbound
