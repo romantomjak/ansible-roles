@@ -54,12 +54,14 @@ unbound_blocked_ad_domains:
 # configure local data without specifying local zone, by default a transparent
 # local zone is created for the data.
 #
+# unbound_local_zones:
+#  - name: lan.
+#    type: static
+#
 # If you need more complicated authoritative data, with referrals, wildcards,
 # CNAME/DNAME support, or DNSSEC authoritative service, take a look at the
 # unbound_stub_zones directive.
-unbound_local_zones:
-  - name: lan.
-    type: static
+unbound_local_zones: []
 
 # Allow the domain (and its subdomains) to contain private addresses.
 unbound_private_domains: []
@@ -84,6 +86,13 @@ unbound_insecure_domains: []
 unbound_do_not_query_localhost: true
 
 # Configure local data, which is served in reply to queries for it.
+#
+# unbound_local_data:
+#   - type: A  # default, can be skipped
+#     name: macbook-pro.lan. # note the trailing dot
+#     value: 192.0.2.51
+#   - name: xbox360.lan.
+#     value: 10.0.0.3
 #
 # If you need more complicated authoritative data, with referrals, wildcards,
 # CNAME/DNAME support, or DNSSEC authoritative service, take a look at the

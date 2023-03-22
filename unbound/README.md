@@ -21,15 +21,6 @@ Example playbook for provisioning Unbound DNS server.
       - ::1 allow
     unbound_block_ad_domains: true
     unbound_protect_against_dns_rebinding: true
-    unbound_local_zones:
-      - name: lan.
-        type: static
-    unbound_local_data:
-      - type: A  # default, can be skipped
-        name: macbook-pro.lan. # note the trailing dot
-        value: 192.0.2.51
-      - name: xbox360.lan.
-        value: 10.0.0.3
   roles:
     - unbound
 ```
