@@ -31,7 +31,7 @@
   copy:
     content: >-
       deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg] http://repo.powerdns.com/debian {{ ansible_lsb.codename }}-rec-48 main
-    dest: /etc/apt/sources.list.d/powerdns.list
+    dest: /etc/apt/sources.list.d/powerdns.recursor.list
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"

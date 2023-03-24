@@ -13,6 +13,7 @@ powerdns_recursor_allow_from:
   - 10.0.0.0/8
   - 172.16.0.0/12
   - 192.168.0.0/16
+  - ::1
 
 # Perform prefetching of close to expired message cache entries. If the value is zero,
 # this functionality is disabled.
