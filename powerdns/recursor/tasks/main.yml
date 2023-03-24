@@ -1,0 +1,64 @@
+---
+# Installs PowerDNS recursor server
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Import GPG key
+  shell:
+    cmd: "curl -fsSL https://repo.powerdns.com/FD380FBB-pub.asc | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg"
+    warn: False
+  register: gpg_key_import_output
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Add PowerDNS Recursor APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg] http://repo.powerdns.com/debian {{ ansible_lsb.codename }}-rec-48 main
+    dest: /etc/apt/sources.list.d/powerdns.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Set PowerDNS repository priority
+  copy:
+    content: |
+      Package: pdns-*
+      Pin: origin repo.powerdns.com
+      Pin-Priority: 600
+    dest: /etc/apt/preferences.d/powerdns
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Install latest version of PowerDNS Recursor
+  apt: name=pdns-recursor state=latest update_cache=yes
+  become: true
+
+- name: Copy server configuration
+  template: src=recursor.conf.j2 dest=/etc/powerdns/recursor.conf
+  notify:
+    - Restart PowerDNS Recursor
+  become: true
+
+- name: Enable and start PowerDNS Recursor
+  systemd: name=pdns-recursor enabled=yes state=started daemon_reload=true
+  become: true

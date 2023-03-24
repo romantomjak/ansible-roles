@@ -1,0 +1,19 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The interfaces on which PowerDNS recursor will listen on.
+powerdns_recursor_addresses:
+  - 127.0.0.1
+  - ::1
+
+# Controls which clients are allowed to make (recursive) queries
+# to this server.
+powerdns_recursor_allow_from:
+  - 127.0.0.1
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+
+# Perform prefetching of close to expired message cache entries. If the value is zero,
+# this functionality is disabled.
+powerdns_recursor_refresh_on_ttl_perc: 10
