@@ -6,3 +6,8 @@ local-address={{ powerdns_recursor_addresses | join(', ') }}
 allow-from={{ powerdns_recursor_allow_from | join(', ') }}
 
 refresh-on-ttl-perc={{ powerdns_recursor_refresh_on_ttl_perc }}
+
+{% for zone in powerdns_recursor_forward_zones %}
+forward-zones{% if loop.index > 1 %}+={% else %}={% endif %}{{ zone.name }}={% if zone.ips is string %}{{ zone.ips }}{% else %}{{ zone.ips | join(';') }}{% endif %}
+
+{% endfor %}

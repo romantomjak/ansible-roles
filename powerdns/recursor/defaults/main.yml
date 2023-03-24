@@ -18,3 +18,19 @@ powerdns_recursor_allow_from:
 # Perform prefetching of close to expired message cache entries. If the value is zero,
 # this functionality is disabled.
 powerdns_recursor_refresh_on_ttl_perc: 10
+
+# Queries for zones listed here will be forwarded to the IP address(-es) listed. Multiple IP
+# addresses can be specified and port numbers other than 53 can be configured.
+#
+# powerdns_recursor_forward_zones:
+#   - name: private.example.com
+#     ips: 127.0.0.1:5300
+#   - name: example.org
+#     ips:
+#       - 203.0.113.210:5300
+#       - '[2001:DB8::1:3]:5300'
+#       - 127.0.0.1
+#
+# Forwarded queries have the recursion desired (RD) bit set to 0, meaning that this setting is
+# intended to forward queries to authoritative servers.
+powerdns_recursor_forward_zones: []
