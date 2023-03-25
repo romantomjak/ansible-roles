@@ -1,0 +1,86 @@
+---
+# Installs PowerDNS Authoritative Server
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+      - sqlite3
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Import GPG key
+  shell:
+    cmd: "curl -fsSL https://repo.powerdns.com/FD380FBB-pub.asc | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg"
+    warn: False
+  register: gpg_key_import_output
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Add PowerDNS Recursor APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg] http://repo.powerdns.com/debian {{ ansible_lsb.codename }}-auth-47 main
+    dest: /etc/apt/sources.list.d/powerdns.authoritative.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Set PowerDNS repository priority
+  copy:
+    content: |
+      Package: pdns-*
+      Pin: origin repo.powerdns.com
+      Pin-Priority: 600
+    dest: /etc/apt/preferences.d/powerdns
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Install latest version of PowerDNS Authoritative Server
+  apt: name=pdns-server state=latest update_cache=yes
+  become: true
+
+- name: Install enabled backends
+  apt: name="pdns-backend-{% if item in ['gmysql','godbc','gpgsql','gsqlite3'] %}{{ item[1:] }}{% else %}{{ item }}{% endif %}" state=latest update_cache=yes
+  with_items: "{{ powerdns_enabled_backends.keys() }}"
+  become: true
+
+- name: Create sqlite database
+  shell: sqlite3 {{ powerdns_enabled_backends.gsqlite3.database }} < /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql
+  args:
+    creates: "{{ powerdns_enabled_backends.gsqlite3.database }}"
+  when: "'gsqlite3' in powerdns_enabled_backends.keys()"
+  become: true
+
+- name: Fix database permissions
+  file:
+    path: "{{ powerdns_enabled_backends.gsqlite3.database }}"
+    owner: pdns
+    group: pdns
+    mode: "u=rw,g=r,o=r"
+  when: "'gsqlite3' in powerdns_enabled_backends.keys()"
+  become: true
+
+- name: Copy server configuration
+  template: src=pdns.conf.j2 dest=/etc/powerdns/pdns.conf
+  notify:
+    - Restart PowerDNS Authoritative Server
+  become: true
+
+- name: Enable and start PowerDNS Authoritative Server
+  systemd: name=pdns enabled=yes state=started daemon_reload=true
+  become: true

@@ -1,0 +1,18 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# 
+# See https://doc.powerdns.com/authoritative/settings.html
+
+local-address={{ powerdns_addresses | join(', ') }}
+local-port={{ powerdns_port }}
+
+launch={{ powerdns_enabled_backends.keys() | join(',') }}
+
+{% for backend, config in powerdns_enabled_backends.items() %}
+{% for k, v in config.items() %}
+{{ backend }}-{{ k | replace('_', '-') }}={{ v }}
+{% endfor %}
+{% endfor %}
+
+dnsupdate={{ (powerdns_dnsupdate == true) | ternary('yes', 'no') }}
+
+default-soa-edit={{ powerdns_default_soa_edit }}

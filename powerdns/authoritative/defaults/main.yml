@@ -1,0 +1,31 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The interfaces on which PowerDNS Authoritative Server will listen on.
+powerdns_addresses:
+  - 0.0.0.0
+  - ::
+
+powerdns_port: 53
+
+# Defines which backends to launch and the order in which to query them in.
+#
+# Available backends: bind, geoip, ldap, lmdb, lua2, gmysql, godbc, gpgsql
+# pipe, remote, gsqlite3 and tinydns.
+#
+# See https://doc.powerdns.com/authoritative/backends/index.html
+powerdns_enabled_backends:
+  gsqlite3:
+    database: /var/lib/powerdns/powerdns.sqlite
+    pragma_journal_mode: WAL
+    pragma_synchronous: NORMAL
+    pragma_foreign_keys: "OFF"
+    dnssec: "OFF"
+
+# Use this soa-edit value for all zones if no SOA-EDIT metadata value
+# is set.
+# See https://doc.powerdns.com/authoritative/dnssec/operational.html
+powerdns_default_soa_edit: 
+
+# Change the setting to true to enable Dynamic DNS update support.
+powerdns_dnsupdate: false

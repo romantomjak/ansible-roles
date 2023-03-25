@@ -1,0 +1,6 @@
+---
+# Restart the PowerDNS Authoritative Server
+
+- name: Restart PowerDNS Authoritative Server
+  service: name=pdns state=restarted
+  become: true
