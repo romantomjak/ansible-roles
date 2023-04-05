@@ -46,6 +46,6 @@ powerdns_tsig_keys: []
 # Associates the domains with the given TSIG keys.
 #
 # powerdns_domain_keys:
-#   - domain: trusted.home.arpa
+#   - domain: foo.com
 #     key: DHCP_UPDATER
 powerdns_domain_keys: []
