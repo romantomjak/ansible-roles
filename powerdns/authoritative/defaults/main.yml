@@ -28,4 +28,24 @@ powerdns_enabled_backends:
 powerdns_default_soa_edit: 
 
 # Change the setting to true to enable Dynamic DNS update support.
-powerdns_dnsupdate: false
+powerdns_enable_dns_updates: false
+
+# Allow DNS updates from these IP ranges.
+powerdns_allow_dns_updates_from:
+  - 127.0.0.0/8
+  - ::1
+
+# Imports a TSIG key used to secure domain updates.
+#
+# powerdns_tsig_keys:
+#   - name: DHCP_UPDATER
+#     algorithm: hmac-sha256
+#     secret: FYhvwsW1ZtFZqWzsMpqhbg==
+powerdns_tsig_keys: []
+
+# Associates the domains with the given TSIG keys.
+#
+# powerdns_domain_keys:
+#   - domain: trusted.home.arpa
+#     key: DHCP_UPDATER
+powerdns_domain_keys: []

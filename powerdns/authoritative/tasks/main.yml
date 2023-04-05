@@ -84,3 +84,13 @@
 - name: Enable and start PowerDNS Authoritative Server
   systemd: name=pdns enabled=yes state=started daemon_reload=true
   become: true
+
+- name: Import TSIG keys
+  shell: pdnsutil import-tsig-key {{ item.name }} {{ item.algorithm }} {{ item.secret }}
+  with_items: "{{ powerdns_tsig_keys }}"
+  become: true
+
+- name: Associate domains with TSIG keys
+  shell: pdnsutil set-meta {{ item.domain }} TSIG-ALLOW-DNSUPDATE {{ item.key }}
+  with_items: "{{ powerdns_domain_keys }}"
+  become: true

@@ -13,6 +13,8 @@ launch={{ powerdns_enabled_backends.keys() | join(',') }}
 {% endfor %}
 {% endfor %}
 
-dnsupdate={{ (powerdns_dnsupdate == true) | ternary('yes', 'no') }}
+dnsupdate={{ (powerdns_enable_dns_updates == true) | ternary('yes', 'no') }}
 
 default-soa-edit={{ powerdns_default_soa_edit }}
+
+allow-dnsupdate-from={{ powerdns_allow_dns_updates_from | join(',') }}
