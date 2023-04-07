@@ -11,3 +11,8 @@ refresh-on-ttl-perc={{ powerdns_recursor_refresh_on_ttl_perc }}
 forward-zones{% if loop.index > 1 %}+={% else %}={% endif %}{{ zone.name }}={% if zone.ips is string %}{{ zone.ips }}{% else %}{{ zone.ips | join(';') }}{% endif %}
 
 {% endfor %}
+
+{% for zone in powerdns_recursor_forward_zones_recurse %}
+forward-zones-recurse{% if loop.index > 1 %}+={% else %}={% endif %}{{ zone.name }}={% if zone.ips is string %}{{ zone.ips }}{% else %}{{ zone.ips | join(';') }}{% endif %}
+
+{% endfor %}

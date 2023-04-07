@@ -34,3 +34,6 @@ powerdns_recursor_refresh_on_ttl_perc: 10
 # Forwarded queries have the recursion desired (RD) bit set to 0, meaning that this setting is
 # intended to forward queries to authoritative servers.
 powerdns_recursor_forward_zones: []
+
+# See notes about powerdns_recursor_forward_zones.
+powerdns_recursor_forward_zones_recurse: []
