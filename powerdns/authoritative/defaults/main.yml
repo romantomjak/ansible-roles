@@ -49,3 +49,17 @@ powerdns_tsig_keys: []
 #   - domain: foo.com
 #     key: DHCP_UPDATER
 powerdns_domain_keys: []
+
+# Enable or disable the built-in webserver and HTTP API.
+powerdns_enable_api: false
+
+# Static authentication key for accessing the REST API.
+powerdns_api_key:
+
+# IP Address for webserver/API to listen on.
+powerdns_webserver_address: 127.0.0.1
+
+# Allow accessing Webserver/API only from the specified subnets.
+powerdns_webserver_allow_from:
+  - 127.0.0.1
+  - ::1

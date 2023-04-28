@@ -18,3 +18,9 @@ dnsupdate={{ (powerdns_enable_dns_updates == true) | ternary('yes', 'no') }}
 default-soa-edit={{ powerdns_default_soa_edit }}
 
 allow-dnsupdate-from={{ powerdns_allow_dns_updates_from | join(',') }}
+
+api={{ (powerdns_enable_api == true) | ternary('yes', 'no') }}
+api-key={{ powerdns_api_key }}
+
+webserver-address={{ powerdns_webserver_address }}
+webserver-allow-from={{ powerdns_webserver_allow_from | join(', ') }}
