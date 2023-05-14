@@ -37,3 +37,7 @@ powerdns_recursor_forward_zones: []
 
 # See notes about powerdns_recursor_forward_zones.
 powerdns_recursor_forward_zones_recurse: []
+
+# Maximum amount of time negative entries are cached, i.e. a query for which there is no
+# authoritative answer.
+powerdns_recursor_max_negative_ttl: 3600
