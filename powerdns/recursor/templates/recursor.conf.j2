@@ -18,3 +18,8 @@ forward-zones{% if loop.index > 1 %}+={% else %}={% endif %}{{ zone.name }}={% i
 forward-zones-recurse{% if loop.index > 1 %}+={% else %}={% endif %}{{ zone.name }}={% if zone.ips is string %}{{ zone.ips }}{% else %}{{ zone.ips | join(';') }}{% endif %}
 
 {% endfor %}
+
+webserver={{ (powerdns_recursor_enable_webserver == true) | ternary('yes', 'no') }}
+webserver-address={{ powerdns_recursor_webserver_address }}
+webserver-allow-from={{ powerdns_recursor_webserver_allow_from | join(', ') }}
+webserver-password={{ powerdns_recursor_webserver_password }}

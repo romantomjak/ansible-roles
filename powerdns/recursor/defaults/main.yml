@@ -41,3 +41,18 @@ powerdns_recursor_forward_zones_recurse: []
 # Maximum amount of time negative entries are cached, i.e. a query for which there is no
 # authoritative answer.
 powerdns_recursor_max_negative_ttl: 3600
+
+# Enable or disable the built-in webserver which exposes a JSON API and allows reading
+# various metrics.
+powerdns_recursor_enable_webserver: false
+
+# IP Address for webserver/API to listen on.
+powerdns_recursor_webserver_address: 127.0.0.1
+
+# Allow accessing Webserver/API only from the specified subnets.
+powerdns_recursor_webserver_allow_from:
+  - 127.0.0.1
+  - ::1
+
+# If set, will require a password in order to gain access to the statistics.
+powerdns_recursor_webserver_password:
