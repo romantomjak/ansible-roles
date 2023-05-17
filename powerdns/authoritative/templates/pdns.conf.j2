@@ -22,5 +22,7 @@ allow-dnsupdate-from={{ powerdns_allow_dns_updates_from | join(',') }}
 api={{ (powerdns_enable_api == true) | ternary('yes', 'no') }}
 api-key={{ powerdns_api_key }}
 
+webserver={{ (powerdns_enable_webserver == true) | ternary('yes', 'no') }}
 webserver-address={{ powerdns_webserver_address }}
 webserver-allow-from={{ powerdns_webserver_allow_from | join(', ') }}
+webserver-password={{ powerdns_webserver_password }}

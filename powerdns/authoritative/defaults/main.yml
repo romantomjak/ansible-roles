@@ -51,10 +51,14 @@ powerdns_tsig_keys: []
 powerdns_domain_keys: []
 
 # Enable or disable the built-in webserver and HTTP API.
+# NOTE: to enable the API you must also enable the webserver.
 powerdns_enable_api: false
 
 # Static authentication key for accessing the REST API.
 powerdns_api_key:
+
+# Enable or disable the built-in webserver which allows reading various metrics.
+powerdns_enable_webserver: false
 
 # IP Address for webserver/API to listen on.
 powerdns_webserver_address: 127.0.0.1
@@ -63,3 +67,6 @@ powerdns_webserver_address: 127.0.0.1
 powerdns_webserver_allow_from:
   - 127.0.0.1
   - ::1
+
+# If set, will require a password in order to gain access to the statistics.
+powerdns_webserver_password:
