@@ -1,0 +1,113 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+# option definitions common to all supported networks...
+#option domain-name "example.org";
+#option domain-name-servers ns1.example.org, ns2.example.org;
+
+{% if isc_dhcp_server_authoritative %}
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+authoritative;
+{% endif %}
+
+default-lease-time {{ isc_dhcp_server_default_lease_time }};
+max-lease-time {{ isc_dhcp_server_max_lease_time }};
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+ddns-update-style {{ isc_dhcp_server_ddns_update_style }};
+update-optimization {{ (isc_dhcp_server_update_optimization == true) | ternary('on', 'off') }};
+update-static-leases {{ (isc_dhcp_server_update_static_leases == true) | ternary('on', 'off') }};
+
+# can be useful if you have systems with e.g. both wireless and wired
+# connections, and you occasionally switch between the two. This allows
+# a new record with the same hostname to override the old one, even if
+# the MAC address of the client's network interface is not the same.
+update-conflict-detection {{ (isc_dhcp_server_update_conflict_detection == true) | ternary('on', 'off') }};
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+#log-facility local7;
+
+{% for key in isc_dhcp_server_tsig_keys %}
+key {{ key.name }} {
+  algorithm {{ key.algorithm }};
+  secret {{ key.secret }};
+}
+
+{% endfor %}
+
+{% for zone in isc_dhcp_server_zones %}
+zone {{ zone.name }} {
+  primary {{ zone.primary }};
+  key {{ zone.key }};
+}
+
+{% endfor %}
+
+{% for subnet in isc_dhcp_server_subnets %}
+subnet {{ subnet.net }} netmask {{ subnet.mask }} {
+{% if subnet.range is defined %}
+  range {{ subnet.range }};
+{% endif %}
+{% if subnet.broadcast is defined %}
+  option broadcast-address {{ subnet.broadcast }};
+{% endif %}
+{% if subnet.routers is defined %}
+  option routers {{ subnet.routers | join(', ') }};
+{% endif %}
+{% if subnet.dns is defined %}
+  option domain-name-servers {{ subnet.dns }};
+{% endif %}
+{% if subnet.domain is defined %}
+  option domain-name "{{ subnet.domain }}";
+{% endif %}
+}
+
+{% endfor %}
+
+#host passacaglia {
+#  hardware ethernet 0:0:c0:5d:bd:95;
+#  filename "vmunix.passacaglia";
+#  server-name "toccata.example.com";
+#}
+
+# Fixed IP addresses can also be specified for hosts.   These addresses
+# should not also be listed as being available for dynamic assignment.
+# Hosts for which fixed IP addresses have been specified can boot using
+# BOOTP or DHCP.   Hosts for which no fixed address is specified can only
+# be booted with DHCP, unless there is an address range on the subnet
+# to which a BOOTP client is connected which has the dynamic-bootp flag
+# set.
+#host fantasia {
+#  hardware ethernet 08:00:07:26:c0:a5;
+#  fixed-address fantasia.example.com;
+#}
+
+# You can declare a class of clients and then do address allocation
+# based on that.   The example below shows a case where all clients
+# in a certain class get addresses on the 10.17.224/24 subnet, and all
+# other clients get addresses on the 10.0.29/24 subnet.
+
+#class "foo" {
+#  match if substring (option vendor-class-identifier, 0, 4) = "SUNW";
+#}
+
+#shared-network 224-29 {
+#  subnet 10.17.224.0 netmask 255.255.255.0 {
+#    option routers rtr-224.example.org;
+#  }
+#  subnet 10.0.29.0 netmask 255.255.255.0 {
+#    option routers rtr-29.example.org;
+#  }
+#  pool {
+#    allow members of "foo";
+#    range 10.17.224.10 10.17.224.250;
+#  }
+#  pool {
+#    deny members of "foo";
+#    range 10.0.29.10 10.0.29.230;
+#  }
+#}

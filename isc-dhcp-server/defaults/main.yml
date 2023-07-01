@@ -1,0 +1,74 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The interfaces on which ISC DHCP server will listen on.
+isc_dhcp_server_interfaces:
+  - lo
+
+isc_dhcp_server_default_lease_time: 600
+isc_dhcp_server_max_lease_time: 7200
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+isc_dhcp_server_ddns_update_style: none
+
+# If the update-optimization parameter is false for a given client, the server
+# will attempt a DNS update for that client each time the client renews its
+# lease, rather than only attempting an update when it appears to be necessary. 
+isc_dhcp_server_update_optimization: on
+
+# if enabled, causes the DHCP server to do DNS updates for clients even if
+# those clients are being assigned their IP address using a fixed-address
+# or fixed-address6 statement - that is, the client is being given a static
+# assignment.
+isc_dhcp_server_update_static_leases: off
+
+# If true, the server will perform standard DHCID multiple-client, one-name
+# conflict detection. If false, the server will skip this check and instead
+# tear down any previous bindings to install the new binding without question.
+# 
+# Can be useful if you have systems with both wireless and wired connections,
+# and you occasionally switch between the two. This allows a new record with
+# the same hostname to override the old one, even if the MAC address of the
+# client's network interface is not the same.
+isc_dhcp_server_update_conflict_detection: on
+
+# When you set your DNS server up to allow updates from the DHCP server, you
+# may be exposing it to unauthorized updates. TSIG keys are used to secure
+# domain updates.
+#
+# isc_dhcp_server_keys:
+#   - name: DHCP_UPDATER
+#     algorithm: HMAC-MD5;
+#     secret: pRP5FapFoJ95JEL06sv4PQ==
+isc_dhcp_server_tsig_keys: []
+
+# Zone declarations that will contain A records that will be updated.
+#
+# isc_dhcp_server_zones:
+#   - name: example.org.
+#     primary: 127.0.0.1
+#     key: DHCP_UPDATER
+isc_dhcp_server_zones: []
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be set to true.
+isc_dhcp_server_authoritative: false
+
+# The subnet statement is used to provide dhcpd with enough
+# information to tell whether or not an IP address is on that
+# subnet. It may also be used to provide subnet-specific
+# parameters and to specify what addresses may be dynamically
+# allocated to clients booting on that subnet.
+# 
+# isc_dhcp_server_subnets:
+#   - net: 10.5.5.0
+#     mask: 255.255.255.224
+#     range: 10.5.5.26 10.5.5.30
+#     broadcast: 10.5.5.31
+#     routers: 10.5.5.1
+#     dns: ns1.internal.example.org
+#     domain: internal.example.org
+isc_dhcp_server_subnets: []

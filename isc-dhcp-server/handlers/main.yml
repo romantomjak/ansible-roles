@@ -1,0 +1,6 @@
+---
+# Restart the ISC DHCP Server
+
+- name: Restart ISC DHCP Server
+  service: name=isc-dhcp-server state=restarted
+  become: true
