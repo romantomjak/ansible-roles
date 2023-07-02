@@ -51,10 +51,14 @@
 
 - name: Install latest version of PowerDNS Recursor
   apt: name=pdns-recursor state=latest update_cache=yes
+  tags:
+    - packages
   become: true
 
 - name: Copy server configuration
   template: src=recursor.conf.j2 dest=/etc/powerdns/recursor.conf
+  tags:
+    - configuration
   notify:
     - Restart PowerDNS Recursor
   become: true

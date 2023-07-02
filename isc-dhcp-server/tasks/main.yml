@@ -3,12 +3,14 @@
 
 - name: Install latest version of ISC DHCP server
   apt: name=isc-dhcp-server state=latest update_cache=yes
+  tags:
+    - packages
   become: true
 
 - name: Copy interface configuration
   template: src=isc-dhcp-server.j2 dest=/etc/default/isc-dhcp-server
   tags:
-    - dhcp-interfaces
+    - configuration
   notify:
     - Restart ISC DHCP Server
   become: true
@@ -16,11 +18,13 @@
 - name: Copy server configuration
   template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
   tags:
-    - dhcp-configuration
+    - configuration
   notify:
     - Restart ISC DHCP Server
   become: true
 
 - name: Enable and start ISC DHCP server
   systemd: name=isc-dhcp-server enabled=yes state=started daemon_reload=true
+  tags:
+    - packages
   become: true
