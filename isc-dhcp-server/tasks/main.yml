@@ -7,12 +7,16 @@
 
 - name: Copy interface configuration
   template: src=isc-dhcp-server.j2 dest=/etc/default/isc-dhcp-server
+  tags:
+    - dhcp-interfaces
   notify:
     - Restart ISC DHCP Server
   become: true
 
 - name: Copy server configuration
   template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
+  tags:
+    - dhcp-config
   notify:
     - Restart ISC DHCP Server
   become: true

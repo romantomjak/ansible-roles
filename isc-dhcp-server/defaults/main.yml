@@ -72,3 +72,18 @@ isc_dhcp_server_authoritative: false
 #     dns: ns1.internal.example.org
 #     domain: internal.example.org
 isc_dhcp_server_subnets: []
+
+# The host declaration provides a way for the DHCP server to identify a
+# DHCP or BOOTP client to provide specialised configuration such as fixed
+# addresses. These addresses should not be made available for dynamic
+# assignment using the subnets statement.
+#
+# The hostname should be a name identifying the host. Each address should
+# be either an IP address or a domain name that resolves to one or more IP
+# addresses.
+#
+# isc_dhcp_server_hosts:
+#   - hostname: fantasia
+#     mac: 08:00:07:26:c0:a5
+#     ip: fantasia.example.com
+isc_dhcp_server_hosts: []
