@@ -16,7 +16,7 @@
 - name: Copy server configuration
   template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
   tags:
-    - dhcp-config
+    - dhcp-configuration
   notify:
     - Restart ISC DHCP Server
   become: true
