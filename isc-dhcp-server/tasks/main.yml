@@ -25,6 +25,4 @@
 
 - name: Enable and start ISC DHCP server
   systemd: name=isc-dhcp-server enabled=yes state=started daemon_reload=true
-  tags:
-    - packages
   become: true
