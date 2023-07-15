@@ -1,6 +1,6 @@
 ---
 # Override these in playbook with 'vars:' block
 
-calicoctl_version: 3.25.1
+calicoctl_version: 3.26.1
 
 calicoctl_architecture: amd64
