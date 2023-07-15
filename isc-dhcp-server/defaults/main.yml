@@ -61,7 +61,8 @@ isc_dhcp_server_authoritative: false
 # information to tell whether or not an IP address is on that
 # subnet. It may also be used to provide subnet-specific
 # parameters and to specify what addresses may be dynamically
-# allocated to clients booting on that subnet.
+# allocated to clients booting on that subnet. The range is
+# inclusive.
 # 
 # isc_dhcp_server_subnets:
 #   - net: 10.5.5.0
