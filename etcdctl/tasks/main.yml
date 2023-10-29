@@ -1,0 +1,17 @@
+---
+# Installs etcdctl for managing etcd clusters and configuration
+
+- name: Download and install etcdctl
+  unarchive:
+    creates: /usr/local/bin/etcdctl
+    src: https://github.com/etcd-io/etcd/releases/download/v{{ etcdctl_version }}/etcd-v{{ etcdctl_version }}-{{ ansible_system | lower }}-{{ etcdctl_architecture }}.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    include:
+      - etcd-v{{ etcdctl_version }}-{{ ansible_system | lower }}-{{ etcdctl_architecture }}/etcdctl
+    extra_opts:
+     - --strip-components=1
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true

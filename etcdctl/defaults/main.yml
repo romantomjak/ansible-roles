@@ -1,0 +1,8 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The etcdctl version to install
+etcdctl_version: 3.5.10
+
+# etcdctl is supported on amd64, arm64, ppc64le and s390x architectures
+etcdctl_architecture: amd64
