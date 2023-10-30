@@ -1,0 +1,21 @@
+---
+# Installs Samba SMB server
+
+- name: Install latest version of samba
+  apt: name=samba state=latest update_cache=yes
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  notify:
+    - Restart samba
+
+- name: Start samba
+  systemd: name=smbd enabled=yes state=started daemon_reload=true
+  become: true
