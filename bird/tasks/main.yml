@@ -1,0 +1,36 @@
+---
+# Installs BIRD Internet Routing Daemon
+
+- name: Install latest version of BIRD
+  apt: name=bird state=latest update_cache=yes
+  become: true
+
+- name: Copy IPv4 configuration
+  template:
+    src: templates/bird.conf.j2
+    dest: /etc/bird/bird.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  tags:
+    - configuration
+  notify:
+    - Restart bird
+
+- name: Copy IPv6 configuration
+  template:
+    src: templates/bird6.conf.j2
+    dest: /etc/bird/bird6.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  tags:
+    - configuration
+  notify:
+    - Restart bird
+
+- name: Start bird
+  systemd: name=bird enabled=yes state=started daemon_reload=true
+  become: true

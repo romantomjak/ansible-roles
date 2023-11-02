@@ -1,0 +1,61 @@
+---
+# Override these in playbook with 'vars:' block
+
+# BIRD router ID is a world-wide unique identification of your router,
+# usually one of router's addresses.
+bird_ipv4_router_id: 198.51.100.1
+bird_ipv6_router_id: 198.51.100.1
+
+# Protocol templates can be used to group common options when many similarly
+# configured protocol instances are to be defined.
+#
+# bird_ipv4_templates:
+#   - name: bgp1
+#     protocol: bgp
+#     options: |
+#       local 198.51.100.14 as 65000;
+bird_ipv4_templates:
+bird_ipv6_templates:
+
+# Enabled protocols.
+bird_ipv4_protocols:
+  # The Kernel protocol is not a real routing protocol. Instead of communicating
+  # with other routers in the network, it performs synchronization of BIRD's
+  # routing tables with the OS kernel.
+  - protocol: kernel
+    options: |-
+      # Time in seconds between two scans of the network interface list.
+      scan time 60;
+      # Import routes coming from the protocol into BIRD routing table.
+      import none;
+      # Synchronize BIRD's routing tables with the OS kernel. Uncommenting this
+      # will insert BIRD's routes into the kernel routing table.
+      #	export all;
+  # The Device protocol is not a real routing protocol. It doesn't generate any
+  # routes and it only serves as a module for getting information about network
+  # interfaces from the kernel. 
+  - protocol: device
+    options: |-
+      # Time in seconds between two scans of the network interface list.
+      scan time 60;
+
+bird_ipv6_protocols:
+  # The Kernel protocol is not a real routing protocol. Instead of communicating
+  # with other routers in the network, it performs synchronization of BIRD's
+  # routing tables with the OS kernel.
+  - protocol: kernel
+    options: |-
+      # Time in seconds between two scans of the network interface list.
+      scan time 60;
+      # Import routes coming from the protocol into BIRD routing table.
+      import none;
+      # Synchronize BIRD's routing tables with the OS kernel. Uncommenting this
+      # will insert BIRD's routes into the kernel routing table.
+      #	export all;
+  # The Device protocol is not a real routing protocol. It doesn't generate any
+  # routes and it only serves as a module for getting information about network
+  # interfaces from the kernel. 
+  - protocol: device
+    options: |-
+      # Time in seconds between two scans of the network interface list.
+      scan time 60;
