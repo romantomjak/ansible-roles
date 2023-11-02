@@ -12,7 +12,7 @@ bird_ipv6_router_id: 198.51.100.1
 # bird_ipv4_templates:
 #   - name: bgp1
 #     protocol: bgp
-#     options: |
+#     options: |-
 #       local 198.51.100.14 as 65000;
 bird_ipv4_templates:
 bird_ipv6_templates:
