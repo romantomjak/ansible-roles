@@ -1,0 +1,23 @@
+---
+# Installs Avahi multicast DNS/DNS-SD server
+
+- name: Install latest version of Avahi
+  apt: name=avahi-daemon state=latest update_cache=yes
+  become: true
+
+- name: Copy IPv4 configuration
+  template:
+    src: templates/avahi-daemon.conf.j2
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  tags:
+    - configuration
+  notify:
+    - Restart avahi
+
+- name: Start avahi
+  systemd: name=avahi-daemon enabled=yes state=started daemon_reload=true
+  become: true

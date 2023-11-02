@@ -1,0 +1,21 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Comma seperated list of allowed network interfaces that should be
+# used by the avahi-daemon. Other interfaces will be ignored. If set
+# to the empty list all local interfaces except loopback and
+# point-to-point will be used. 
+avahi_allow_interfaces: eth0
+
+# Comma seperated list of browsing domains (in addition to the default
+# one and those announced inside the default browsing domain).
+avahi_browse_domains: 0pointer.de, zeroconf.org
+
+# If enabled avahi-daemon will reflect incoming mDNS requests to all local
+# network interfaces, effectively allowing clients to browse mDNS/DNS-SD
+# services on all networks connected to the gateway. The gateway is somewhat
+# intelligent and should work with all kinds of mDNS traffic, though some
+# functionality is lost (specifically the unicast reply bit, which is used
+# rarely anyway). Make sure to not run multiple reflectors between the same
+# networks, this might cause them to play Ping Pong with mDNS packets. 
+avahi_enable_reflector: false
