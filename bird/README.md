@@ -1,4 +1,4 @@
-# samba
+# BIRD
 
 Example playbook for provisioning BIRD Internet Routing Daemon.
 
