@@ -1,0 +1,24 @@
+---
+# Installs ceph components
+
+- name: Download cephadm
+  get_url:
+    url: https://github.com/ceph/ceph/raw/{{ ceph_release }}/src/cephadm/cephadm
+    dest: /usr/sbin/cephadm
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Add ceph repo
+  shell: cephadm add-repo --release {{ ceph_release }}
+  args:
+    creates: /etc/apt/sources.list.d/ceph.list
+  become: true
+
+- name: Install ceph components
+  shell: cephadm {{ item }}
+  with_items:
+    - install
+    - install ceph-common
+  become: true
