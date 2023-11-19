@@ -22,3 +22,7 @@
     - install
     - install ceph-common
   become: true
+
+- name: Install debian package for working with ceph volumes
+  apt: name=ceph-volume state=latest update_cache=yes
+  become: true
