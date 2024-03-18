@@ -1,0 +1,27 @@
+driver = require "luasql.sqlite3"
+env = assert( driver.sqlite3() )
+con = assert(env:connect("{{ powerdns_adblock_database }}"))
+
+--[[
+    If preresolve returns true, it will indicate it handled a query, and
+    the recursor will send the result as constructed in the function to
+    the client. If it returns false, the Recursor will continue processing.
+    
+    See https://doc.powerdns.com/recursor/lua-scripting/hooks.html#preresolve
+]]
+function preresolve(dq)
+    domain = dq.qname:toStringNoDot()
+
+    while domain ~= "" do
+        local sth = assert(con:execute(string.format("SELECT 1 FROM domains WHERE name = '%s'", con:escape(domain))))
+        if sth:fetch() then
+            dq.variable = true -- disable packet cache
+            dq.rcode = pdns.NXDOMAIN
+            dq:addAnswer(pdns.TXT, "\"dropped by adblock\"", 1) -- for debugging
+            return true
+        end
+        domain = domain:gsub("^[^.]*%.?", "")
+    end
+
+    return false
+end

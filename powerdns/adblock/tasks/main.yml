@@ -1,0 +1,71 @@
+---
+# Installs adblock for PowerDNS server
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - grep
+      - sqlite3
+      - lua-sql-sqlite3
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Create the database
+  shell:
+    cmd: |
+      sqlite3 {{ powerdns_adblock_database }} <<EOF
+      CREATE TABLE IF NOT EXISTS domains
+      (
+        name TEXT UNIQUE NOT NULL COLLATE NOCASE,
+        date_added INTEGER NOT NULL DEFAULT (cast(strftime('%s', 'now') as int))
+      );
+      EOF
+    creates: "{{ powerdns_adblock_database }}"
+  register: create_database_output
+  become: true
+
+- name: Fix database permissions
+  file:
+    path: "{{ powerdns_adblock_database }}"
+    owner: "{{ powerdns_adblock_user }}"
+    group: "{{ powerdns_adblock_group }}"
+    mode: "u=rw,g=r,o=r"
+  when: create_database_output.changed
+  become: true
+
+- name: Copy lua script
+  template:
+    src: adblock.lua.j2
+    dest: "{{ powerdns_adblock_lua_script }}"
+    owner: "{{ powerdns_adblock_user }}"
+    group: "{{ powerdns_adblock_group }}"
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Get Steven Black's host list
+  get_url:
+    url: https://raw.githubusercontent.com/StevenBlack/hosts/{{ powerdns_adblock_version }}/hosts
+    dest: /tmp/adblock.txt
+
+# Note: the 'NR>1' skips the false positive that looks like this '0.0.0.0 0.0.0.0'
+- name: Transform the list into a csv
+  shell:
+    cmd: grep '^0.0.0.0' /tmp/adblock.txt | awk 'NR>1 { print $2"," }' > /tmp/adblock.csv
+    creates: /tmp/adblock.csv
+
+- name: Import the csv
+  shell: "sqlite3 {{ powerdns_adblock_database }} '.import --csv /tmp/adblock.csv domains'"
+  register: sqlite_import_csv
+  become: true
+  failed_when:
+    - sqlite_import_csv.rc > 0
+    - "'UNIQUE constraint failed' not in sqlite_import_csv.stderr"
+
+- name: Cleanup
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /tmp/adblock.csv
+    - /tmp/adblock.txt

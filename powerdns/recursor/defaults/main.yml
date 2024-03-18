@@ -56,3 +56,7 @@ powerdns_recursor_webserver_allow_from:
 
 # If set, will require a password in order to gain access to the statistics.
 powerdns_recursor_webserver_password:
+
+# Path to a lua file to manipulate the Recursor’s answers. Can be used to implement
+# ad blocking. See powerdns/adblock role.
+powerdns_recursor_lua_dns_script:

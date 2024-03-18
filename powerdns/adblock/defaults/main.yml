@@ -1,0 +1,18 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The version of Steven Black's host list to get. Specify 'master'
+# for the latest version.
+powerdns_adblock_version: 3.14.59
+
+# The sqlite database where the lua script will look for blocked domains.
+powerdns_adblock_database: /var/lib/powerdns/adblock.db
+
+# The user which runs the PowerDNS service.
+powerdns_adblock_user: pdns
+
+# The user group which runs the PowerDNS service.
+powerdns_adblock_group: pdns
+
+# The path to the lua script that will manipulate PowerDNS answers.
+powerdns_adblock_lua_script: /var/lib/powerdns/adblock.lua
