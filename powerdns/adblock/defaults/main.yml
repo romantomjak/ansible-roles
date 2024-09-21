@@ -3,7 +3,7 @@
 
 # The version of Steven Black's host list to get. Specify 'master'
 # for the latest version.
-powerdns_adblock_version: 3.14.59
+powerdns_adblock_version: 3.14.109
 
 # The sqlite database where the lua script will look for blocked domains.
 powerdns_adblock_database: /var/lib/powerdns/adblock.db
