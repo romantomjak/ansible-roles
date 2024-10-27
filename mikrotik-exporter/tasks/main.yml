@@ -1,0 +1,51 @@
+---
+# Installs node exporter
+
+- name: Create group
+  group: name=mikrotik-exporter state=present
+  become: true
+
+- name: Create user
+  user:
+    name: mikrotik-exporter
+    groups: mikrotik-exporter
+    system: true
+    shell: /bin/false
+    create_home: true
+    home: /etc/mikrotik-exporter
+  become: true
+
+- name: Download and install mikrotik exporter
+  get_url:
+    url: https://github.com/nshttpd/mikrotik-exporter/releases/download/{{ mikrotik_exporter_version }}/mikrotik-exporter_{{ ansible_system | lower }}_{{ mikrotik_exporter_architecture }}
+    dest: /usr/local/bin/mikrotik_exporter
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/mikrotik-exporter.service.j2
+    dest: /etc/systemd/system/mikrotik-exporter.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  notify:
+    - Restart mikrotik exporter
+  become: true
+
+- name: Copy configuration
+  template:
+    src: templates/config.yml.j2
+    dest: /etc/mikrotik-exporter/config.yml
+    owner: mikrotik-exporter
+    group: mikrotik-exporter
+    mode: 0640
+  notify:
+    - Restart mikrotik exporter
+  become: true
+
+- name: Start mikrotik exporter
+  systemd: name=mikrotik-exporter enabled=yes state=started daemon_reload=true
+  become: true

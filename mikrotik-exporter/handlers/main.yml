@@ -1,0 +1,5 @@
+---
+
+- name: Restart mikrotik exporter
+  service: name=mikrotik-exporter state=restarted
+  become: true

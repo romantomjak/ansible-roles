@@ -1,0 +1,16 @@
+[Unit]
+Description="Mikrotik API exporter"
+Documentation=https://github.com/nshttpd/mikrotik-exporter
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=mikrotik-exporter
+Group=mikrotik-exporter
+ExecStart=/usr/local/bin/mikrotik_exporter \
+    -port={{ mikrotik_exporter_web_listen_address }} \
+    -path={{ mikrotik_exporter_web_telemetry_path }} \
+    -config-file /etc/mikrotik-exporter/config.yml
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,53 @@
+---
+# Override these in playbook with 'vars:' block.
+
+# The mikrotik exporter version to install.
+mikrotik_exporter_version: 1.0.11
+
+# Mikrotik exporter is supported on amd64, arm and 386 architectures.
+mikrotik_exporter_architecture: amd64
+
+# The address is the address of the router and device is the label name for
+# the device in prometheus metrics. The user and password are what you created
+# in the mikrotik web interface.
+#
+# mikrotik_exporter_devices:
+#   - name: my_router
+#     address: 10.10.0.1
+#     srv:
+#       record: _mikrotik._udp.example.com
+#       dns:
+#         address: 1.1.1.1
+#         port: 53
+#     user: prometheus
+#     password: changeme
+#     port: 8728
+mikrotik_exporter_devices: []
+
+# The features for which to scrape metrics.
+mikrotik_exporter_features:
+  bgp: false
+  conntrack: false
+  dhcp: false
+  dhcpl: false
+  dhcpv6: false
+  firmware: false
+  health: false
+  routes: false
+  poe: false
+  pools: false
+  optics: false
+  w60g: false
+  wlansta: false
+  capsman: false
+  wlanif: false
+  monitor: false
+  ipsec: false
+  lte: false
+  netwatch: false
+
+# Address on which to expose metrics and web interface.
+mikrotik_exporter_web_listen_address: ":9436"
+
+# Path under which to expose metrics.
+mikrotik_exporter_web_telemetry_path: "/metrics"
