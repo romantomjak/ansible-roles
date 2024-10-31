@@ -1,4 +1,4 @@
 ---
 # Override these in playbook with 'vars:' block
 
-ceph_release: quincy
+ceph_release: reef

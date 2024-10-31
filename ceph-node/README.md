@@ -13,7 +13,7 @@ Example playbook for provisioning CEPH components.
 - name: Provision ceph nodes
   hosts: all
   vars:
-    ceph_release: quincy
+    ceph_release: reef
   roles:
     - ceph-node
 ```
