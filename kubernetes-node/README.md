@@ -2,7 +2,7 @@
 
 ---
 
-Example playbook for provisioning kubernetes components on Debian 11.
+Example playbook for provisioning kubernetes components.
 
 ---
 
@@ -13,7 +13,8 @@ Example playbook for provisioning kubernetes components on Debian 11.
 - name: Provision kubernetes nodes
   hosts: all
   vars:
-    kubernetes_cri_o_version: 1.27
+    kubernetes_version: v1.31
+    kubernetes_cri_o_version: v1.31
   roles:
     - kubernetes-node
 ```

@@ -1,4 +1,10 @@
 ---
 # Override these in playbook with 'vars:' block
 
-kubernetes_cri_o_version: 1.27
+kubernetes_version: v1.31
+
+kubernetes_apt_keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+kubernetes_cri_o_version: v1.31
+
+kubernetes_cri_o_apt_keyring: /etc/apt/keyrings/cri-o-apt-keyring.gpg

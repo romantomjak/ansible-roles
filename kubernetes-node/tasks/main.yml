@@ -1,6 +1,15 @@
 ---
 # Installs kubernetes components
 
+- name: Install GPG and friends
+  apt:
+    name:
+      - curl
+      - gnupg2
+    state: latest
+    update_cache: yes
+  become: true
+
 - name: Disable swap because kubernetes can't work with swap enabled
   shell: swapoff -a
   become: true
@@ -37,42 +46,69 @@
     - net.bridge.bridge-nf-call-arptables
     - net.bridge.bridge-nf-call-ip6tables
 
-- name: Install CRI-O runtime
-  import_tasks: "crio.yml"
-
 - name: Import kubernetes GPG key
   shell:
-    cmd: "curl -fsSL {{ item.key }} | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/{{ item.keyring }} --import"
-    creates: "/etc/apt/trusted.gpg.d/{{ item.keyring }}"
+    cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_apt_keyring }}"
+    creates: "{{ kubernetes_apt_keyring }}"
     warn: False
-  with_items:
-    - key: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      keyring: kubernetes-archive-keyring.gpg
   become: true
 
-- name: Fix key permissions
+- name: Fix kubernetes GPG key permissions
   file:
-    path: "/etc/apt/trusted.gpg.d/{{ item }}"
+    path: "{{ kubernetes_apt_keyring }}"
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
-  with_items:
-    - kubernetes-archive-keyring.gpg
   become: true
 
 - name: Add kubernetes APT repository
   copy:
     content: >-
-      deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg] https://packages.cloud.google.com/apt kubernetes-xenial main
+      deb [signed-by={{ kubernetes_apt_keyring }}] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /
     dest: /etc/apt/sources.list.d/kubernetes.list
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
   become: true
 
+- name: Import CRI-O GPG key
+  shell:
+    cmd: "curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
+    creates: "{{ kubernetes_cri_o_apt_keyring }}"
+    warn: False
+  become: true
+
+- name: Fix CRI-O GPG key permissions
+  file:
+    path: "{{ kubernetes_cri_o_apt_keyring }}"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Add CRI-O APT repository
+  copy:
+    content: >-
+      deb [signed-by={{ kubernetes_cri_o_apt_keyring }}] https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/ /
+    dest: /etc/apt/sources.list.d/cri-o.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+
+- name: Unhold previously held kubernetes components
+  dpkg_selections: name="{{ item }}" selection=install
+  with_items:
+    - cri-o
+    - kubelet
+    - kubeadm
+    - kubectl
+  become: true
+
 - name: Install kubernetes components
   apt:
     name:
+      - cri-o
       - kubelet
       - kubeadm
       - kubectl
@@ -85,6 +121,7 @@
 - name: Prevent kubernetes components from being upgraded
   dpkg_selections: name="{{ item }}" selection=hold
   with_items:
+    - cri-o
     - kubelet
     - kubeadm
     - kubectl
@@ -92,4 +129,14 @@
 
 - name: Pull kubernetes images
   shell: kubeadm config images pull
+  become: true
+
+- name: Copy configuration
+  template: src=crio.conf.j2 dest=/etc/crio/crio.conf
+  become: true
+  notify:
+    - Restart CRI-O
+
+- name: Enable and start CRI-O service
+  service: name=crio enabled=yes state=started
   become: true
