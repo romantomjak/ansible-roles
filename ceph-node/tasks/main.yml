@@ -24,5 +24,8 @@
   become: true
 
 - name: Install debian package for working with ceph volumes
-  apt: name=ceph-volume state=latest update_cache=yes
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - ceph-volume
+    - python3-packaging
   become: true
