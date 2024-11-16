@@ -2,7 +2,7 @@
 # Override these in playbook with 'vars:' block.
 
 # The node exporter version to install.
-node_exporter_version: 1.6.1
+node_exporter_version: 1.8.2
 
 # Node exporter is supported on amd64, arm and 386 architectures.
 node_exporter_architecture: amd64
