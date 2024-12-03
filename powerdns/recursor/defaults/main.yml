@@ -1,62 +1,116 @@
 ---
 # Override these in playbook with 'vars:' block
 
-# The interfaces on which PowerDNS recursor will listen on.
-powerdns_recursor_addresses:
-  - 127.0.0.1
-  - ::1
+powerdns_recursor_dnssec:
+  # A path to a zone file to read trust anchors from. This can be used to read
+  # distribution provided trust anchors, as for instance /usr/share/dns/root.key
+  # from Debian's dns-root-data package.
+  trustanchorfile: /usr/share/dns/root.key
 
-# Controls which clients are allowed to make (recursive) queries
-# to this server.
-powerdns_recursor_allow_from:
-  - 127.0.0.1
-  - 10.0.0.0/8
-  - 172.16.0.0/12
-  - 192.168.0.0/16
-  - ::1
+powerdns_recursor_recordcache:
+  # A query for which there is authoritatively no answer is cached to quickly deny
+  # a record’s existence later on, without putting a heavy load on the remote server.
+  # In practice, caches can become saturated with hundreds of thousands of hosts which
+  # are tried only once. This setting, which defaults to 3600 seconds, puts a maximum
+  # on the amount of time negative entries are cached.
+  max_negative_ttl: 3600
 
-# Perform prefetching of close to expired message cache entries. If the value is zero,
-# this functionality is disabled.
-powerdns_recursor_refresh_on_ttl_perc: 10
+  # Sets the ‘refresh almost expired’ percentage of the record cache. Whenever a
+  # record is fetched from the packet or record cache and only refresh-on-ttl-perc
+  # percent or less of its original TTL is left, a task is queued to refetch the
+  # name/type combination to update the record cache. In most cases this causes
+  # future queries to always see a non-expired record cache entry. A typical value
+  # is 10. If the value is zero, this functionality is disabled.
+  refresh_on_ttl_perc: 10
 
-# Queries for zones listed here will be forwarded to the IP address(-es) listed. Multiple IP
-# addresses can be specified and port numbers other than 53 can be configured.
-#
-# powerdns_recursor_forward_zones:
-#   - name: private.example.com
-#     ips: 127.0.0.1:5300
-#   - name: example.org
-#     ips:
-#       - 203.0.113.210:5300
-#       - '[2001:DB8::1:3]:5300'
-#       - 127.0.0.1
-#
-# Forwarded queries have the recursion desired (RD) bit set to 0, meaning that this setting is
-# intended to forward queries to authoritative servers.
-powerdns_recursor_forward_zones: []
+powerdns_recursor:
+  # If set, the root-hints are read from this file. If empty, the default built-in
+  # root hints are used.
+  hint_file: /usr/share/dns/root.hints
 
-# See notes about powerdns_recursor_forward_zones.
-powerdns_recursor_forward_zones_recurse: []
+  # Directory to scan for additional config files. All files that end with .yml are
+  # loaded in order using POSIX as locale.
+  include_dir: /etc/powerdns/recursor.d
 
-# Maximum amount of time negative entries are cached, i.e. a query for which there is no
-# authoritative answer.
-powerdns_recursor_max_negative_ttl: 3600
+  # Queries for zones listed here will be forwarded to the IP address listed. Forwarded
+  # queries have the recursion desired (RD) bit set to 0, meaning that this setting is
+  # intended to forward queries to authoritative servers. If an NS record set for a
+  # subzone of the forwarded zone is learned, that record set will be used to determine
+  # addresses for name servers of the subzone. This allows e.g. a forward to a local
+  # authoritative server holding a copy of the root zone, delegations received from
+  # that server will work.
+  #
+  # powerdns_recursor:
+  #   forward_zones:
+  #     - zone: example1.com
+  #       forwarders:
+  #         - 127.0.0.1
+  #         - 127.0.0.1:5353
+  #         - '[::1]:53'
+  #
+  forward_zones: []
 
-# Enable or disable the built-in webserver which exposes a JSON API and allows reading
-# various metrics.
-powerdns_recursor_enable_webserver: false
+  # Like regular recursor.forward_zones, but forwarded queries have the recursion
+  # desired (RD) bit set to 1, meaning that this setting is intended to forward
+  # queries to other recursive servers. In contrast to regular forwarding, the rule
+  # that delegations of the forwarded subzones are respected is not active. This is
+  # because we rely on the forwarder to resolve the query fully.
+  forward_zones_recurse: []
 
-# IP Address for webserver/API to listen on.
-powerdns_recursor_webserver_address: 127.0.0.1
+  # Path to a lua file to manipulate the Recursor’s answers. See Scripting PowerDNS
+  # Recursor for more information.
+  lua_dns_script: ""
 
-# Allow accessing Webserver/API only from the specified subnets.
-powerdns_recursor_webserver_allow_from:
-  - 127.0.0.1
-  - ::1
+powerdns_recursor_incoming:
+  # Netmasks (both IPv4 and IPv6) that are allowed to use the server. The default allows
+  # access only from RFC 1918 private IP addresses. An empty value means no checking
+  # is done, all clients are allowed. Due to the aggressive nature of the internet
+  # these days, it is highly recommended to not open up the recursor for the entire
+  # internet. Questions from IP addresses not listed here are ignored and do not get
+  # an answer.
+  allow_from: 
+    - 127.0.0.0/8
+    - 10.0.0.0/8
+    - 100.64.0.0/10
+    - 169.254.0.0/16
+    - 192.168.0.0/16
+    - 172.16.0.0/12
+    - '::1/128'
+    - 'fc00::/7'
+    - 'fe80::/10'
 
-# If set, will require a password in order to gain access to the statistics.
-powerdns_recursor_webserver_password:
+  # Local IP addresses to which we bind. Each address specified can include a port
+  # number; if no port is included then the incoming.port port will be used for that
+  # address. If a port number is specified, it must be separated from the address
+  # with a ‘:’; for an IPv6 address the address must be enclosed in square brackets.
+  listen:
+    - 127.0.0.1
 
-# Path to a lua file to manipulate the Recursor’s answers. Can be used to implement
-# ad blocking. See powerdns/adblock role.
-powerdns_recursor_lua_dns_script:
+powerdns_recursor_outgoing:
+  # Send out local queries from this address, or addresses. By adding multiple
+  # addresses, increased spoofing resilience is achieved. When no address of a
+  # certain address family is configured, there are no queries sent with that
+  # address family. In the default configuration this means that IPv6 is not
+  # used for outgoing queries.
+  source_address:
+    - 0.0.0.0
+
+powerdns_recursor_webservice:
+  # IP address for the webserver to listen on.
+  address: 127.0.0.1
+
+  # These IPs and subnets are allowed to access the webserver. Note that
+  # specifying an IP address without a netmask uses an implicit netmask
+  # of /32 or /128.
+  allow_from:
+    - 127.0.0.1
+    - ::1
+
+  # Password required to access the webserver. Since 4.6.0 the password
+  # can be hashed and salted using rec_control hash-password instead of
+  # being present in the configuration in plaintext, but the plaintext
+  # version is still supported.
+  password: ""
+
+  # Start the webserver (for REST API).
+  webserver: false

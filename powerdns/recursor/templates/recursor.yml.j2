@@ -1,0 +1,16 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+# 
+# See https://doc.powerdns.com/recursor/yamlsettings.html
+
+dnssec:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor_dnssec'] | combine(powerdns_recursor_dnssec) | to_nice_yaml(indent=2) | indent(2) }}
+incoming:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor_incoming'] | combine(powerdns_recursor_incoming) | to_nice_yaml(indent=2) | indent(2) }}
+outgoing:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor_outgoing'] | combine(powerdns_recursor_outgoing) | to_nice_yaml(indent=2) | indent(2) }}
+recordcache:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor_recordcache'] | combine(powerdns_recursor_recordcache) | to_nice_yaml(indent=2) | indent(2) }}
+recursor:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor'] | combine(powerdns_recursor) | to_nice_yaml(indent=2) | indent(2) }}
+webservice:
+  {{ (lookup('file', 'defaults/main.yml') | from_yaml)['powerdns_recursor_webservice'] | combine(powerdns_recursor_webservice) | to_nice_yaml(indent=2) | indent(2) }}
