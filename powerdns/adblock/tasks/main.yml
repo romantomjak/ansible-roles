@@ -11,6 +11,15 @@
     update_cache: yes
   become: true
 
+- name: Create destination folder if it doesnt exist
+  file:
+    path: "{{ powerdns_adblock_database | dirname }}"
+    state: directory
+    owner: "{{ powerdns_adblock_user }}"
+    group: "{{ powerdns_adblock_group }}"
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
 - name: Create the database
   shell:
     cmd: |
