@@ -68,6 +68,9 @@ subnet {{ subnet.net }} netmask {{ subnet.mask }} {
 {% if subnet.domain is defined %}
   option domain-name "{{ subnet.domain }}";
 {% endif %}
+{% if subnet.ddns_updates is defined %}
+  ddns-updates {{ (subnet.ddns_updates == true) | ternary('on', 'off') }};
+{% endif %}
 }
 
 {% endfor %}

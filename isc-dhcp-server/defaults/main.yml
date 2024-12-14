@@ -63,6 +63,9 @@ isc_dhcp_server_authoritative: false
 # parameters and to specify what addresses may be dynamically
 # allocated to clients booting on that subnet. The range is
 # inclusive.
+#
+# Note that ddns_updates defaults to true, but does nothing if
+# isc_dhcp_server_ddns_update_style is set to none.
 # 
 # isc_dhcp_server_subnets:
 #   - net: 10.5.5.0
@@ -72,6 +75,7 @@ isc_dhcp_server_authoritative: false
 #     routers: 10.5.5.1
 #     dns: ns1.internal.example.org
 #     domain: internal.example.org
+#     ddns_updates: true
 isc_dhcp_server_subnets: []
 
 # The host declaration provides a way for the DHCP server to identify a
