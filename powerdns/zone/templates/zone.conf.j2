@@ -1,0 +1,6 @@
+$ORIGIN .
+{{ item.name }}	{{ item.ttl }}	IN	SOA	{{ item.master }} {{ item.contact }} {{ item.serial_number }} {{ item.refresh }} {{ item.retry }} {{ item.expire }} {{ item.ttl }}
+{% for record in item.records %}
+{% if record.name == '@' %}{{ item.name }}{% elif item.name not in record.name %}{{ record.name }}.{{ item.name }}{% else %}{{ record.name }}{% endif %} {{ record.ttl }} IN {{ record.type }} {{ record.content }}{% if record.type == 'NS' %}.{% endif %}
+
+{% endfor %}

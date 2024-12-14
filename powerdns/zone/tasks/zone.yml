@@ -1,0 +1,34 @@
+---
+# Configures PowerDNS Authoritative Server zone
+
+- name: Create zone file
+  template: src=zone.conf.j2 dest=/tmp/zone-{{ item.name }}.conf
+  tags:
+    - configuration
+
+- name: Load zone file
+  shell: pdnsutil load-zone {{ item.name }} /tmp/zone-{{ item.name }}.conf
+  become: true
+
+- name: List zone keys
+  shell: pdnsutil list-keys {{ item.name }}
+  register: zone_key_output
+  become: true
+
+- name: Secure zone
+  shell: pdnsutil secure-zone {{ item.name }}
+  become: true
+  when: item.name not in zone_key_output.stdout
+
+- name: Rectify zone
+  shell: pdnsutil rectify-zone {{ item.name }}
+  become: true
+
+- name: Increase serial
+  shell: pdnsutil increase-serial {{ item.name }}
+  become: true
+
+- name: Cleanup zone file
+  file:
+    path: "/tmp/zone-{{ item.name }}.conf"
+    state: absent
