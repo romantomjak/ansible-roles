@@ -35,21 +35,6 @@ powerdns_allow_dns_updates_from:
   - 127.0.0.0/8
   - ::1
 
-# Imports a TSIG key used to secure domain updates.
-#
-# powerdns_tsig_keys:
-#   - name: DHCP_UPDATER
-#     algorithm: hmac-sha256
-#     secret: FYhvwsW1ZtFZqWzsMpqhbg==
-powerdns_tsig_keys: []
-
-# Associates the domains with the given TSIG keys.
-#
-# powerdns_domain_keys:
-#   - domain: foo.com
-#     key: DHCP_UPDATER
-powerdns_domain_keys: []
-
 # Enable or disable the built-in webserver and HTTP API.
 # NOTE: to enable the API you must also enable the webserver.
 powerdns_enable_api: false
