@@ -11,7 +11,7 @@
     dest: /etc/bird/bird.conf
     owner: root
     group: root
-    mode: 0640
+    mode: 0644
   become: true
   tags:
     - configuration
@@ -24,7 +24,7 @@
     dest: /etc/bird/bird6.conf
     owner: root
     group: root
-    mode: 0640
+    mode: 0644
   become: true
   tags:
     - configuration
