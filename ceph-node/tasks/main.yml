@@ -3,7 +3,7 @@
 
 - name: Download cephadm
   get_url:
-    url: https://github.com/ceph/ceph/raw/{{ ceph_release }}/src/cephadm/cephadm.py
+    url: https://download.ceph.com/rpm-{{ ceph_release }}/el9/noarch/cephadm
     dest: /usr/sbin/cephadm
     owner: root
     group: root
