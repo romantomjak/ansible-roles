@@ -1,0 +1,23 @@
+---
+# Installs Wireguard
+
+- name: Install latest version of Wireguard
+  package: name=wireguard state=latest update_cache=yes
+  become: true
+
+- name: Ensure configuration folder exists
+  file:
+    path: "/etc/wireguard"
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+  become: true
+
+- name: Copy configuration
+  template: src=wireguard.conf.j2 dest="/etc/wireguard/{{ wireguard_interface }}.conf"
+  become: true
+
+- name: Enable and start Wireguard
+  systemd: name=wg-quick@{{ wireguard_interface }} enabled=yes state=started daemon_reload=true
+  become: true

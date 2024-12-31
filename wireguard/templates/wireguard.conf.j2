@@ -1,0 +1,19 @@
+# {{ ansible_managed }}. Created on {{ template_run_date }}
+
+[Interface]
+Address = {{ wireguard_address }}
+PrivateKey = {{ wireguard_private_key }}
+ListenPort = {{ wireguard_listen_port }}
+
+{% for peer in wireguard_peers %}
+{% if peer.name is defined %}
+# {{ peer.name }}
+{% endif %}
+[Peer]
+PublicKey = {{ peer.public_key }}
+AllowedIPs = {{ peer.allowed_ips | join(', ') }}
+{% if peer.endpoint is defined %}
+Endpoint = {{ peer.endpoint }}
+{% endif %}
+
+{% endfor %}

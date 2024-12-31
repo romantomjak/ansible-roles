@@ -1,0 +1,42 @@
+---
+# Override these in playbook with 'vars:' block
+
+# The interface on which to listen for incoming packets.
+wireguard_interface: wg0
+
+# The private key for the interface.
+wireguard_private_key: oK56DE9Ue9zK76rAc8pBl6opph+1v36lm7cXXsQKrQM=
+
+# Port to listen on for incoming connections.
+wireguard_listen_port: 51820
+
+# The address to assign for the wireguard interface.
+wireguard_address: 192.168.2.1/24
+
+# Peer configuration.
+#
+# This works for both "servers" and "clients". When sending packets,
+# the list of allowed IPs behaves as a sort of routing table, and when
+# receiving packets, the list of allowed IPs behaves as a sort of
+# access control list.
+#
+# Name property is entirely optional and when specified will add a
+# comment in the configuration file above the peer definition to
+# simplify peer identification later on.
+#
+# Peer configuration on a server might look like this:
+#   wireguard_peers:
+#     - name: client1
+#       public_key: GtL7fZc/bLnqZldpVofMCD6hDjrK28SsdLxevJ+qtKU=
+#       allowed_ips:
+#         - 0.0.0.0/0
+#         - 10.192.122.3/32
+#
+# Client configuration is very similiar with the addition of endpoint
+# key wich is the internet IP of the remote peer:
+#   wireguard_peers:
+#     - public_key: HIgo9xNzJMWLKASShiTqIybxZ0U3wGLiUeJ1PKf8ykw=
+#       endpoint: 192.95.5.69:51820
+#       allowed_ips:
+#         - 0.0.0.0/0
+wireguard_peers: []
