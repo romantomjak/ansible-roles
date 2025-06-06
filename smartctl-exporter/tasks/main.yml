@@ -1,0 +1,39 @@
+---
+# Installs smartctl exporter
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - smartmontools
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Download and install smartctl exporter
+  unarchive:
+    src: https://github.com/prometheus-community/smartctl_exporter/releases/download/v{{ smartctl_exporter_version }}/smartctl_exporter-{{ smartctl_exporter_version }}.{{ ansible_system | lower }}-{{ smartctl_exporter_architecture }}.tar.gz
+    dest: /usr/local/bin/
+    remote_src: yes
+    include:
+      - smartctl_exporter-{{ smartctl_exporter_version }}.{{ ansible_system | lower }}-{{ smartctl_exporter_architecture }}/smartctl_exporter
+    extra_opts:
+     - --strip-components=1
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  become: true
+
+- name: Copy service template
+  template:
+    src: templates/smartctl-exporter.service.j2
+    dest: /etc/systemd/system/smartctl-exporter.service
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o=rwx"
+  notify:
+    - Restart smartctl exporter
+  become: true
+
+- name: Start smartctl exporter
+  systemd: name=smartctl-exporter enabled=yes state=started daemon_reload=true
+  become: true

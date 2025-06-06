@@ -1,0 +1,14 @@
+---
+# Override these in playbook with 'vars:' block.
+
+# The smartctl exporter version to install.
+smartctl_exporter_version: 0.14.0
+
+# Smartctl exporter is supported on amd64, arm and 386 architectures.
+smartctl_exporter_architecture: amd64
+
+# Address on which to expose metrics and web interface.
+smartctl_exporter_web_listen_address: ":9633"
+
+# Path under which to expose metrics.
+smartctl_exporter_web_telemetry_path: "/metrics"
