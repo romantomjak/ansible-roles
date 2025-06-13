@@ -3,7 +3,6 @@
 
 - name: Download and install etcdctl
   unarchive:
-    creates: /usr/local/bin/etcdctl
     src: https://github.com/etcd-io/etcd/releases/download/v{{ etcdctl_version }}/etcd-v{{ etcdctl_version }}-{{ ansible_system | lower }}-{{ etcdctl_architecture }}.tar.gz
     dest: /usr/local/bin/
     remote_src: yes
