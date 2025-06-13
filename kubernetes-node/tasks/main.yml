@@ -50,7 +50,6 @@
   shell:
     cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_apt_keyring }}"
     creates: "{{ kubernetes_apt_keyring }}"
-    warn: False
   become: true
 
 - name: Fix kubernetes GPG key permissions
@@ -75,7 +74,6 @@
   shell:
     cmd: "curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
     creates: "{{ kubernetes_cri_o_apt_keyring }}"
-    warn: False
   become: true
 
 - name: Fix CRI-O GPG key permissions
