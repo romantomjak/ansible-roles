@@ -50,6 +50,9 @@
   shell:
     cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_apt_keyring }}"
     creates: "{{ kubernetes_apt_keyring }}"
+  tags:
+    - repository
+    - kubernetes-repository
   become: true
 
 - name: Fix kubernetes GPG key permissions
@@ -58,6 +61,9 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
+  tags:
+    - repository
+    - kubernetes-repository
   become: true
 
 - name: Add kubernetes APT repository
@@ -68,12 +74,18 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
+  tags:
+    - repository
+    - kubernetes-repository
   become: true
 
 - name: Import CRI-O GPG key
   shell:
     cmd: "curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
     creates: "{{ kubernetes_cri_o_apt_keyring }}"
+  tags:
+    - repository
+    - crio-repository
   become: true
 
 - name: Fix CRI-O GPG key permissions
@@ -82,6 +94,9 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
+  tags:
+    - repository
+    - crio-repository
   become: true
 
 - name: Add CRI-O APT repository
@@ -92,6 +107,9 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
+  tags:
+    - repository
+    - crio-repository
   become: true
 
 - name: Unhold previously held kubernetes components
