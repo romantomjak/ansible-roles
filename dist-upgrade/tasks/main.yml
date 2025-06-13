@@ -1,0 +1,10 @@
+---
+# Upgrade packages to latest versions.
+
+- name: update apt cache
+  apt: update_cache=true cache_valid_time={{ dist_upgrade_apt_cache_expiry_seconds }}
+  become: true
+
+- name: upgrade packages
+  apt: upgrade=dist
+  become: true

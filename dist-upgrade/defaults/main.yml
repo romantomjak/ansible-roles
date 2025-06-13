@@ -1,0 +1,5 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Update apt cache if it's older than specified number of seconds.
+dist_upgrade_apt_cache_expiry_seconds: 3600
