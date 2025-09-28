@@ -30,7 +30,7 @@
 - name: Add PowerDNS Recursor APT repository
   copy:
     content: >-
-      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg] http://repo.powerdns.com/debian {{ ansible_lsb.codename }}-rec-52 main
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/powerdns-archive-keyring.gpg] http://repo.powerdns.com/debian {{ powerdns_recursor_apt_repository }} main
     dest: /etc/apt/sources.list.d/powerdns.recursor.list
     owner: root
     group: root

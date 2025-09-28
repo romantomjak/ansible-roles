@@ -1,6 +1,11 @@
 ---
 # Override these in playbook with 'vars:' block
 
+# The APT repository to use. For example, bookworm-rec-52 is the
+# repository of PowerDNS Recursor versions 5.2.x for Debian Bookworm
+# operating system.
+powerdns_recursor_apt_repository: "{{ ansible_lsb.codename }}-rec-53"
+
 powerdns_recursor_dnssec:
   # A path to a zone file to read trust anchors from. This can be used to read
   # distribution provided trust anchors, as for instance /usr/share/dns/root.key

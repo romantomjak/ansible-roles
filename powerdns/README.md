@@ -10,11 +10,12 @@ Example playbook to deploy a PowerDNS recursor server:
 
 ```yml
 ---
-# Configures PowerDNS recursive DNS server
+# Configures PowerDNS recursive DNS server v5.3.x
 
 - name: Provision PowerDNS recursor
   hosts: all
   vars:
+    powerdns_recursor_apt_repository: "{{ ansible_lsb.codename }}-rec-53"
     powerdns_recursor_addresses:
       - 127.0.0.1
       - 192.168.1.1
