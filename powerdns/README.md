@@ -36,11 +36,12 @@ Example for deploying a PowerDNS authoritative server:
 
 ```yml
 ---
-# Configures PowerDNS Authoritative Server
+# Configures PowerDNS Authoritative Server v5.0.x
 
 - name: Provision PowerDNS Authoritative Server
   hosts: all
   vars:
+    powerdns_apt_repository: "{{ ansible_lsb.codename }}-auth-50"
     powerdns_addresses:
       - 0.0.0.0
       - ::

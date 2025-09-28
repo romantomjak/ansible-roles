@@ -1,6 +1,11 @@
 ---
 # Override these in playbook with 'vars:' block
 
+# The APT repository to use. For example, bookworm-auth-49 is the
+# repository of PowerDNS Authoritative Server versions 4.9.x for
+# Debian Bookworm operating system.
+powerdns_apt_repository: "{{ ansible_lsb.codename }}-auth-50"
+
 # The interfaces on which PowerDNS Authoritative Server will listen on.
 powerdns_addresses:
   - 0.0.0.0
