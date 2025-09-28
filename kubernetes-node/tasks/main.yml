@@ -80,7 +80,7 @@
 
 - name: Import CRI-O GPG key
   shell:
-    cmd: "curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
+    cmd: "curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
   tags:
     - repository
     - crio-repository
@@ -100,7 +100,7 @@
 - name: Add CRI-O APT repository
   copy:
     content: >-
-      deb [signed-by={{ kubernetes_cri_o_apt_keyring }}] https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/ /
+      deb [signed-by={{ kubernetes_cri_o_apt_keyring }}] https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/ /
     dest: /etc/apt/sources.list.d/cri-o.list
     owner: root
     group: root
