@@ -73,9 +73,9 @@ subnet {{ subnet.net }} netmask {{ subnet.mask }} {
 {% endif %}
 {% if subnet.ntp_servers is defined %}
 {% if subnet.ntp_servers | type_debug == "list" %}
-  ntp-servers {{ subnet.ntp_servers | join(', ') }};
+  option ntp-servers {{ subnet.ntp_servers | join(', ') }};
 {% else %}
-  ntp-servers {{ subnet.ntp_servers }};
+  option ntp-servers {{ subnet.ntp_servers }};
 {% endif %}
 {% endif %}
 }
