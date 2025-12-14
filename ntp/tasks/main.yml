@@ -1,0 +1,24 @@
+---
+# Installs NTP server
+
+- name: Install latest version of NTP
+  package: name=ntp state=latest update_cache=yes
+  become: true
+
+- name: Ignore DHCP-provided NTP servers
+  lineinfile:
+    path: /etc/default/ntpsec
+    regexp: '^IGNORE_DHCP='
+    line: IGNORE_DHCP="yes"
+  when: ntp_ignore_dhcp
+  become: true
+
+- name: Copy configuration
+  template: src=ntp.conf.j2 dest="/etc/ntpsec/ntp.conf"
+  notify:
+    - Restart NTP server
+  become: true
+
+- name: Enable and start NTP
+  systemd: name=ntp enabled=yes state=started daemon_reload=true
+  become: true

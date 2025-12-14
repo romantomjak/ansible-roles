@@ -1,0 +1,6 @@
+---
+# Restart the NTP server
+
+- name: Restart NTP server
+  service: name=ntp state=restarted
+  become: true

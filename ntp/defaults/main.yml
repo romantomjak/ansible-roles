@@ -1,0 +1,23 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Set to "yes" to ignore the DHCP-provided NTP servers.
+ntp_ignore_dhcp: false
+
+# Publicly available servers that provide highly accurate
+# time via the Network Time Protocol to clients.
+ntp_pool:
+  - addr: 0.debian.pool.ntp.org
+    opts: [iburst]
+  - addr: 1.debian.pool.ntp.org
+    opts: [iburst]
+  - addr: 2.debian.pool.ntp.org
+    opts: [iburst]
+  - addr: 3.debian.pool.ntp.org
+    opts: [iburst]
+
+# Access control configuration. Local users may interrogate
+# the ntp server more closely.
+ntp_restrict:
+  - 127.0.0.1
+  - ::1
