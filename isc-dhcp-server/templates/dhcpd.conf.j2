@@ -52,6 +52,9 @@ subnet {{ subnet.net }} netmask {{ subnet.mask }} {
 {% if subnet.range is defined %}
   range {{ subnet.range }};
 {% endif %}
+{% if subnet.ddns_updates is defined %}
+  ddns-updates {{ (subnet.ddns_updates == true) | ternary('on', 'off') }};
+{% endif %}
 {% if subnet.broadcast is defined %}
   option broadcast-address {{ subnet.broadcast }};
 {% endif %}
@@ -67,9 +70,6 @@ subnet {{ subnet.net }} netmask {{ subnet.mask }} {
 {% endif %}
 {% if subnet.domain is defined %}
   option domain-name "{{ subnet.domain }}";
-{% endif %}
-{% if subnet.ddns_updates is defined %}
-  ddns-updates {{ (subnet.ddns_updates == true) | ternary('on', 'off') }};
 {% endif %}
 {% if subnet.ntp_servers is defined %}
 {% if subnet.ntp_servers | type_debug == "list" %}
