@@ -76,6 +76,7 @@ isc_dhcp_server_authoritative: false
 #     dns: ns1.internal.example.org
 #     domain: internal.example.org
 #     ddns_updates: true
+#     ntp_servers: 10.5.5.1
 isc_dhcp_server_subnets: []
 
 # The host declaration provides a way for the DHCP server to identify a
