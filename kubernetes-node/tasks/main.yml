@@ -48,7 +48,7 @@
 
 - name: Import kubernetes GPG key
   shell:
-    cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_apt_keyring }}"
+    cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key | gpg --dearmor --yes -o {{ kubernetes_apt_keyring }}"
   tags:
     - repository
     - kubernetes-repository
@@ -80,7 +80,7 @@
 
 - name: Import CRI-O GPG key
   shell:
-    cmd: "curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_cri_o_apt_keyring }}"
+    cmd: "curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/{{ kubernetes_cri_o_version }}/deb/Release.key | gpg --dearmor --yes -o {{ kubernetes_cri_o_apt_keyring }}"
   tags:
     - repository
     - crio-repository
